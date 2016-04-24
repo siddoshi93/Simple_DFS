@@ -19,8 +19,11 @@ import dfs_api.DFS_Globals;
 public class Main_Node_Server 
 {
 	private static ExecutorService workers;
-	private static ConcurrentHashMap<String,ClientRequestHandle> active_client_list; /* List which maintains the current active client in the system */
-	private static ServerSocket client_request; /* Socket which listens for client request */
+
+	/* List which maintains the current active client REQUESTS in the Server */
+	private static ConcurrentHashMap<String,ClientRequestHandle> active_client_list;
+
+	private static ServerSocket client_request; /* Server Socket which listens for client request */
 	private static InetAddress hostAddress;
 	private static ClientRequestHandle curr_req;
 	private static String new_uuid;
@@ -31,11 +34,14 @@ public class Main_Node_Server
 		{
 			/* Wait for a connection so that it can be served in a thread */
 			setUpMN(); /* Set up the server */
+
 			while(DFS_Globals.is_on)
 			{
-				/* Generate a random UUID for identification */
+				/* Generate a random UUID for Every new Client Request to be used as a Key in the HashMap */
 				new_uuid = UUID.randomUUID().toString();
+
 				curr_req = new ClientRequestHandle(client_request.accept(),new_uuid); /* Listen to client request and assign the request to a worker thread */
+
 				//System.out.println("Got connection : ");
 				active_client_list.put(new_uuid,curr_req); /* Add the client to the end of the list */
 
@@ -78,7 +84,7 @@ public class Main_Node_Server
 	{		
 		hostAddress = InetAddress.getLocalHost();  /* Get the host address */
 		client_request = new ServerSocket(DFS_CONSTANTS.MN_LISTEN_PORT,DFS_CONSTANTS.REQUEST_BACK_LOG/*,hostAddress*/);
-		active_client_list = new ConcurrentHashMap();
+		active_client_list = new ConcurrentHashMap<String, ClientRequestHandle>();
 		workers = Executors.newFixedThreadPool(DFS_CONSTANTS.NUM_OF_WORKERS);
 	}
 }

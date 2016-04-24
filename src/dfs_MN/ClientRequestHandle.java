@@ -4,6 +4,7 @@ import java.net.Socket;
 
 /* Program specific import */
 
+//This is a Client Thread, which is created for EVERY client request handled
 public class ClientRequestHandle implements Runnable{
 	private Socket client_socket;
 	private String uuid;
