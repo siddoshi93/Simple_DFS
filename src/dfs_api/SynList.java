@@ -9,7 +9,13 @@ public class SynList<T>
 	
 	public SynList()
 	{
-		list = new LinkedList<T>();
+		list = new LinkedList<T>();		
+	}
+	
+	/* Synchronized method for accessing the list for modification */
+	public void addLast(T t)
+	{
+		list.add(list.size(), t);		
 	}
 	
 	/* Synchronized method for accessing the list for modification */
@@ -25,8 +31,13 @@ public class SynList<T>
 	}
 	
 	/* Synchronized method for removing element from the list */
-	public T	 remove(int index)
-	{
+	public T remove(int index)
+	{				
 		return list.remove(index);
+	}
+	
+	public int getSize()
+	{
+		return list.size();
 	}
 }
