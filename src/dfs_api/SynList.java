@@ -13,13 +13,14 @@ public class SynList<T>
 	}
 	
 	/* Synchronized method for accessing the list for modification */
-	public void addLast(T t)
+	public synchronized void addLast(T t)
 	{
+		System.out.println("Add at index : " + list.size());
 		list.add(list.size(), t);		
 	}
 	
 	/* Synchronized method for accessing the list for modification */
-	public void set(int index,T t)
+	public synchronized void set(int index,T t)
 	{
 		list.add(index, t);		
 	}
@@ -31,7 +32,7 @@ public class SynList<T>
 	}
 	
 	/* Synchronized method for removing element from the list */
-	public T remove(int index)
+	public synchronized T remove(int index)
 	{				
 		return list.remove(index);
 	}

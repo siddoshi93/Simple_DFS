@@ -5,25 +5,23 @@ import java.net.Socket;
 /* Program specific import */
 
 public class ClientRequestHandle implements Runnable{
-	Socket client_socket;
-	int list_index;
+	private Socket client_socket;
+	private String uuid;
 	
-	public ClientRequestHandle(Socket soc,int index) {
+	public ClientRequestHandle(Socket soc,String uuid) {
 		this.client_socket = soc;
-		this.list_index = index;
+		this.uuid = uuid;
 	}
 	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		System.out.println("Sleeping " + client_socket.getRemoteSocketAddress().toString() + ":" + list_index);
+	public void run() {				
 		try {
-			Thread.sleep(3000);
+			System.out.println("Sleeping : " + uuid);
+			Thread.sleep(5000);
+			Main_Node_Server.remove_active_request(uuid);
+			System.out.println("removed " + uuid);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		Main_Node_Server.getSyncList().remove(list_index);
-		System.out.println("removed ");
+		}		
 	}
 
 }
