@@ -11,4 +11,6 @@ public class ClientResponsePacket implements Serializable
 {
     public int response_code;
     public String secondary_server_ip;
+
+    public TreeNode curNode;    //Returning Current Node for LS Command
 }
