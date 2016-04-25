@@ -18,6 +18,7 @@ public class TreeNode implements Serializable {
 
     public TreeNode()
     {
-
+        this.NodeName = "/";
+        this.isDir = true;
     }
 }
