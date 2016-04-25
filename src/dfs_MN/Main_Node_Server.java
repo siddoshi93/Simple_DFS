@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 
 /* Program specific imports */
-import dfs_api.SynList;
 import dfs_api.DFS_CONSTANTS;
 import dfs_api.DFS_Globals;
 
