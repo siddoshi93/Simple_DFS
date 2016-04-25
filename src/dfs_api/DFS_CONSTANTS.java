@@ -18,6 +18,7 @@ public class DFS_CONSTANTS
 	public final static int SUCCESS = 0; /* SUCCESS RETURN FOR FUNCTION */
 	public final static int FAILURE = -1; /* FAILURE RETURN FOR FUNCTION */
 	public final static int OK = 0;
+	public final static int AUTH_FAILED = 3;
 
 	/* CONSTANTS FOR TYPE OF CLIENT REQUESTS i.e. commands*/
 	public final static int REGISTER = 11;

@@ -36,7 +36,7 @@ public class Register {
             System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
         try
         {
-            connect = new Socket(server_ip,DFS_CONSTANTS.MN_LISTEN_PORT);
+            connect = new Socket("127.0.0.1",DFS_CONSTANTS.MN_LISTEN_PORT);
             oos = new ObjectOutputStream(connect.getOutputStream());
             ois = new ObjectInputStream(connect.getInputStream());
             /* Send the request to client for registration */
