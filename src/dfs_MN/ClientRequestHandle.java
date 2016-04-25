@@ -45,6 +45,7 @@ public class ClientRequestHandle implements Runnable{
 
 	public void handle_command(ClientRequestPacket req_packet)
 	{
+		ClientWrapper temp_cw;
 		switch (req_packet.command)
 		{
 			case DFS_CONSTANTS.REGISTER:
@@ -53,7 +54,15 @@ public class ClientRequestHandle implements Runnable{
 				break;
 			case DFS_CONSTANTS.LOGIN:
 				/* Validate the username requested */
-				if(DFS_Globals.global_client_list.get(req_packet.client_uuid);
+				if((temp_cw = DFS_Globals.global_client_list.get(req_packet.client_uuid)) != null)
+				{
+					
+					/* Send the client positive response */
+				}
+				else
+				{
+					/* Send the client positive response */
+				}
 				break;
 		}
 	}

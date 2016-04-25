@@ -18,6 +18,13 @@ public class TreeNode implements Serializable
     //List of Directories and Files
     public ArrayList<TreeNode> children = null;
 
+    public TreeNode()
+    {
+        this.storageNode = null;
+        this.NodeName = "/";
+        this.isDir = true;
+    }
+
     public TreeNode(StorageNode storageNode, String NodeName, boolean isDir, Date timeAccess, long size)
     {
         this.storageNode = storageNode;
