@@ -9,7 +9,6 @@ import java.util.Date;
  */
 public class TreeNode implements Serializable
 {
-    public StorageNode storageNode;
     public String NodeName;
     public boolean isDir;
     public Date timeAccess;
@@ -18,6 +17,9 @@ public class TreeNode implements Serializable
     //List of Directories and Files
     public ArrayList<TreeNode> children = null;
 
+    //List of Storage Nodes the files are stored on
+    public ArrayList<StorageNode> storageNode = null;
+
     public TreeNode()
     {
         this.storageNode = null;
@@ -25,7 +27,7 @@ public class TreeNode implements Serializable
         this.isDir = true;
     }
 
-    public TreeNode(StorageNode storageNode, String NodeName, boolean isDir, Date timeAccess, long size)
+    public TreeNode(ArrayList<StorageNode> storageNode, String NodeName, boolean isDir, Date timeAccess, long size)
     {
         this.storageNode = storageNode;
         this.NodeName = NodeName;
