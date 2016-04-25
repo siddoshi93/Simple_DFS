@@ -24,6 +24,8 @@ public class DFS_CONSTANTS
 	public final static int REGISTER = 11;
 	public final static int LOGIN = 12;
 	public final static int LS = 13;
+	public final static int MKDIR = 14;
+	public final static int RM = 15;
 
 	/* Environment variable for server address */
 	public final static String DFS_SERVER_ADDR = "DFS_SERVER_ADDR";
