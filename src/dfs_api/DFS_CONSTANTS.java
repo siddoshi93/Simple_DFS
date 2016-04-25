@@ -17,9 +17,13 @@ public class DFS_CONSTANTS
 	/* RETURN TYPE CONSTANTS */
 	public final static int SUCCESS = 0; /* SUCCESS RETURN FOR FUNCTION */
 	public final static int FAILURE = -1; /* FAILURE RETURN FOR FUNCTION */
+	public final static int OK = 0;
 
 	/* CONSTANTS FOR TYPE OF CLIENT REQUESTS i.e. commands*/
 	public final static int REGISTER = 11;
 	public final static int LOGIN = 12;
 	public final static int LS = 13;
+
+	/* Environment variable for server address */
+	public final static String DFS_SERVER_ADDR = "DFS_SERVER_ADDR";
 }

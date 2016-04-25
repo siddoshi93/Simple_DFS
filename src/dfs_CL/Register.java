@@ -7,6 +7,7 @@ import java.net.Socket;
 
 /* Program specific imports */
 import dfs_api.ClientRequestPacket;
+import dfs_api.ClientResponsePacket;
 import dfs_api.DFS_CONSTANTS;
 
 /**
@@ -16,8 +17,9 @@ public class Register {
     public static void main(String arg[])
     {
         Socket connect = null;
-        String username;
-        ClientRequestPacket packet;
+        String username,server_ip;
+        ClientRequestPacket req_packet;
+        ClientResponsePacket res_packet;
         ObjectOutputStream oos = null;
         ObjectInputStream  ois = null;
 
@@ -29,22 +31,35 @@ public class Register {
         }
 
         username = arg[1];
+        server_ip = ClientAPI.getServerAddress();
+        if(server_ip == null || username == null)
+            System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
         try
         {
-            connect = new Socket("127.0.0.1",DFS_CONSTANTS.MN_LISTEN_PORT);
+            connect = new Socket(server_ip,DFS_CONSTANTS.MN_LISTEN_PORT);
+            oos = new ObjectOutputStream(connect.getOutputStream());
+            ois = new ObjectInputStream(connect.getInputStream());
             /* Send the request to client for registration */
-            packet = new ClientRequestPacket();
-            packet.command = DFS_CONSTANTS.REGISTER;
-            packet.client_uuid = username;
+            req_packet = new ClientRequestPacket();
+            req_packet.command = DFS_CONSTANTS.REGISTER;
+            req_packet.client_uuid = username;
 
             /* Send the packet to the  server */
-            oos = new ObjectOutputStream(connect.getOutputStream());
-            oos.writeObject(packet);
+            oos.writeObject(req_packet);
 
-            /* Wait for the response from the server */
-            
+            /* Wait for the response packet from the server */
+            res_packet = (ClientResponsePacket)ois.readObject();
+            if(res_packet.response_code == DFS_CONSTANTS.OK)
+            {
+                if(ClientAPI.create_session_file(username))
+                    System.out.println("Successfully Registered.......");
+                else
+                    System.out.println("Error while Creating session.....");
+            }
+            else
+                System.out.println("Error while registering client with the server.....");
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }

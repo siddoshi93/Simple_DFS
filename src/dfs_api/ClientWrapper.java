@@ -6,5 +6,12 @@ package dfs_api;
 public class ClientWrapper {
     public String ID;
     public TreeNode root;
-    public TreeNode cur;
+    public TreeNode curr;
+
+    public ClientWrapper(String id)
+    {
+        this.ID = ID;
+        root = new TreeNode(); /* Root node for register file system */
+        curr = root;
+    }
 }
