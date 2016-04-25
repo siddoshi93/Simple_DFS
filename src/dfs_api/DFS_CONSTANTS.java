@@ -5,6 +5,9 @@ package dfs_api;
  */
 public class DFS_CONSTANTS 
 {
+	/* NUMBERS */
+	public final static int ONE = 1;
+
 	/* PORT CONSTANTS */
 	public final static int MN_LISTEN_PORT = 7091;
 	public final static int CL_LISTEN_PORT = 8090;
@@ -29,4 +32,8 @@ public class DFS_CONSTANTS
 
 	/* Environment variable for server address */
 	public final static String DFS_SERVER_ADDR = "DFS_SERVER_ADDR";
+
+	/* File Path */
+	public final static String user_name_file = "/home/abhishek/.sdfs/sdfs_username";
+	public final static String sdfs_path = "/home/abhishek/.sdfs/";
 }

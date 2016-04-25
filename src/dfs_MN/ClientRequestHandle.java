@@ -74,6 +74,14 @@ public class ClientRequestHandle implements Runnable{
 				}
 				send_response(res_packet);
 				break;
+			case DFS_CONSTANTS.MKDIR:
+				res_packet = CommandHandler.commandMKDIR(req_packet);
+				send_response(res_packet);
+				break;
+			case DFS_CONSTANTS.LS:
+				res_packet = CommandHandler.commandLS(req_packet);
+				send_response(res_packet);
+				break;
 			default:
 				System.out.println("Invalid Command");
 		}
@@ -107,6 +115,7 @@ public class ClientRequestHandle implements Runnable{
 	{
 		try
 		{
+			System.out.println(res_packet.response_code);
 			oos = new ObjectOutputStream(client_socket.getOutputStream());
 			oos.writeObject(res_packet);
 			oos.flush();

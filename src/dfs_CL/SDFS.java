@@ -25,6 +25,12 @@ public class SDFS
             case "LOGIN":
                 status = ClientCommand.Login(arg);
                 break;
+            case "MKDIR":
+                status = ClientCommand.MkDir(arg);
+                break;
+            case "LS":
+                status = ClientCommand.Ls(arg);
+                break;
             case "HELP":
                 display_help_option();
             default:

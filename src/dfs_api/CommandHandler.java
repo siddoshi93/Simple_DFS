@@ -8,7 +8,7 @@ import java.util.Date;
 public class CommandHandler {
 
     //LS Command
-    public ClientResponsePacket commandLS (ClientRequestPacket req_packet)
+    public static ClientResponsePacket commandLS (ClientRequestPacket req_packet)
     {
         ClientResponsePacket responsePacket = new ClientResponsePacket();
 
@@ -19,7 +19,7 @@ public class CommandHandler {
     }
 
     //arguments[0] in MKDIR is the name of the Directory
-    public ClientResponsePacket commandMKDIR (ClientRequestPacket req_packet)
+    public static ClientResponsePacket commandMKDIR (ClientRequestPacket req_packet)
     {
         ClientResponsePacket responsePacket = new ClientResponsePacket();
 
