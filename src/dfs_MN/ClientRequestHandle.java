@@ -33,6 +33,7 @@ public class ClientRequestHandle implements Runnable{
 			req_packet = (ClientRequestPacket)ois.readObject();
 			if(req_packet == null)
 				System.out.println("Handle NULL case");
+			System.out.println("ID : " + req_packet.client_uuid);
 			handle_command(this.client_socket,req_packet);
 		}
 		catch (Exception e)
@@ -83,6 +84,7 @@ public class ClientRequestHandle implements Runnable{
 		ClientWrapper temp_cw;
 		if((temp_cw = DFS_Globals.global_client_list.get(req_packet.client_uuid)) != null)
 		{
+			System.out.println("Is NULL? : " + temp_cw.ID);
 			if(temp_cw.ID.equals(req_packet.client_uuid))
 			{
 				/* Send the client positive response */
@@ -107,18 +109,11 @@ public class ClientRequestHandle implements Runnable{
 		{
 			oos = new ObjectOutputStream(client_socket.getOutputStream());
 			oos.writeObject(res_packet);
+			oos.flush();
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			try {
-				oos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 }
