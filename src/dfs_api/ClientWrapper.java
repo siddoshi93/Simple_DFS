@@ -10,7 +10,7 @@ public class ClientWrapper {
 
     public ClientWrapper(String id)
     {
-        this.ID = ID;
+        this.ID = id;
         root = new TreeNode(); /* Root node for register file system */
         curr = root;
     }

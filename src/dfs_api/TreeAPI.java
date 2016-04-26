@@ -8,12 +8,18 @@ import java.util.ArrayList;
  * This file is responsible for operating on the server
  */
 public class TreeAPI {
-    public void TreeInsert(TreeNode root, TreeNode newNode)
+
+    public static boolean TreeInsert(TreeNode root, TreeNode newNode)
     {
-        if (root.children == null)
+        //To avoid duplicates
+        for (TreeNode childNode : root.children)
         {
-            root.children = new ArrayList<TreeNode>();
+            if (childNode.NodeName.equals(newNode.NodeName))
+                return false;
         }
+
         root.children.add(newNode);
+
+        return true;
     }
 }

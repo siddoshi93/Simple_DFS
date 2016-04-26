@@ -4,6 +4,7 @@ package dfs_MN;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -88,5 +89,6 @@ public class Main_Node_Server
 		client_request = new ServerSocket(DFS_CONSTANTS.MN_LISTEN_PORT,DFS_CONSTANTS.REQUEST_BACK_LOG/*,hostAddress*/);
 		active_client_list = new ConcurrentHashMap<String, ClientRequestHandle>();
 		workers = Executors.newFixedThreadPool(DFS_CONSTANTS.NUM_OF_WORKERS);
+		DFS_Globals.global_client_list = new HashMap();
 	}
 }

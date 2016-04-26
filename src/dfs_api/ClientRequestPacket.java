@@ -11,5 +11,5 @@ public class ClientRequestPacket implements Serializable
 {
     public int command;
     public String client_uuid;
-    public int response_code;
+    public String arguments[];
 }

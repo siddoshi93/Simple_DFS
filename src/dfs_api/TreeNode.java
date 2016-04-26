@@ -15,7 +15,7 @@ public class TreeNode implements Serializable
     public long size;
 
     //List of Directories and Files
-    public ArrayList<TreeNode> children = null;
+    public ArrayList<TreeNode> children = new ArrayList<TreeNode>();
 
     //List of Storage Nodes the files are stored on
     public ArrayList<StorageNode> storageNode = null;
