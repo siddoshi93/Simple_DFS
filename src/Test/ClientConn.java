@@ -3,7 +3,7 @@ package Test;
 import java.net.Socket;
 
 import dfs_api.DFS_CONSTANTS;
-// trial
+
 public class ClientConn {
 	private static Socket socket;
 	public static void main(String arg[])

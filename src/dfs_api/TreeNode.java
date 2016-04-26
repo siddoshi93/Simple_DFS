@@ -13,6 +13,7 @@ public class TreeNode implements Serializable
     public boolean isDir;
     public Date timeAccess;
     public long size;
+    public TreeNode parent;
 
     //List of Directories and Files
     public ArrayList<TreeNode> children = new ArrayList<TreeNode>();
@@ -25,6 +26,7 @@ public class TreeNode implements Serializable
         this.storageNode = null;
         this.NodeName = "/";
         this.isDir = true;
+        this.parent=null;
     }
 
     public TreeNode(ArrayList<StorageNode> storageNode, String NodeName, boolean isDir, Date timeAccess, long size)
@@ -34,5 +36,6 @@ public class TreeNode implements Serializable
         this.isDir = isDir;
         this.timeAccess = timeAccess;
         this.size = size;
+        this.parent= null;
     }
 }
