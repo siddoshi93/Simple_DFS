@@ -6,10 +6,14 @@ package dfs_api;
 public class StorageNode {
     public String IPAddr;
     public String DataNodeID;
+    public long Size;
+    public long Capacity;
 
-    StorageNode(String IPAddr, String DataNodeID)
+    StorageNode(String IPAddr, String DataNodeID, long Capacity)
     {
         this.IPAddr = IPAddr;
         this.DataNodeID = DataNodeID;
+        Size = 0;
+        this.Capacity = Capacity;
     }
 }

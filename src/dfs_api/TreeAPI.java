@@ -17,6 +17,7 @@ public class TreeAPI {
             if (childNode.NodeName.equals(newNode.NodeName))
                 return false;
         }
+
         newNode.parent=root;
         root.children.add(newNode);
 
@@ -40,7 +41,8 @@ public class TreeAPI {
         while(path.length()>0 && newCurNode!=null)
         {
             if(path.indexOf('/')!=-1)
-            nextPathPoint = path.substring(0,path.indexOf('/'));
+                nextPathPoint = path.substring(0,path.indexOf('/'));
+
             else {
                 nextPathPoint = path;
                 path="";
@@ -49,18 +51,18 @@ public class TreeAPI {
             switch(nextPathPoint)
             {
                 case "..":
-                    newCurNode=newCurNode.parent;
-                    break;
+                          newCurNode=newCurNode.parent;
+                          break;
                 case ".":
-                    continue;
+                         continue;
                 default:
-                    newCurNode=searchNode(newCurNode,nextPathPoint);
-                    if(newCurNode!=null)
-                    {
-                        if (!newCurNode.isDir)
-                            newCurNode = null;
-                    }
-                    break;
+                        newCurNode=searchNode(newCurNode,nextPathPoint);
+                        if(newCurNode!=null)
+                        {
+                            if (!newCurNode.isDir)
+                                newCurNode = null;
+                        }
+                        break;
             }
             path=path.substring(path.indexOf('/')+1);
 
@@ -71,6 +73,9 @@ public class TreeAPI {
     //To find a Node in Children of a Node
     public static TreeNode searchNode(TreeNode curNode,String childNodeName)
     {
+        if (curNode.children == null)
+            return null;
+
         for(TreeNode node: curNode.children)
         {
             if(node.NodeName.equals(childNodeName))
