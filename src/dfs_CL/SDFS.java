@@ -31,6 +31,8 @@ public class SDFS
             case "LS":
                 status = ClientCommand.Ls(arg);
                 break;
+            case "GET":
+                //status = ClientCommand.
             case "HELP":
                 display_help_option();
             default:

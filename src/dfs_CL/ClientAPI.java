@@ -3,6 +3,7 @@ package dfs_CL;
 import dfs_api.ClientRequestPacket;
 import dfs_api.ClientResponsePacket;
 import dfs_api.DFS_CONSTANTS;
+import dfs_api.FileTransfer;
 
 import java.io.*;
 import java.net.Socket;
@@ -115,5 +116,95 @@ public class ClientAPI
         req_packet.client_uuid = username;
         req_packet.command = command;
         return req_packet;
+    }
+
+    public static boolean getFiles(ClientResponsePacket res_packet,String path)
+    {
+        /* This program connects to the Data Node and transfer it to the local system */
+        ClientRequestPacket req_packet = new ClientRequestPacket();
+        ClientResponsePacket dn_res_packet = new ClientResponsePacket();
+        String dn_ip = res_packet.dn_list.get(DFS_CONSTANTS.ONE).IPAddr;
+        Socket connect = null;
+        FileTransfer ftp = new FileTransfer();
+
+        req_packet.command = DFS_CONSTANTS.GET;
+        req_packet.client_uuid = ClientAPI.getUserName();
+        req_packet.file_name = res_packet.file_name;
+        req_packet.file_size = res_packet.file_size;
+
+        try
+        {
+            connect = new Socket(dn_ip,DFS_CONSTANTS.DN_LISTEN_PORT);
+            send_request(connect,req_packet);
+            dn_res_packet = ClientAPI.recv_response(connect);
+
+            if (dn_res_packet !=null && dn_res_packet.response_code == DFS_CONSTANTS.OK)
+            {
+                /* Start Sending the file */
+                ftp.save_file(connect,path,req_packet.file_name,req_packet.file_size);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        finally {
+            try {
+                connect.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    public static boolean sendFiles(ClientResponsePacket res_packet,String path)
+    {
+        /* This program connects to the Data Node and transfer it to the local system */
+        ClientRequestPacket req_packet = new ClientRequestPacket();
+        ClientResponsePacket dn_res_packet = new ClientResponsePacket();
+        String dn_ip = res_packet.dn_list.get(DFS_CONSTANTS.ONE).IPAddr;
+        Socket connect = null;
+        FileTransfer ftp = new FileTransfer();
+
+        req_packet.command = DFS_CONSTANTS.PUT;
+        req_packet.client_uuid = ClientAPI.getUserName();
+        req_packet.file_name = res_packet.file_name;
+        req_packet.file_size = res_packet.file_size;
+
+        try
+        {
+            connect = new Socket(dn_ip,DFS_CONSTANTS.DN_LISTEN_PORT);
+            send_request(connect,req_packet);
+            dn_res_packet = ClientAPI.recv_response(connect);
+
+            if (dn_res_packet !=null && dn_res_packet.response_code == DFS_CONSTANTS.OK)
+            {
+                /* Start Sending the file */
+                ftp.send_file(connect,path,req_packet.file_name,req_packet.file_size);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        finally {
+            try {
+                connect.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
     }
 }

@@ -11,5 +11,10 @@ public class ClientRequestPacket implements Serializable
 {
     public int command;
     public String client_uuid;
+
+    public String file_name;
     public String arguments[];
+    public int file_size;
+
+    public int requestEntity;           //0-Client, 1-datanode
 }

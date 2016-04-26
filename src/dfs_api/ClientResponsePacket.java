@@ -1,6 +1,7 @@
 package dfs_api;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by abhishek on 4/24/16.
@@ -10,7 +11,8 @@ import java.io.Serializable;
 public class ClientResponsePacket implements Serializable
 {
     public int response_code;
-    public String secondary_server_ip;
-
     public TreeNode curNode;    //Returning Current Node for LS Command
+    public ArrayList<StorageNode> dn_list;
+    public String file_name;
+    public int file_size;
 }

@@ -38,7 +38,7 @@ public class Main_Node_Server
 			/* Wait for a connection so that it can be served in a thread */
 			setUpMN(); /* Set up the server */
 
-			while(DFS_Globals.is_on)
+			while(DFS_Globals.is_MN_on)
 			{
 				/* Generate a random UUID for Every new Client Request to be used as a Key in the HashMap */
 				new_uuid = UUID.randomUUID().toString();

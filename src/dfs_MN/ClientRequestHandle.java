@@ -56,7 +56,6 @@ public class ClientRequestHandle implements Runnable{
 				DFS_Globals.global_client_list.put(req_packet.client_uuid,cw);
 				res_packet = new ClientResponsePacket();
 				res_packet.response_code = DFS_CONSTANTS.OK;
-				send_response(res_packet);
 				break;
 			case DFS_CONSTANTS.LOGIN:
 				/* Validate the username requested */
@@ -72,7 +71,6 @@ public class ClientRequestHandle implements Runnable{
 					res_packet = new ClientResponsePacket();
 					res_packet.response_code = DFS_CONSTANTS.AUTH_FAILED;
 				}
-				send_response(res_packet);
 				break;
 			case DFS_CONSTANTS.MKDIR:
 				res_packet = CommandHandler.commandMKDIR(req_packet);
@@ -80,11 +78,15 @@ public class ClientRequestHandle implements Runnable{
 				break;
 			case DFS_CONSTANTS.LS:
 				res_packet = CommandHandler.commandLS(req_packet);
-				send_response(res_packet);
 				break;
+			case DFS_CONSTANTS.GET:
+
 			default:
 				System.out.println("Invalid Command");
+				res_packet = new ClientResponsePacket();
+				res_packet.response_code = DFS_CONSTANTS.INVALID_CMD;
 		}
+		send_response(res_packet);
 	}
 
 	public boolean validate_login(ClientRequestPacket req_packet)

@@ -17,19 +17,23 @@ import javax.xml.ws.handler.MessageContext;
  */
 public class ClientCommand
 {
+    static Socket connect = null;
+    static String server_ip;
+    static ClientRequestPacket req_packet;
+    static ClientResponsePacket res_packet;
+    static ObjectInputStream  ois = null;
+
     public static boolean RegLogActivity(String username,int command,ClientResponsePacket res_packet)
     {
-        Socket connect = null;
-        String server_ip;
-        ClientRequestPacket req_packet;
-        ObjectInputStream  ois = null;
-
         server_ip = ClientAPI.getServerAddress();
-        //if(server_ip == null || username == null)
-          //  System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
+        if(server_ip == null || username == null)
+        {
+            System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
+            return false;
+        }
         try
         {
-            connect = new Socket("127.0.0.1",DFS_CONSTANTS.MN_LISTEN_PORT);
+            connect = new Socket(server_ip,DFS_CONSTANTS.MN_LISTEN_PORT);
 
             /* Set the request packet for Server with registration */
             req_packet = new ClientRequestPacket();
@@ -38,7 +42,6 @@ public class ClientCommand
 
             /* Send the packet to the  server */
             ClientAPI.send_request(connect,req_packet);
-            System.out.println("Request Send : ");
 
             /* Wait for the response packet from the server */
             ois = new ObjectInputStream(connect.getInputStream());
@@ -87,7 +90,6 @@ public class ClientCommand
 
     public static boolean Register(String[] arg)
     {
-        ClientResponsePacket res_packet = null;
         String username;
 
         if(arg.length != 2)
@@ -106,7 +108,6 @@ public class ClientCommand
 
     public static boolean Login(String[] arg)
     {
-        ClientResponsePacket res_packet = null;
         String username;
 
         if(arg.length != 2)
@@ -125,11 +126,7 @@ public class ClientCommand
     }
 
     public static boolean MkDir(String[] arg) {
-        String[] arg_list;
-        Socket connect = null;
-        ClientRequestPacket req_packet;
-        ClientResponsePacket res_packet;
-        ObjectInputStream ois = null;
+        String[] arg_list; /* Argument list passed as String */
 
         if (arg.length != 2) {
             System.out.println("Please call with a argument as below");
@@ -137,13 +134,19 @@ public class ClientCommand
             return false;
         }
 
+        server_ip = ClientAPI.getServerAddress();
+        if(server_ip == null)
+        {
+            System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
+            return false;
+        }
         req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.MKDIR);
         arg_list = new String[DFS_CONSTANTS.ONE];
         arg_list[0] = arg[1];
         req_packet.arguments = arg_list;
         try
         {
-            connect = new Socket("127.0.0.1", DFS_CONSTANTS.MN_LISTEN_PORT);
+            connect = new Socket(server_ip, DFS_CONSTANTS.MN_LISTEN_PORT);
 
             ClientAPI.send_request(connect, req_packet);
             res_packet = ClientAPI.recv_response(connect);
@@ -161,23 +164,43 @@ public class ClientCommand
         {
             e.printStackTrace();
         }
+        finally {
+            try {
+                connect.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return true;
     }
 
     public static boolean Ls(String[] arg)
     {
-        ClientRequestPacket req_packet;
-        ClientResponsePacket res_packet;
-        Socket connect = null;
-        if (arg.length != 1) {
+        String arg_list[] = new String[DFS_CONSTANTS.ONE];
+        if (arg.length  < 2) {
             System.out.println("Please call with a argument as below");
-            System.out.println("Usage <SDFS LS>");
+            System.out.println("Usage <SDFS LS <PATH>");
             return false;
         }
         try
         {
+            server_ip = ClientAPI.getServerAddress();
+            if(server_ip == null)
+            {
+                System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
+                return false;
+            }
             req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.LS);
-            connect = new Socket("127.0.0.1",DFS_CONSTANTS.MN_LISTEN_PORT);
+            connect = new Socket(server_ip,DFS_CONSTANTS.MN_LISTEN_PORT);
+            if(arg.length == 2) /* Mo Parameter to LS */
+            {
+                arg_list[0] = DFS_CONSTANTS.CURRENT_DIRECTORY;
+            }
+            else
+            {
+                arg_list[0] = arg[1];
+            }
+            req_packet.arguments = arg_list;
             ClientAPI.send_request(connect,req_packet);
             res_packet = ClientAPI.recv_response(connect);
 
@@ -198,6 +221,166 @@ public class ClientCommand
         catch (IOException e)
         {
             e.printStackTrace();
+        }
+        finally {
+            try {
+                connect.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    public static boolean Cd(String[] arg)
+    {
+        String[] arg_list; /* Argument list passed as String */
+        if (arg.length != 2) {
+            System.out.println("Please call with a argument as below");
+            System.out.println("Usage <SDFS GET FILE_NAME>");
+            return false;
+        }
+
+        server_ip = ClientAPI.getServerAddress();
+        if(server_ip == null)
+        {
+            System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
+            return false;
+        }
+        req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.CD);
+        arg_list = new String[DFS_CONSTANTS.ONE];
+        arg_list[0] = arg[1];
+        req_packet.arguments = arg_list;
+
+        try
+        {
+            connect = new Socket(server_ip, DFS_CONSTANTS.MN_LISTEN_PORT);
+
+            ClientAPI.send_request(connect, req_packet);
+            res_packet = ClientAPI.recv_response(connect);
+            if(res_packet != null && res_packet.response_code == DFS_CONSTANTS.OK)
+            {
+                System.out.println("Successfully performed the operation.....");
+            }
+            else
+            {
+                System.out.println("Something went wrong in performing the address!!!!");
+                return false;
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                connect.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    public static boolean Get(String[] arg)
+    {
+        String[] arg_list; /* Argument list passed as String */
+        if (arg.length != 3) {
+            System.out.println("Please call with a argument as below");
+            System.out.println("Usage <SDFS GET DEST SDFS_SOURCE>");
+            return false;
+        }
+
+        server_ip = ClientAPI.getServerAddress();
+        if(server_ip == null)
+        {
+            System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
+            return false;
+        }
+        req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.GET);
+        arg_list = new String[DFS_CONSTANTS.ONE];
+        arg_list[0] = arg[2];
+        req_packet.arguments = arg_list;
+        try
+        {
+            connect = new Socket(server_ip, DFS_CONSTANTS.MN_LISTEN_PORT);
+
+            ClientAPI.send_request(connect, req_packet);
+            res_packet = ClientAPI.recv_response(connect);
+            if(res_packet != null && res_packet.response_code == DFS_CONSTANTS.OK)
+            {
+                System.out.println("Got the IPs of DN.Connecting for getting data.....");
+                connect.close(); /* Close the connection with the server */
+                ClientAPI.getFiles(res_packet,arg[1]);
+            }
+            else
+            {
+                System.out.println("Something went wrong in getting DN address or with file!!!!");
+                return false;
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                connect.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    public static boolean Put(String[] arg)
+    {
+        String[] arg_list; /* Argument list passed as String */
+        if (arg.length != 3) {
+            System.out.println("Please call with a argument as below");
+            System.out.println("Usage <SDFS GET SOURCE DEST>");
+            return false;
+        }
+
+        server_ip = ClientAPI.getServerAddress();
+        if(server_ip == null)
+        {
+            System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
+            return false;
+        }
+        req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.GET);
+        arg_list = new String[DFS_CONSTANTS.TWO];
+        arg_list[0] = arg[1].split("/")[arg[1].split("/").length - 1];
+        arg_list[1] = arg[2];
+        req_packet.arguments = arg_list;
+        try
+        {
+            connect = new Socket(server_ip, DFS_CONSTANTS.MN_LISTEN_PORT);
+
+            ClientAPI.send_request(connect, req_packet);
+            res_packet = ClientAPI.recv_response(connect);
+            if(res_packet != null && res_packet.response_code == DFS_CONSTANTS.OK)
+            {
+                System.out.println("Got the IPs of DN.Connecting for sending data.....");
+                connect.close(); /* Close the connection with the server */
+                ClientAPI.sendFiles(res_packet,arg[1]);
+            }
+            else
+            {
+                System.out.println("Something went wrong in getting DN address or with file!!!!");
+                return false;
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                connect.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return true;
     }
