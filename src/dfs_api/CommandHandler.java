@@ -1,5 +1,7 @@
 package dfs_api;
 
+import sun.reflect.generics.tree.Tree;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -124,7 +126,7 @@ public class CommandHandler {
 
         //Getting the Directory to Store File
         String filePath = req_packet.arguments[1];
-
+        System.out.println("Filename:"+filePath);
         //Getting Correct Directory Node to insert a new directory
         TreeNode node = searchNode(req_packet,filePath);
 
@@ -147,6 +149,7 @@ public class CommandHandler {
         //File Present
         else
         {
+            System.out.println("FilePresent");
             TreeNode modifyFile = TreeAPI.searchNode(node,req_packet.file_name);
 
             if (modifyFile == null)
@@ -163,6 +166,43 @@ public class CommandHandler {
 
                 responsePacket.response_code = DFS_CONSTANTS.OK;
             }
+        }
+
+        return responsePacket;
+    }
+
+    public static ClientResponsePacket commandGet(ClientRequestPacket req_packet)
+    {
+        ClientResponsePacket responsePacket = new ClientResponsePacket();
+        String dirPath="",filename="";
+        String completePath= req_packet.arguments[0];
+
+        if(completePath.length()>(completePath.lastIndexOf('/')+1))
+        {
+            dirPath = completePath.substring(0, completePath.lastIndexOf('/'));
+            filename = completePath.substring(completePath.lastIndexOf('/') + 1);
+        }
+        else
+        {
+            System.out.println("Invalid Directory Path FORMAT");
+        }
+
+        TreeNode dirNode= searchNode(req_packet,dirPath);
+
+        TreeNode targetNode= TreeAPI.searchNode(dirNode,filename);
+
+        if(targetNode==null || targetNode.isDir)
+        {
+            System.out.println("File/Directory Doesn't Exist!");
+            responsePacket.response_code = DFS_CONSTANTS.FAILURE;
+        }
+        else
+        {
+            responsePacket.response_code=DFS_CONSTANTS.OK;
+            responsePacket.curNode=targetNode;
+            responsePacket.dn_list=targetNode.storageNode;
+            responsePacket.arguments=req_packet.arguments;
+            responsePacket.file_size=(int)targetNode.size;
         }
 
         return responsePacket;
