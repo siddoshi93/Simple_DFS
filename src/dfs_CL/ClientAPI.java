@@ -167,6 +167,7 @@ public class ClientAPI
         req_packet.file_size = res_packet.file_size;
         req_packet.arguments = res_packet.arguments;
         req_packet.dn_list = res_packet.dn_list;
+        System.out.println("File Name : " + req_packet.file_name);
 
         try
         {

@@ -374,8 +374,8 @@ public class ClientCommand
             if(res_packet != null && res_packet.response_code == DFS_CONSTANTS.OK)
             {
                 connect.close(); /* Close the connection with the server */
-                System.out.println("File Name : " + res_packet.file_name);
-                res_packet.arguments = req_packet.arguments;
+                res_packet.arguments = req_packet.arguments; /* Data need to send to DN */
+                res_packet.file_name = req_packet.file_name;
                 ClientAPI.sendFiles(res_packet,arg[1]);
             }
             else

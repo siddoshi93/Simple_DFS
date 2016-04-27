@@ -139,7 +139,7 @@ public class CommandHandler {
                                                     new Date(),
                                                     req_packet.file_size)                 //Size at the time of creation
                                         );
-
+        System.out.println("File Path : " + filePath + ":" + req_packet.file_name + ":" + insert);
         //1st Time File Insertion
         if (insert)
             responsePacket.response_code = DFS_CONSTANTS.OK;
