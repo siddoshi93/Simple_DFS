@@ -110,7 +110,7 @@ public class CommandHandler {
 
         System.out.println(responsePacket.response_code);
         ArrayList<StorageNode> tempList = new ArrayList<>();
-        tempList.add(DFS_Globals.dn_q.peek());
+        tempList.add(LoadBalancer.getTargetNode(req_packet.file_size));
 
         responsePacket.dn_list = tempList;
         responsePacket.file_name = req_packet.file_name;

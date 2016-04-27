@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class StorageNode implements Serializable {
     public String IPAddr;
     public String DataNodeID;
-    public long Size;
+    public double Size;
     public long Capacity;
 
     public StorageNode(String IPAddr, String DataNodeID, long Capacity)

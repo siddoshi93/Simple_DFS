@@ -44,6 +44,8 @@ public class ClientCommand
             /* Send the packet to the  server */
             ClientAPI.send_request(connect,req_packet);
 
+            System.out.println("Sending the request");
+
             /* Wait for the response packet from the server */
             ois = new ObjectInputStream(connect.getInputStream());
             res_packet = (ClientResponsePacket)ois.readObject();
@@ -340,9 +342,9 @@ public class ClientCommand
     public static boolean Put(String[] arg)
     {
         String[] arg_list; /* Argument list passed as String */
-        if (arg.length != 3) {
+        if (arg.length != 3 || !(arg.length == 4 && arg[1].equalsIgnoreCase(DFS_CONSTANTS.repl))) {
             System.out.println("Please call with a argument as below");
-            System.out.println("Usage <SDFS GET SOURCE DEST>");
+            System.out.println("Usage <SDFS PUT SOURCE DEST>");
             return false;
         }
 
@@ -359,11 +361,23 @@ public class ClientCommand
             return false;
         }
         req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.PUT);
-        arg_list = new String[DFS_CONSTANTS.TWO];
-        arg_list[0] = arg[1];
-        arg_list[1] = arg[2];
-        req_packet.file_name = arg[1].split("/")[arg[1].split("/").length - 1];
-            req_packet.file_size = ClientAPI.getFileSize(arg[1]);
+        if(arg.length == 3) /* No Replication passed */
+        {
+            arg_list = new String[DFS_CONSTANTS.TWO];
+            arg_list[0] = arg[1];
+            arg_list[1] = arg[2];
+            req_packet.replicate_ind = false;
+            req_packet.file_name = arg[1].split("/")[arg[1].split("/").length - 1];
+        }
+        else
+        {
+            arg_list = new String[DFS_CONSTANTS.THREE];
+            req_packet.replicate_ind = true;
+            arg_list[0] = arg[2];
+            arg_list[1] = arg[3];
+            req_packet.file_name = arg[2].split("/")[arg[2].split("/").length - 1];
+        }
+        req_packet.file_size = ClientAPI.getFileSize(arg[1]);
 
         req_packet.arguments = arg_list;
         try
@@ -377,6 +391,7 @@ public class ClientCommand
                 connect.close(); /* Close the connection with the server */
                 res_packet.arguments = req_packet.arguments; /* Data need to send to DN */
                 res_packet.file_name = req_packet.file_name;
+                res_packet.replicate_ind = req_packet.replicate_ind;
                 ClientAPI.sendFiles(res_packet,arg[1]);
             }
             else

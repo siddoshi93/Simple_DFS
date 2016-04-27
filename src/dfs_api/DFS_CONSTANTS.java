@@ -9,6 +9,7 @@ public class DFS_CONSTANTS
 	public final static int ZERO = 0;
 	public final static int ONE = 1;
 	public final static int TWO = 2;
+	public final static int THREE = 3;
 	public final static int PQ_SIZE = 10;
 
 	/* PORT CONSTANTS */
@@ -42,6 +43,7 @@ public class DFS_CONSTANTS
 	public final static int CD = 18;
 	public final static int UPDATE = 19;
 	public final static String CURRENT_DIRECTORY = ".";
+	public final static String repl = "REPL";
 
 	/* Environment variable for server address */
 	public final static String DFS_SERVER_ADDR = "DFS_SERVER_ADDR";
