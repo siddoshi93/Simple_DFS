@@ -13,33 +13,35 @@ public class FileTransfer
     FileOutputStream fos;
     byte[] buffer;
 
-    public void save_file(Socket sock,String path,String file_name,int file_size) throws IOException
+    public void save_file(Socket sock,String path) throws IOException
     {
         dis = new DataInputStream(sock.getInputStream());
-        fos = new FileOutputStream(path + file_name);
+        fos = new FileOutputStream(path);
         buffer = new byte[DFS_CONSTANTS.DATA_PACKET_SIZE];
 
         int read = 0;
         int totalRead = 0;
-        int remaining = file_size;
-        while((read = dis.read(buffer, 0, Math.min(buffer.length, remaining))) > 0)
+        //int remaining = file_size;
+        System.out.println("Calling save file ");
+        while((read = dis.read(buffer)) > 0)
         {
             totalRead += read;
-            remaining -= read;
+            //remaining -= read;
             System.out.println("read " + totalRead + " bytes.");
             fos.write(buffer, 0, read);
         }
-        fos.close();
-        dis.close();
+        //fos.close();
+        //dis.close();
     }
 
-    public void send_file(Socket sock,String path,String file_name,int file_size) throws IOException
+    public void send_file(Socket sock,String path) throws IOException
     {
         DataOutputStream dos = new DataOutputStream(sock.getOutputStream());
-        FileInputStream fis = new FileInputStream(path + file_name);
+        FileInputStream fis = new FileInputStream(path);
         byte[] buffer = new byte[DFS_CONSTANTS.DATA_PACKET_SIZE];
 
         while (fis.read(buffer) > 0) {
+            System.out.println("Sending file");
             dos.write(buffer);
         }
 

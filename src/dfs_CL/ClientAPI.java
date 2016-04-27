@@ -130,7 +130,7 @@ public class ClientAPI
             if (dn_res_packet !=null && dn_res_packet.response_code == DFS_CONSTANTS.OK)
             {
                 /* Start Sending the file */
-                ftp.save_file(connect,path,req_packet.file_name,req_packet.file_size);
+                ftp.save_file(connect,(path + req_packet.file_name));
             }
             else
             {
@@ -170,15 +170,16 @@ public class ClientAPI
         {
             connect = new Socket(dn_ip,DFS_CONSTANTS.DN_LISTEN_PORT);
             send_request(connect,req_packet);
+            System.out.println("In Send File wit dn ip :" + dn_ip);
             dn_res_packet = ClientAPI.recv_response(connect);
-
             if (dn_res_packet !=null && dn_res_packet.response_code == DFS_CONSTANTS.OK)
             {
                 /* Start Sending the file */
-                ftp.send_file(connect,path,req_packet.file_name,req_packet.file_size);
+                ftp.send_file(connect,path);
             }
             else
             {
+                System.out.println("Recv null from DN response : " + dn_res_packet == null);
                 return false;
             }
         }
@@ -195,5 +196,21 @@ public class ClientAPI
             }
         }
         return true;
+    }
+
+    public static boolean validate_file(String file)
+    {
+        System.out.println("validate file : " + file);
+        File f = new File(file);
+        System.out.println("validate file : " + file + " IsDir : " + f.exists());
+        if(f.exists() && !f.isDirectory()) {
+            return true;
+        }
+        return false;
+    }
+
+    public static double getFileSize(String file)
+    {
+        return new File(file).length();
     }
 }

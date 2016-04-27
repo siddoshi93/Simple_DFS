@@ -40,6 +40,7 @@ public class DFS_CONSTANTS
 	public final static int GET = 16;
 	public final static int PUT = 17;
 	public final static int CD = 18;
+	public final static int UPDATE = 19;
 	public final static String CURRENT_DIRECTORY = ".";
 
 	/* Environment variable for server address */

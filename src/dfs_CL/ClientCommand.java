@@ -300,7 +300,9 @@ public class ClientCommand
         }
         req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.GET);
         arg_list = new String[DFS_CONSTANTS.ONE];
-        arg_list[0] = arg[2];
+        arg_list[0] = arg[1];
+        arg_list[1] = arg[2];
+        req_packet.file_name = arg[2].split("/")[arg[2].split("/").length - 1];
         req_packet.arguments = arg_list;
         try
         {
@@ -343,6 +345,12 @@ public class ClientCommand
             return false;
         }
 
+        if(!ClientAPI.validate_file(arg[1]))
+        {
+            System.out.println("Invalid File...");
+            return false;
+        }
+
         server_ip = ClientAPI.getServerAddress();
         if(server_ip == null)
         {
@@ -351,8 +359,11 @@ public class ClientCommand
         }
         req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.PUT);
         arg_list = new String[DFS_CONSTANTS.TWO];
-        arg_list[0] = arg[1].split("/")[arg[1].split("/").length - 1];
+        arg_list[0] = arg[1];
         arg_list[1] = arg[2];
+        req_packet.file_name = arg[1].split("/")[arg[1].split("/").length - 1];
+        //req_packet.file_size = ClientAPI.getFileSize(arg[1]);
+
         req_packet.arguments = arg_list;
         try
         {
@@ -362,8 +373,8 @@ public class ClientCommand
             res_packet = ClientAPI.recv_response(connect);
             if(res_packet != null && res_packet.response_code == DFS_CONSTANTS.OK)
             {
-                System.out.println("Got the IPs of DN.Connecting for sending data.....");
                 connect.close(); /* Close the connection with the server */
+                System.out.println("File Name : " + res_packet.file_name);
                 ClientAPI.sendFiles(res_packet,arg[1]);
             }
             else

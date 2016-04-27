@@ -21,4 +21,7 @@ public class DFS_Globals
 
     /* List of data node to maintain */
     public static PriorityQueue<StorageNode> dn_q;
+
+    /* Server address stored by DN */
+    public static String server_addr;
 }

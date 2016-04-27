@@ -30,10 +30,8 @@ public class DN_CommandHandler
     }
 
     /* Get Request to Transfer file to client*/
-    public ClientResponsePacket Get(Socket connect,ClientRequestPacket req_packet)
+    public ClientResponsePacket Get(ClientRequestPacket req_packet)
     {
-        FileTransfer ft = new FileTransfer();
-        String cname = null;
         res_packet = new ClientResponsePacket();
         res_packet.response_code = DFS_CONSTANTS.FAILURE;
 
@@ -47,29 +45,16 @@ public class DN_CommandHandler
         {
             return res_packet;
         }
-        /* Get the file name which needs to be send  */
-        cname = client_data.file_map.get(req_packet.file_name);
-        if(cname == null)
-            return res_packet;
 
-        try
-        {
-            ft.send_file(connect, (DFS_CONSTANTS.storage_path + client_data.folder_name), cname, req_packet.file_size);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-            return res_packet;
-        }
         /* Set the response packet and pass it back */
+        res_packet.file_name = req_packet.file_name;
         res_packet.response_code = DFS_CONSTANTS.OK;
         return res_packet;
     }
 
     /* Store the file requested by client */
-    public ClientResponsePacket Put(Socket connect,ClientRequestPacket req_packet)
+    public ClientResponsePacket Put(ClientRequestPacket req_packet)
     {
-        FileTransfer ft = new FileTransfer();
         String cname = null;
         res_packet = new ClientResponsePacket();
         res_packet.response_code = DFS_CONSTANTS.FAILURE;
@@ -91,28 +76,62 @@ public class DN_CommandHandler
             }
             DFS_Globals.client_data.put(req_packet.client_uuid,client_data);
         }
-        /* Get the file name  */
-        cname = getCNAME(req_packet.file_name);
+
+        cname = client_data.file_map.get(req_packet.file_name);
+        if(cname == null)
+            return res_packet;
+
+        /* Set the response packet and pass it back */
+        res_packet.file_name = cname;
+        res_packet.response_code = DFS_CONSTANTS.OK;
+        return res_packet;
+    }
+
+    public void send_file(Socket connect,String file_name)
+    {
+        FileTransfer ft = new FileTransfer();
+        String cname = client_data.file_map.get(file_name);
         try
         {
-            ft.send_file(connect, (DFS_CONSTANTS.storage_path + client_data.folder_name), cname, req_packet.file_size);
+            ft.send_file(connect, (DFS_CONSTANTS.storage_path + client_data.folder_name + cname));
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
-            return res_packet;
         }
-        /* Add the mapping to the File Map so that data node knows about the mapping */
-        client_data.file_map.put(req_packet.file_name,cname);
+    }
 
-        /* Set the response packet and pass it back */
-        res_packet.response_code = DFS_CONSTANTS.OK;
-        return res_packet;
+    public void recv_file(Socket connect,String file_name)
+    {
+        FileTransfer ft = new FileTransfer();
+        boolean new_file = false;
+
+        /* Get the file name  */
+        String cname = client_data.file_map.get(file_name);
+        if(cname == null)/* New file */
+        {
+            new_file = true;
+            cname = getCNAME(file_name);
+        }
+
+        try
+        {
+            ft.save_file(connect, (DFS_CONSTANTS.storage_path + client_data.folder_name + "/" + cname));
+
+            /* Add the mapping to the File Map so that data node knows about the mapping */
+            if (new_file)
+                client_data.file_map.put(file_name,cname);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     public boolean create_client_folder(String folder_name)
     {
         File dir = new File(DFS_CONSTANTS.storage_path + folder_name);
+        System.out.println(DFS_CONSTANTS.storage_path + folder_name);
         if(!(dir.exists() && dir.isDirectory()))
         {
             System.out.println("Creating Directory......");
@@ -123,6 +142,6 @@ public class DN_CommandHandler
 
     public String getCNAME(String filename)
     {
-        return (filename + client_data.random_suffix);
+        return (client_data.random_suffix + filename);
     }
 }
