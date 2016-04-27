@@ -7,7 +7,8 @@ public class DFS_CONSTANTS
 {
 	/* NUMBERS */
 	public final static int ONE = 1;
-	public final static int TWO = 1;
+	public final static int TWO = 2;
+	public final static int PQ_SIZE = 10;
 
 	/* PORT CONSTANTS */
 	public final static int MN_LISTEN_PORT = 7091;
@@ -46,4 +47,5 @@ public class DFS_CONSTANTS
 	/* File Path */
 	public final static String user_name_file = "/home/abhishek/.sdfs/sdfs_username";
 	public final static String sdfs_path = "/home/abhishek/.sdfs/";
+	public final static String dn_list = "dn_config.csv";
 }

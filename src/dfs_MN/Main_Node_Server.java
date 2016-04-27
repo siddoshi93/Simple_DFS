@@ -1,10 +1,12 @@
 package dfs_MN;
 
 
-import java.io.IOException;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.PriorityQueue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -15,6 +17,8 @@ import java.util.concurrent.TimeUnit;
 /* Program specific imports */
 import dfs_api.DFS_CONSTANTS;
 import dfs_api.DFS_Globals;
+import dfs_api.FileTransfer;
+import dfs_api.StorageNode;
 
 /**
  * Created by Abhishek on 4/24/2016.
@@ -30,6 +34,16 @@ public class Main_Node_Server
 	private static InetAddress hostAddress;
 	private static ClientRequestHandle curr_req;
 	private static String new_uuid;
+
+	static class Storagesort implements Comparator<StorageNode> {
+
+		public int compare(StorageNode s1, StorageNode s2) {
+			if(s2.Size < s1.Size)
+				return 1;
+			else
+				return -1;
+		}
+	}
 	
 	public static void main(String[] args)
 	{
@@ -89,6 +103,54 @@ public class Main_Node_Server
 		client_request = new ServerSocket(DFS_CONSTANTS.MN_LISTEN_PORT,DFS_CONSTANTS.REQUEST_BACK_LOG/*,hostAddress*/);
 		active_client_list = new ConcurrentHashMap<String, ClientRequestHandle>();
 		workers = Executors.newFixedThreadPool(DFS_CONSTANTS.NUM_OF_WORKERS);
+
 		DFS_Globals.global_client_list = new HashMap();
+		if(!setUp_DN_List())
+		{
+			System.out.println("Please define a proper config file for DN!!!!");
+			System.exit(DFS_CONSTANTS.SUCCESS);
+		}
 	}
+
+	private static boolean setUp_DN_List()
+	{
+		Storagesort storagesort = new Storagesort();
+		DFS_Globals.dn_q = new PriorityQueue(DFS_CONSTANTS.PQ_SIZE,storagesort);
+		String line = null;
+		StorageNode temp;
+		String[] storage_params;
+		FileReader fr = null;
+		BufferedReader bufferedReader = null;
+
+		try
+		{
+			fr = new FileReader(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.storage_path);
+			bufferedReader = new BufferedReader(fr);
+
+			while((line = bufferedReader.readLine()) != null)
+			{
+				storage_params = line.split(",");
+				temp = new StorageNode(storage_params[0],storage_params[1],Long.parseLong(storage_params[2]));
+				DFS_Globals.dn_q.offer(temp);
+			}
+
+			// Always close files.
+			bufferedReader.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		finally {
+			try {
+				bufferedReader.close();
+				fr.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+
 }

@@ -16,7 +16,7 @@ public class ClientAPI
 {
     public static boolean create_session_file(String user_name)
     {
-        if(!check_and_create_dir())
+        if(!FileTransfer.check_and_create_dir(DFS_CONSTANTS.sdfs_path))
         {
             System.out.println("Failed in CCD");
             return false;
@@ -29,17 +29,6 @@ public class ClientAPI
         {
             e.printStackTrace();
             return false;
-        }
-        return true;
-    }
-
-    public static boolean check_and_create_dir()
-    {
-        File dir = new File(DFS_CONSTANTS.sdfs_path);
-        if(!(dir.exists() && dir.isDirectory()))
-        {
-            System.out.println("Creating Directory......");
-            return dir.mkdir();
         }
         return true;
     }

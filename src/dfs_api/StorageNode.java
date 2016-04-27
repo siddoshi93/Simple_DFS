@@ -9,7 +9,7 @@ public class StorageNode {
     public long Size;
     public long Capacity;
 
-    StorageNode(String IPAddr, String DataNodeID, long Capacity)
+    public StorageNode(String IPAddr, String DataNodeID, long Capacity)
     {
         this.IPAddr = IPAddr;
         this.DataNodeID = DataNodeID;

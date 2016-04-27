@@ -2,6 +2,7 @@ package dfs_api;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 /**
  * Created by Abhishek on 4/24/2016.
@@ -18,6 +19,6 @@ public class DFS_Globals
     /* HashMap for maintaining the client data*/
     public static HashMap<String, ClientMetaData> client_data;
 
-    /* Maintain free port list for DataNode */
-    public static LinkedList<Integer> free_port_list;
+    /* List of data node to maintain */
+    public static PriorityQueue<StorageNode> dn_q;
 }

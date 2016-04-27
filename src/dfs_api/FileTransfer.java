@@ -46,4 +46,15 @@ public class FileTransfer
         fis.close();
         dos.close();
     }
+
+    public static boolean check_and_create_dir(String path)
+    {
+        File dir = new File(path);
+        if(!(dir.exists() && dir.isDirectory()))
+        {
+            System.out.println("Creating Directory......");
+            return dir.mkdir();
+        }
+        return true;
+    }
 }
