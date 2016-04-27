@@ -13,6 +13,7 @@ public class CommandHandler {
     {
 
         TreeNode tempNode = DFS_Globals.global_client_list.get(req_packet.client_uuid).root;
+
         /*
         if (path.charAt(0) == '/')
             tempNode =  clientWrapper.root;
@@ -21,6 +22,17 @@ public class CommandHandler {
          */
 
         return TreeAPI.findNode(tempNode,path);
+    }
+
+    //Adds NEW storage node to TreeNode IF NOT PRESENT, Else Ignores
+    static void AddStorageNode (TreeNode TN, StorageNode SN)
+    {
+        for (StorageNode node : TN.storageNode )
+        {
+            if (node.DataNodeID.equals(SN.DataNodeID))
+                return;
+        }
+        TN.storageNode.add(SN);
     }
 
     //LS Command (Path is either a Full path OR ./directory)
@@ -43,12 +55,12 @@ public class CommandHandler {
 
         String arg = req_packet.arguments[0], dirPath, nodeName;
 
-        if(arg.lastIndexOf('/') == -1)              //If Path is ABSOLUTE
+        if(arg.lastIndexOf('/') == -1)              //If Path is RELATIVE
         {
             dirPath = "";
             nodeName = req_packet.arguments[0];
         }
-        else                                        //If Path is RELATIVE
+        else                                        //If Path is ABSOLUTE
         {
             dirPath = arg.substring(0,arg.lastIndexOf('/'));
             nodeName = arg.substring(arg.lastIndexOf('/')+1);
@@ -101,6 +113,57 @@ public class CommandHandler {
         responsePacket.dn_list = tempList;
         responsePacket.file_name = req_packet.file_name;
         responsePacket.file_size = req_packet.file_size;
+
+        return responsePacket;
+    }
+
+    //PUT Confirmation by Datanode
+    public static ClientResponsePacket commandPUTData (ClientRequestPacket req_packet)
+    {
+        ClientResponsePacket responsePacket = new ClientResponsePacket();
+
+        //Getting the Directory to Store File
+        String filePath = req_packet.arguments[1];
+
+        //Getting Correct Directory Node to insert a new directory
+        TreeNode node = searchNode(req_packet,filePath);
+
+        ArrayList<StorageNode> tempStorageList = new ArrayList<>();
+        tempStorageList.add(req_packet.dn_list.get(0));
+
+        boolean insert = TreeAPI.TreeInsert
+                                        (node,
+                                        new TreeNode(tempStorageList,              //Storage Node List => Implement Function
+                                                    req_packet.file_name,
+                                                    false,                      //isDir = false
+                                                    new Date(),
+                                                    req_packet.file_size)                 //Size at the time of creation
+                                        );
+
+        //1st Time File Insertion
+        if (insert)
+            responsePacket.response_code = DFS_CONSTANTS.OK;
+
+        //File Present
+        else
+        {
+            TreeNode modifyFile = TreeAPI.searchNode(node,req_packet.file_name);
+
+            if (modifyFile == null)
+            {
+                System.out.println("Cannot Modify File");
+                responsePacket.response_code = DFS_CONSTANTS.FAILURE;
+            }
+            else
+            {
+                //Modifying File Attributes
+                AddStorageNode(modifyFile,req_packet.dn_list.get(0));
+                modifyFile.timeAccess = new Date();
+                modifyFile.size = req_packet.file_size;
+
+                responsePacket.response_code = DFS_CONSTANTS.OK;
+            }
+        }
 
         return responsePacket;
     }
