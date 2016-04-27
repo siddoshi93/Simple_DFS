@@ -17,5 +17,5 @@ public class ClientResponsePacket implements Serializable
 
     public String file_name;
     public String arguments[];
-    public int file_size;
+    public double file_size;
 }

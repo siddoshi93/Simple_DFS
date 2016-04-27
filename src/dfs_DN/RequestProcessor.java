@@ -55,15 +55,15 @@ public class RequestProcessor implements Runnable {
                 res_packet = handler.Get(req_packet);
                 send_response(res_packet);
                 if(res_packet != null) /* Wrong request */ {
-                    System.out.println("SSending file..commented");
-                    //handler.send_file(client_socket, res_packet.file_name);
+                    System.out.println("Sending file..commented");
+                    handler.send_file(client_socket, res_packet.file_name);
                 }
                 break;
             case DFS_CONSTANTS.PUT:
                 res_packet = handler.Put(req_packet);
                 send_response(res_packet);
                 if(res_packet != null) {
-                    System.out.println("Saving file... commented");
+                    System.out.println("Saving file... commented : " + req_packet.file_name);
                     handler.recv_file(client_socket, req_packet.file_name);
                 }
                 /* We need to notify the main node about this updation */
@@ -88,13 +88,12 @@ public class RequestProcessor implements Runnable {
         Socket mn_connect = null;
 
         //arg[0] = this.req_packet.arguments[1];
-        mn_req_packet.client_uuid = this.req_packet.client_uuid;
-        mn_req_packet.arguments = this.req_packet.arguments;
-        mn_req_packet.dn_list = this.req_packet.dn_list;
-        if(this.req_packet.arguments == null)
-        {
-            System.out.println("Argument was NULL");
-        }
+        mn_req_packet.client_uuid = req_packet.client_uuid;
+        mn_req_packet.arguments = req_packet.arguments;
+        mn_req_packet.dn_list = req_packet.dn_list;
+        mn_req_packet.file_name = req_packet.file_name;
+        System.out.println("Argument is : " + mn_req_packet.file_name);
+
         try {
             mn_connect = new Socket(DFS_Globals.server_addr,DFS_CONSTANTS.MN_LISTEN_PORT);
             send_request(mn_connect,mn_req_packet);

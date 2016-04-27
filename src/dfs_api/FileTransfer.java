@@ -18,7 +18,7 @@ public class FileTransfer
         dis = new DataInputStream(sock.getInputStream());
         fos = new FileOutputStream(path);
         buffer = new byte[DFS_CONSTANTS.DATA_PACKET_SIZE];
-
+        System.out.println("Path : " + path);
         int read = 0;
         int totalRead = 0;
         //int remaining = file_size;
@@ -39,7 +39,6 @@ public class FileTransfer
         DataOutputStream dos = new DataOutputStream(sock.getOutputStream());
         FileInputStream fis = new FileInputStream(path);
         byte[] buffer = new byte[DFS_CONSTANTS.DATA_PACKET_SIZE];
-
         while (fis.read(buffer) > 0) {
             System.out.println("Sending file");
             dos.write(buffer);

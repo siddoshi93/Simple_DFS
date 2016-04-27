@@ -84,12 +84,12 @@ public class ClientRequestHandle implements Runnable{
 				break;
 
 			case DFS_CONSTANTS.GET:
+				res_packet = CommandHandler.commandGet(req_packet);
 				break;
 
 			case DFS_CONSTANTS.PUT:
 				res_packet = CommandHandler.commandPUT(req_packet);
 				break;
-
 			case DFS_CONSTANTS.UPDATE:
 				res_packet = CommandHandler.commandPUTData(req_packet);
 				break;

@@ -112,7 +112,7 @@ public class ClientAPI
         /* This program connects to the Data Node and transfer it to the local system */
         ClientRequestPacket req_packet = new ClientRequestPacket();
         ClientResponsePacket dn_res_packet = new ClientResponsePacket();
-        String dn_ip = res_packet.dn_list.get(DFS_CONSTANTS.ONE).IPAddr;
+        String dn_ip = res_packet.dn_list.get(DFS_CONSTANTS.ZERO).IPAddr;
         Socket connect = null;
         FileTransfer ftp = new FileTransfer();
 
@@ -120,7 +120,7 @@ public class ClientAPI
         req_packet.client_uuid = ClientAPI.getUserName();
         req_packet.file_name = res_packet.file_name;
         req_packet.file_size = res_packet.file_size;
-
+        System.out.println("Path:" + req_packet.file_name);
         try
         {
             connect = new Socket(dn_ip,DFS_CONSTANTS.DN_LISTEN_PORT);
@@ -130,7 +130,7 @@ public class ClientAPI
             if (dn_res_packet !=null && dn_res_packet.response_code == DFS_CONSTANTS.OK)
             {
                 /* Start Sending the file */
-                ftp.save_file(connect,(path + req_packet.file_name));
+                ftp.save_file(connect,System.getProperty("user.dir") + "/" + req_packet.file_name);
             }
             else
             {
@@ -167,6 +167,7 @@ public class ClientAPI
         req_packet.file_size = res_packet.file_size;
         req_packet.arguments = res_packet.arguments;
         req_packet.dn_list = res_packet.dn_list;
+        System.out.println("File Name : " + req_packet.file_name);
 
         try
         {

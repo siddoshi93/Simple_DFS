@@ -286,9 +286,9 @@ public class ClientCommand
     public static boolean Get(String[] arg)
     {
         String[] arg_list; /* Argument list passed as String */
-        if (arg.length != 3) {
+        if (arg.length != 2) {
             System.out.println("Please call with a argument as below");
-            System.out.println("Usage <SDFS GET DEST SDFS_SOURCE>");
+            System.out.println("Usage <SDFS GET SDFS_SOURCE>");
             return false;
         }
 
@@ -301,8 +301,8 @@ public class ClientCommand
         req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.GET);
         arg_list = new String[DFS_CONSTANTS.ONE];
         arg_list[0] = arg[1];
-        arg_list[1] = arg[2];
-        req_packet.file_name = arg[2].split("/")[arg[2].split("/").length - 1];
+        //arg_list[1] = arg[2];
+        req_packet.file_name = arg[1].split("/")[arg[1].split("/").length - 1];
         req_packet.arguments = arg_list;
         try
         {
@@ -314,6 +314,7 @@ public class ClientCommand
             {
                 System.out.println("Got the IPs of DN.Connecting for getting data.....");
                 connect.close(); /* Close the connection with the server */
+                res_packet.file_name = req_packet.file_name;
                 ClientAPI.getFiles(res_packet,arg[1]);
             }
             else
@@ -362,7 +363,7 @@ public class ClientCommand
         arg_list[0] = arg[1];
         arg_list[1] = arg[2];
         req_packet.file_name = arg[1].split("/")[arg[1].split("/").length - 1];
-        //req_packet.file_size = ClientAPI.getFileSize(arg[1]);
+            req_packet.file_size = ClientAPI.getFileSize(arg[1]);
 
         req_packet.arguments = arg_list;
         try
@@ -374,8 +375,8 @@ public class ClientCommand
             if(res_packet != null && res_packet.response_code == DFS_CONSTANTS.OK)
             {
                 connect.close(); /* Close the connection with the server */
-                System.out.println("File Name : " + res_packet.file_name);
-                res_packet.arguments = req_packet.arguments;
+                res_packet.arguments = req_packet.arguments; /* Data need to send to DN */
+                res_packet.file_name = req_packet.file_name;
                 ClientAPI.sendFiles(res_packet,arg[1]);
             }
             else

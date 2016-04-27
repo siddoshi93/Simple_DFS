@@ -90,7 +90,7 @@ public class DN_CommandHandler
         String cname = client_data.file_map.get(file_name);
         try
         {
-            ft.send_file(connect, (DFS_CONSTANTS.storage_path + client_data.folder_name + cname));
+            ft.send_file(connect, (DFS_CONSTANTS.storage_path + client_data.folder_name + "/" + cname));
         }
         catch (Exception ex)
         {

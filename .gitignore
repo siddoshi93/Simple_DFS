@@ -1,1 +1,2 @@
 *.class
+/src/META-INF/MANIFEST.MF
