@@ -85,7 +85,7 @@ public class Data_Node_Server
     public static void setUpDN() throws IOException
     {
         hostAddress = InetAddress.getLocalHost();  /* Get the host address */
-        request = new ServerSocket(DFS_CONSTANTS.MN_LISTEN_PORT,DFS_CONSTANTS.REQUEST_BACK_LOG/*,hostAddress*/);
+        request = new ServerSocket(DFS_CONSTANTS.DN_LISTEN_PORT,DFS_CONSTANTS.REQUEST_BACK_LOG/*,hostAddress*/);
         active_request_list = new ConcurrentHashMap<String, RequestProcessor>();
         workers = Executors.newFixedThreadPool(DFS_CONSTANTS.NUM_OF_WORKERS);
         DFS_Globals.client_data = new HashMap();

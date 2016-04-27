@@ -33,6 +33,9 @@ public class SDFS
                 break;
             case "GET":
                 //status = ClientCommand.
+                break;
+            case "PUT":
+                status = ClientCommand.Put(arg);
             case "HELP":
                 display_help_option();
             default:

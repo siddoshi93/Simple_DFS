@@ -157,7 +157,7 @@ public class ClientAPI
         /* This program connects to the Data Node and transfer it to the local system */
         ClientRequestPacket req_packet = new ClientRequestPacket();
         ClientResponsePacket dn_res_packet = new ClientResponsePacket();
-        String dn_ip = res_packet.dn_list.get(DFS_CONSTANTS.ONE).IPAddr;
+        String dn_ip = res_packet.dn_list.get(DFS_CONSTANTS.ZERO).IPAddr;
         Socket connect = null;
         FileTransfer ftp = new FileTransfer();
 

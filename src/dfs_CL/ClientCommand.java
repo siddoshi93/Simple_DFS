@@ -33,6 +33,7 @@ public class ClientCommand
         }
         try
         {
+            System.out.println("Server Ip : " + server_ip);
             connect = new Socket(server_ip,DFS_CONSTANTS.MN_LISTEN_PORT);
 
             /* Set the request packet for Server with registration */
@@ -177,7 +178,7 @@ public class ClientCommand
     public static boolean Ls(String[] arg)
     {
         String arg_list[] = new String[DFS_CONSTANTS.ONE];
-        if (arg.length  < 2) {
+        if (arg.length  < 1) {
             System.out.println("Please call with a argument as below");
             System.out.println("Usage <SDFS LS <PATH>");
             return false;
@@ -192,7 +193,7 @@ public class ClientCommand
             }
             req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.LS);
             connect = new Socket(server_ip,DFS_CONSTANTS.MN_LISTEN_PORT);
-            if(arg.length == 2) /* Mo Parameter to LS */
+            if(arg.length == 1) /* Mo Parameter to LS */
             {
                 arg_list[0] = DFS_CONSTANTS.CURRENT_DIRECTORY;
             }
@@ -348,7 +349,7 @@ public class ClientCommand
             System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
             return false;
         }
-        req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.GET);
+        req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.PUT);
         arg_list = new String[DFS_CONSTANTS.TWO];
         arg_list[0] = arg[1].split("/")[arg[1].split("/").length - 1];
         arg_list[1] = arg[2];
