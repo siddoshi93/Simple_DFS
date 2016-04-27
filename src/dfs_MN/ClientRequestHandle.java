@@ -48,7 +48,7 @@ public class ClientRequestHandle implements Runnable{
 
 	public void handle_command(Socket client_socket,ClientRequestPacket req_packet)
 	{
-		ClientResponsePacket res_packet;
+		ClientResponsePacket res_packet = null;
 		switch (req_packet.command)
 		{
 			case DFS_CONSTANTS.REGISTER:
