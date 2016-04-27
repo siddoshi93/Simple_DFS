@@ -15,7 +15,7 @@ public class ClientRequestPacket implements Serializable
 
     public String file_name;
     public String arguments[];
-    public int file_size;
+    public double file_size;
 
     public ArrayList<StorageNode> dn_list;
 

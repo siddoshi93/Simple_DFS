@@ -84,6 +84,7 @@ public class ClientRequestHandle implements Runnable{
 				break;
 
 			case DFS_CONSTANTS.GET:
+				res_packet = CommandHandler.commandGet(req_packet);
 				break;
 
 			case DFS_CONSTANTS.PUT:

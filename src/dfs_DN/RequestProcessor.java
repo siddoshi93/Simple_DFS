@@ -56,7 +56,7 @@ public class RequestProcessor implements Runnable {
                 send_response(res_packet);
                 if(res_packet != null) /* Wrong request */ {
                     System.out.println("Sending file..commented");
-                    //handler.send_file(client_socket, res_packet.file_name);
+                    handler.send_file(client_socket, res_packet.file_name);
                 }
                 break;
             case DFS_CONSTANTS.PUT:
