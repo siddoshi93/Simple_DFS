@@ -1,5 +1,6 @@
 package dfs_api;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -91,7 +92,12 @@ public class CommandHandler {
         else
             responsePacket.response_code = DFS_CONSTANTS.FAILURE;
 
-        //
+        ArrayList<StorageNode> tempList = new ArrayList<>();
+        tempList.add(DFS_Globals.dn_q.peek());
+
+        responsePacket.dn_list = tempList;
+        responsePacket.file_name = req_packet.file_name;
+        responsePacket.file_size = req_packet.file_size;
 
         return responsePacket;
     }
