@@ -5,11 +5,11 @@ package dfs_api;
  */
 public class LoadBalancer {
 
-    public static StorageNode getTargetNode(long size)
+    public synchronized static StorageNode getTargetNode(double size)
     {
         StorageNode targetNode;
         targetNode= DFS_Globals.dn_q.poll();
-        targetNode.Size=size;
+        targetNode.Size+=size;
         DFS_Globals.dn_q.add(targetNode);  // adds update StorageNode
         return targetNode;
     }
