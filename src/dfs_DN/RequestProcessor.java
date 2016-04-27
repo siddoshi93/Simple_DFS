@@ -34,7 +34,7 @@ public class RequestProcessor implements Runnable {
             req_packet = (ClientRequestPacket) ois.readObject();
             if (req_packet == null)
                 System.out.println("Handle NULL case");
-            System.out.println("ID : " + req_packet.client_uuid);
+            System.out.println("Request for ID : " + req_packet.client_uuid);
             handle_command();
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,14 +54,18 @@ public class RequestProcessor implements Runnable {
             case DFS_CONSTANTS.GET:
                 res_packet = handler.Get(req_packet);
                 send_response(res_packet);
-                if(res_packet != null) /* Wrong request */
-                    handler.send_file(client_socket,res_packet.file_name);
+                if(res_packet != null) /* Wrong request */ {
+                    System.out.println("SSending file..commented");
+                    //handler.send_file(client_socket, res_packet.file_name);
+                }
                 break;
             case DFS_CONSTANTS.PUT:
                 res_packet = handler.Put(req_packet);
                 send_response(res_packet);
-                if(res_packet != null)
-                    handler.recv_file(client_socket,req_packet.file_name);
+                if(res_packet != null) {
+                    System.out.println("Saving file... commented");
+                    handler.recv_file(client_socket, req_packet.file_name);
+                }
                 /* We need to notify the main node about this updation */
                 NotifyMN();
                 break;
@@ -80,11 +84,17 @@ public class RequestProcessor implements Runnable {
         ClientResponsePacket mn_res_packet = new ClientResponsePacket();
 
         mn_req_packet.command = DFS_CONSTANTS.UPDATE;
-        String arg[] = new String[DFS_CONSTANTS.ONE];
+        String arg[] = new String[DFS_CONSTANTS.TWO];
         Socket mn_connect = null;
 
-        arg[0] = this.req_packet.arguments[1];
-        mn_req_packet.arguments = arg;
+        //arg[0] = this.req_packet.arguments[1];
+        mn_req_packet.client_uuid = this.req_packet.client_uuid;
+        mn_req_packet.arguments = this.req_packet.arguments;
+        mn_req_packet.dn_list = this.req_packet.dn_list;
+        if(this.req_packet.arguments == null)
+        {
+            System.out.println("Argument was NULL");
+        }
         try {
             mn_connect = new Socket(DFS_Globals.server_addr,DFS_CONSTANTS.MN_LISTEN_PORT);
             send_request(mn_connect,mn_req_packet);
@@ -92,6 +102,10 @@ public class RequestProcessor implements Runnable {
             if(mn_res_packet == null || mn_res_packet.response_code != DFS_CONSTANTS.OK)
             {
                 System.out.println("Issue in updating in MN");
+            }
+            else
+            {
+                System.out.println("Notificaton Successfull...");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -142,7 +156,7 @@ public class RequestProcessor implements Runnable {
     {
         try
         {
-            System.out.println(res_packet.response_code);
+            System.out.println("Sending reponse : " + res_packet.response_code);
             oos = new ObjectOutputStream(client_socket.getOutputStream());
             oos.writeObject(res_packet);
             oos.flush();

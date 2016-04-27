@@ -165,6 +165,8 @@ public class ClientAPI
         req_packet.client_uuid = ClientAPI.getUserName();
         req_packet.file_name = res_packet.file_name;
         req_packet.file_size = res_packet.file_size;
+        req_packet.arguments = res_packet.arguments;
+        req_packet.dn_list = res_packet.dn_list;
 
         try
         {
@@ -175,6 +177,7 @@ public class ClientAPI
             if (dn_res_packet !=null && dn_res_packet.response_code == DFS_CONSTANTS.OK)
             {
                 /* Start Sending the file */
+                System.out.println("Starting sending file....");
                 ftp.send_file(connect,path);
             }
             else
@@ -200,7 +203,6 @@ public class ClientAPI
 
     public static boolean validate_file(String file)
     {
-        System.out.println("validate file : " + file);
         File f = new File(file);
         System.out.println("validate file : " + file + " IsDir : " + f.exists());
         if(f.exists() && !f.isDirectory()) {

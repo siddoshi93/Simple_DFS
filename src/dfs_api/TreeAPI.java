@@ -8,7 +8,6 @@ import java.util.ArrayList;
  * This file is responsible for operating on the server
  */
 
-//Bla
 public class TreeAPI {
 
     public static boolean TreeInsert(TreeNode root, TreeNode newNode)
@@ -35,6 +34,7 @@ public class TreeAPI {
         String nextPathPoint;
         TreeNode newCurNode=curNode;
 
+        //Handling Absolute Path and Edge cases
         if(path.length()!=0 && path.charAt(0) == '/') {
             if (path.length() > 1)
                 path = path.substring(1);

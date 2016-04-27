@@ -375,6 +375,7 @@ public class ClientCommand
             {
                 connect.close(); /* Close the connection with the server */
                 System.out.println("File Name : " + res_packet.file_name);
+                res_packet.arguments = req_packet.arguments;
                 ClientAPI.sendFiles(res_packet,arg[1]);
             }
             else

@@ -72,14 +72,11 @@ public class DN_CommandHandler
             /* Create a folder */
             if(!create_client_folder(client_data.folder_name))
             {
+                System.out.println("Some error in creating the folder");
                return res_packet;
             }
             DFS_Globals.client_data.put(req_packet.client_uuid,client_data);
         }
-
-        cname = client_data.file_map.get(req_packet.file_name);
-        if(cname == null)
-            return res_packet;
 
         /* Set the response packet and pass it back */
         res_packet.file_name = cname;
@@ -131,7 +128,7 @@ public class DN_CommandHandler
     public boolean create_client_folder(String folder_name)
     {
         File dir = new File(DFS_CONSTANTS.storage_path + folder_name);
-        System.out.println(DFS_CONSTANTS.storage_path + folder_name);
+        System.out.println("Creating Client Folder : " + DFS_CONSTANTS.storage_path + folder_name);
         if(!(dir.exists() && dir.isDirectory()))
         {
             System.out.println("Creating Directory......");

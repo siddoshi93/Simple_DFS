@@ -1,6 +1,7 @@
 package dfs_api;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by abhishek on 4/24/16.
@@ -15,6 +16,8 @@ public class ClientRequestPacket implements Serializable
     public String file_name;
     public String arguments[];
     public int file_size;
+
+    public ArrayList<StorageNode> dn_list;
 
     public int requestEntity;           //0-Client, 1-datanode
 }
