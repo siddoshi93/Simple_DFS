@@ -6,6 +6,7 @@ package dfs_api;
 public class DFS_CONSTANTS 
 {
 	/* NUMBERS */
+	public final static int ZERO = 0;
 	public final static int ONE = 1;
 	public final static int TWO = 2;
 	public final static int PQ_SIZE = 10;

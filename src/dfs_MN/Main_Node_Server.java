@@ -124,7 +124,7 @@ public class Main_Node_Server
 
 		try
 		{
-			fr = new FileReader(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.storage_path);
+			fr = new FileReader(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.dn_list);
 			bufferedReader = new BufferedReader(fr);
 
 			while((line = bufferedReader.readLine()) != null)

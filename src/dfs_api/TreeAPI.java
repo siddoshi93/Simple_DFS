@@ -35,10 +35,12 @@ public class TreeAPI {
         String nextPathPoint;
         TreeNode newCurNode=curNode;
 
-        if(path.charAt(0) == '/' && path.length()!=1)
-            path=path.substring(1);
-        else
-            return newCurNode;
+        if(path.length()!=0 && path.charAt(0) == '/') {
+            if (path.length() > 1)
+                path = path.substring(1);
+            else
+                return newCurNode;
+        }
 
         while(path.length()>0 && newCurNode!=null)
         {

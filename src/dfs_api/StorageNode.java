@@ -1,9 +1,11 @@
 package dfs_api;
 
+import java.io.Serializable;
+
 /**
  * Created by Anas on 4/24/2016.
  */
-public class StorageNode {
+public class StorageNode implements Serializable {
     public String IPAddr;
     public String DataNodeID;
     public long Size;

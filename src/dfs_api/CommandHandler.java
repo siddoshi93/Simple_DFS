@@ -87,11 +87,14 @@ public class CommandHandler {
 
         String filePath = req_packet.arguments[1];
 
+        System.out.println("FilePath: "+req_packet.arguments[1]);
+
         if (searchNode(req_packet,filePath) != null)
             responsePacket.response_code = DFS_CONSTANTS.OK;
         else
             responsePacket.response_code = DFS_CONSTANTS.FAILURE;
 
+        System.out.println(responsePacket.response_code);
         ArrayList<StorageNode> tempList = new ArrayList<>();
         tempList.add(DFS_Globals.dn_q.peek());
 
