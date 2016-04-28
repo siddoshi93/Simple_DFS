@@ -18,7 +18,7 @@ public class DFS_CONSTANTS
 	public final static int DN_LISTEN_PORT = 9090;
 
 	/* Data Node Constants */
-	public final static String storage_path = "/home/abhishek/";
+	public final static String storage_path = "/home/ubuntu/";
 	public final static short DATA_PACKET_SIZE = 4096;
 
 	/* MISC CONSTANTS */
@@ -49,7 +49,7 @@ public class DFS_CONSTANTS
 	public final static String DFS_SERVER_ADDR = "DFS_SERVER_ADDR";
 
 	/* File Path */
-	public final static String user_name_file = "/home/abhishek/.sdfs/sdfs_username";
-	public final static String sdfs_path = "/home/abhishek/.sdfs/";
+	public final static String user_name_file = "/home/ubuntu/.sdfs/sdfs_username";
+	public final static String sdfs_path = "/home/ubuntu/.sdfs/";
 	public final static String dn_list = "dn_config.csv";
 }

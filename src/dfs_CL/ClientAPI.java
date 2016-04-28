@@ -101,6 +101,11 @@ public class ClientAPI
     {
         ClientRequestPacket req_packet;
         String username = ClientAPI.getUserName();
+        if(username == null)
+        {
+            System.out.println("Please login.....");
+            System.exit(DFS_CONSTANTS.SUCCESS);
+        }
         req_packet = new ClientRequestPacket();
         req_packet.client_uuid = username;
         req_packet.command = command;
@@ -161,16 +166,20 @@ public class ClientAPI
         Socket connect = null;
         FileTransfer ftp = new FileTransfer();
 
+        /* Creating request packet for DN */
         req_packet.command = DFS_CONSTANTS.PUT;
         req_packet.client_uuid = ClientAPI.getUserName();
         req_packet.file_name = res_packet.file_name;
         req_packet.file_size = res_packet.file_size;
         req_packet.arguments = res_packet.arguments;
         req_packet.dn_list = res_packet.dn_list;
-        System.out.println("File Name : " + req_packet.file_name);
+        req_packet.replicate_ind = res_packet.replicate_ind;
+
+        System.out.println("File Name : " + req_packet.file_name + ":" + req_packet.dn_list.size());
 
         try
         {
+            System.out.println("DN IP : " + dn_ip);
             connect = new Socket(dn_ip,DFS_CONSTANTS.DN_LISTEN_PORT);
             send_request(connect,req_packet);
             System.out.println("In Send File wit dn ip :" + dn_ip);

@@ -38,6 +38,7 @@ public class ReplicatorDmn implements Runnable
         {
             send_request();
             dn_res_packet = ClientAPI.recv_response(dn_socket);
+            System.out.println("Got response from Replicator daemon rc : " + dn_res_packet.response_code);
             if (dn_res_packet !=null && dn_res_packet.response_code == DFS_CONSTANTS.OK)
             {
                 /* Start Sending the file */

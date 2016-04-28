@@ -342,16 +342,42 @@ public class ClientCommand
     public static boolean Put(String[] arg)
     {
         String[] arg_list; /* Argument list passed as String */
-        if (arg.length != 3 || !(arg.length == 4 && arg[1].equalsIgnoreCase(DFS_CONSTANTS.repl))) {
+        String path = null;
+
+        if (! ( arg.length ==3  || (arg.length == 4 && arg[1].equalsIgnoreCase(DFS_CONSTANTS.repl))) ) {
             System.out.println("Please call with a argument as below");
             System.out.println("Usage <SDFS PUT SOURCE DEST>");
             return false;
         }
 
-        if(!ClientAPI.validate_file(arg[1]))
+        req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.PUT);
+        if(arg.length == 3) /* No Replication passed */
         {
-            System.out.println("Invalid File...");
-            return false;
+            if (!ClientAPI.validate_file(arg[1])) {
+                System.out.println("Invalid File...");
+                return false;
+            }
+            arg_list = new String[DFS_CONSTANTS.TWO];
+            arg_list[0] = arg[1];
+            arg_list[1] = arg[2];
+            req_packet.replicate_ind = false;
+            req_packet.file_name = arg[1].split("/")[arg[1].split("/").length - 1];
+            req_packet.file_size = ClientAPI.getFileSize(arg[1]);
+            path = arg[1];
+        }
+        else
+        {
+            if (!ClientAPI.validate_file(arg[2])) {
+                System.out.println("Invalid File...");
+                return false;
+            }
+            arg_list = new String[DFS_CONSTANTS.THREE];
+            req_packet.replicate_ind = true;
+            arg_list[0] = arg[2];
+            arg_list[1] = arg[3];
+            req_packet.file_name = arg[2].split("/")[arg[2].split("/").length - 1];
+            req_packet.file_size = ClientAPI.getFileSize(arg[2]);
+            path = arg[2];
         }
 
         server_ip = ClientAPI.getServerAddress();
@@ -360,30 +386,11 @@ public class ClientCommand
             System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
             return false;
         }
-        req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.PUT);
-        if(arg.length == 3) /* No Replication passed */
-        {
-            arg_list = new String[DFS_CONSTANTS.TWO];
-            arg_list[0] = arg[1];
-            arg_list[1] = arg[2];
-            req_packet.replicate_ind = false;
-            req_packet.file_name = arg[1].split("/")[arg[1].split("/").length - 1];
-        }
-        else
-        {
-            arg_list = new String[DFS_CONSTANTS.THREE];
-            req_packet.replicate_ind = true;
-            arg_list[0] = arg[2];
-            arg_list[1] = arg[3];
-            req_packet.file_name = arg[2].split("/")[arg[2].split("/").length - 1];
-        }
-        req_packet.file_size = ClientAPI.getFileSize(arg[1]);
 
         req_packet.arguments = arg_list;
         try
         {
             connect = new Socket(server_ip, DFS_CONSTANTS.MN_LISTEN_PORT);
-
             ClientAPI.send_request(connect, req_packet);
             res_packet = ClientAPI.recv_response(connect);
             if(res_packet != null && res_packet.response_code == DFS_CONSTANTS.OK)
@@ -391,8 +398,13 @@ public class ClientCommand
                 connect.close(); /* Close the connection with the server */
                 res_packet.arguments = req_packet.arguments; /* Data need to send to DN */
                 res_packet.file_name = req_packet.file_name;
-                res_packet.replicate_ind = req_packet.replicate_ind;
-                ClientAPI.sendFiles(res_packet,arg[1]);
+                System.out.println("Replication ind : " + res_packet.replicate_ind);
+                if(res_packet.replicate_ind)
+                {
+                    System.out.println("DN IP1 : " + res_packet.dn_list.get(DFS_CONSTANTS.ZERO).IPAddr);
+                    System.out.println("DN IP2 : " + res_packet.dn_list.get(DFS_CONSTANTS.ONE).IPAddr);
+                }
+                ClientAPI.sendFiles(res_packet,path);
             }
             else
             {

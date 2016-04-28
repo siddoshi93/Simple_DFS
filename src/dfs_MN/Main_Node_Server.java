@@ -35,7 +35,7 @@ public class Main_Node_Server
 	private static ClientRequestHandle curr_req;
 	private static String new_uuid;
 
-	static class Storagesort implements Comparator<StorageNode> {
+   public static class Storagesort implements Comparator<StorageNode> {
 
 		public int compare(StorageNode s1, StorageNode s2) {
 			if(s2.Size < s1.Size)
@@ -112,7 +112,7 @@ public class Main_Node_Server
 		}
 	}
 
-	private static boolean setUp_DN_List()
+	public static boolean setUp_DN_List()
 	{
 		Storagesort storagesort = new Storagesort();
 		DFS_Globals.dn_q = new PriorityQueue(DFS_CONSTANTS.PQ_SIZE,storagesort);

@@ -29,11 +29,12 @@ public class RequestProcessor implements Runnable {
     @Override
     public void run() {
         try {
+            System.out.println("DN");
             ois = new ObjectInputStream(client_socket.getInputStream());
             req_packet = (ClientRequestPacket) ois.readObject();
             if (req_packet == null)
                 System.out.println("Handle NULL case");
-            System.out.println("Request for ID : " + req_packet.client_uuid);
+            System.out.println("Request for ID : " + req_packet.client_uuid + ":" + req_packet.dn_list.size());
             handle_command();
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,7 +52,7 @@ public class RequestProcessor implements Runnable {
     {
         ClientResponsePacket res_packet = null;
         DN_CommandHandler handler = new DN_CommandHandler(req_packet.client_uuid);
-
+        System.out.println("DN List Size : " + req_packet.dn_list.size());
         /* Handle the request */
         switch (req_packet.command)
         {
@@ -92,7 +93,7 @@ public class RequestProcessor implements Runnable {
         mn_req_packet.command = DFS_CONSTANTS.UPDATE;
         String arg[] = new String[DFS_CONSTANTS.TWO];
         Socket mn_connect = null;
-
+        System.out.println("DN List : " + req_packet.dn_list.size());
         //arg[0] = this.req_packet.arguments[1];
         mn_req_packet.client_uuid = req_packet.client_uuid;
         mn_req_packet.arguments = req_packet.arguments;
@@ -111,6 +112,7 @@ public class RequestProcessor implements Runnable {
             else
             {
                 System.out.println("Notificaton Successfull...");
+                System.out.println("Recv DN List : " + req_packet.dn_list.size());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -160,17 +162,24 @@ public class RequestProcessor implements Runnable {
     /* Routine which will start a DN 2 DN transfer in case of a repliation */
     public void check_and_replicate(ClientRequestPacket req_packet) throws IOException
     {
+        Socket repl_dn = null;
+        if(!req_packet.replicate_ind)
+        {
+            System.out.println("No Replication");
+            return;
+        }
+        System.out.println("Doing Replication : " + req_packet.dn_list.size());
         client_data = DFS_Globals.client_data.get(req_packet.client_uuid);
         String file_path = (DFS_CONSTANTS.storage_path +
                             client_data.folder_name +
                             "/" +
                             client_data.file_map.get(req_packet.file_name));
+        System.out.println("File Path for DN Replication : " + file_path);
         req_packet.dn_list.remove(DFS_CONSTANTS.ZERO);
-        Socket repl_dn = new Socket(req_packet.dn_list.get(DFS_CONSTANTS.ZERO).IPAddr,DFS_CONSTANTS.DN_LISTEN_PORT);
-        if(!req_packet.replicate_ind)
-        {
-            return;
-        }
+
+        repl_dn = new Socket(req_packet.dn_list.get(DFS_CONSTANTS.ZERO).IPAddr,DFS_CONSTANTS.DN_LISTEN_PORT);
+        req_packet.replicate_ind = false; /* No More Replication */
+
         replication_req = new ReplicatorDmn(repl_dn,req_packet,file_path);
         new Thread(replication_req).start();
     }

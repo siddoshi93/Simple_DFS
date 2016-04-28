@@ -30,7 +30,7 @@ public class FileTransfer
             System.out.println("read " + totalRead + " bytes.");
             fos.write(buffer, 0, read);
         }
-        //fos.close();
+        fos.close();
         //dis.close();
     }
 
@@ -45,7 +45,7 @@ public class FileTransfer
         }
 
         fis.close();
-        dos.close();
+        //dos.close();
     }
 
     public static boolean check_and_create_dir(String path)

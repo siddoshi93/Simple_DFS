@@ -55,7 +55,7 @@ public class DN_CommandHandler
     /* Store the file requested by client */
     public ClientResponsePacket Put(ClientRequestPacket req_packet)
     {
-        String cname = null;
+        //String cname = null;
         res_packet = new ClientResponsePacket();
         res_packet.response_code = DFS_CONSTANTS.FAILURE;
 
@@ -79,7 +79,7 @@ public class DN_CommandHandler
         }
 
         /* Set the response packet and pass it back */
-        res_packet.file_name = cname;
+        //res_packet.file_name = cname;
         res_packet.response_code = DFS_CONSTANTS.OK;
         return res_packet;
     }

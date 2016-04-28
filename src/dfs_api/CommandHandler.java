@@ -101,7 +101,7 @@ public class CommandHandler {
 
         String filePath = req_packet.arguments[1];
 
-        System.out.println("FilePath: "+req_packet.arguments[1]);
+        System.out.println("FilePath: "+req_packet.arguments[1] + ":" + req_packet.replicate_ind);
 
         if (searchNode(req_packet,filePath) != null)
             responsePacket.response_code = DFS_CONSTANTS.OK;
@@ -112,17 +112,16 @@ public class CommandHandler {
 
         ArrayList<StorageNode> tempList = new ArrayList<>();
 
-
+        System.out.println("Req_packet:"+req_packet.file_size);
         tempList.add(LoadBalancer.getTargetNode(req_packet.file_size));
 
-        if(req_packet.arguments.length>=2 && req_packet.arguments[2].equals(""))
+        if(req_packet.replicate_ind)
             tempList.add(LoadBalancer.getTargetNode(req_packet.file_size));
-
-
 
         responsePacket.dn_list = tempList;
         responsePacket.file_name = req_packet.file_name;
         responsePacket.file_size = req_packet.file_size;
+        responsePacket.replicate_ind = req_packet.replicate_ind;
 
         return responsePacket;
     }
