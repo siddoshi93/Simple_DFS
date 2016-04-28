@@ -115,10 +115,8 @@ public class CommandHandler {
 
         tempList.add(LoadBalancer.getTargetNode(req_packet.file_size));
 
-        if(req_packet.arguments.length>=2 && req_packet.arguments[2].equals(""))
+        if(req_packet.replicate_ind)
             tempList.add(LoadBalancer.getTargetNode(req_packet.file_size));
-
-
 
         responsePacket.dn_list = tempList;
         responsePacket.file_name = req_packet.file_name;
