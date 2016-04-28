@@ -109,8 +109,16 @@ public class CommandHandler {
             responsePacket.response_code = DFS_CONSTANTS.FAILURE;
 
         System.out.println(responsePacket.response_code);
+
         ArrayList<StorageNode> tempList = new ArrayList<>();
+
+
         tempList.add(LoadBalancer.getTargetNode(req_packet.file_size));
+
+        if(req_packet.arguments.length>=2 && req_packet.arguments[2].equals(""))
+            tempList.add(LoadBalancer.getTargetNode(req_packet.file_size));
+
+
 
         responsePacket.dn_list = tempList;
         responsePacket.file_name = req_packet.file_name;
