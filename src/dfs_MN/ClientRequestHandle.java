@@ -43,6 +43,11 @@ public class ClientRequestHandle implements Runnable{
 		finally
 		{
 			Main_Node_Server.remove_active_request(uuid);
+			try {
+				client_socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

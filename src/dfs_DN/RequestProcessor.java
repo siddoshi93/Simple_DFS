@@ -1,26 +1,25 @@
 package dfs_DN;
 
 /* Program specific import */
-import dfs_api.ClientRequestPacket;
-import dfs_api.ClientResponsePacket;
-import dfs_api.DFS_CONSTANTS;
-import dfs_api.DFS_Globals;
+import dfs_api.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.UUID;
 
 /**
  * Created by abhishek on 4/26/16.
  */
 public class RequestProcessor implements Runnable {
+    ReplicatorDmn replication_req;
     private Socket client_socket;
     private String uuid;
-    boolean status;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private ClientRequestPacket req_packet;
+    private ClientMetaData client_data;
 
     public RequestProcessor(Socket soc, String uuid) {
         this.client_socket = soc;
@@ -40,10 +39,15 @@ public class RequestProcessor implements Runnable {
             e.printStackTrace();
         } finally {
             Data_Node_Server.remove_active_request(uuid);
+            try {
+                client_socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void handle_command()
+    public void handle_command() throws IOException
     {
         ClientResponsePacket res_packet = null;
         DN_CommandHandler handler = new DN_CommandHandler(req_packet.client_uuid);
@@ -68,6 +72,8 @@ public class RequestProcessor implements Runnable {
                 }
                 /* We need to notify the main node about this updation */
                 NotifyMN();
+                /* Check if its a replication request */
+                check_and_replicate(req_packet);
                 break;
             default:
                 System.out.println("Invalid request");
@@ -149,6 +155,24 @@ public class RequestProcessor implements Runnable {
         {
             e.printStackTrace();
         }
+    }
+
+    /* Routine which will start a DN 2 DN transfer in case of a repliation */
+    public void check_and_replicate(ClientRequestPacket req_packet) throws IOException
+    {
+        client_data = DFS_Globals.client_data.get(req_packet.client_uuid);
+        String file_path = (DFS_CONSTANTS.storage_path +
+                            client_data.folder_name +
+                            "/" +
+                            client_data.file_map.get(req_packet.file_name));
+        req_packet.dn_list.remove(DFS_CONSTANTS.ZERO);
+        Socket repl_dn = new Socket(req_packet.dn_list.get(DFS_CONSTANTS.ZERO).IPAddr,DFS_CONSTANTS.DN_LISTEN_PORT);
+        if(!req_packet.replicate_ind)
+        {
+            return;
+        }
+        replication_req = new ReplicatorDmn(repl_dn,req_packet,file_path);
+        new Thread(replication_req).start();
     }
 
     public void send_response(ClientResponsePacket res_packet)
