@@ -11,6 +11,8 @@ public class DFS_CONSTANTS
 	public final static int TWO = 2;
 	public final static int THREE = 3;
 	public final static int PQ_SIZE = 10;
+	public final static int SLEEP_TIME = 10000;
+	public final static int TIMEOUT = 5000;
 
 	/* PORT CONSTANTS */
 	public final static int MN_LISTEN_PORT = 7091;
@@ -24,6 +26,11 @@ public class DFS_CONSTANTS
 	/* MISC CONSTANTS */
 	public final static int REQUEST_BACK_LOG = 25; /* MN Queue length */
 	public final static int NUM_OF_WORKERS = 20;
+
+	/* Entity Type */
+	public final static int MN = 55;
+	public final static int DN = 56;
+	public final static int CL = 57;
 
 	/* RETURN TYPE CONSTANTS */
 	public final static int SUCCESS = 0; /* SUCCESS RETURN FOR FUNCTION */
@@ -44,6 +51,8 @@ public class DFS_CONSTANTS
 	public final static int UPDATE = 19;
 	public final static String CURRENT_DIRECTORY = ".";
 	public final static String repl = "REPL";
+	public final static int IS_DN_ALIVE = 20;
+	public final static int ALIVE = 21;
 
 	/* Environment variable for server address */
 	public final static String DFS_SERVER_ADDR = "DFS_SERVER_ADDR";
