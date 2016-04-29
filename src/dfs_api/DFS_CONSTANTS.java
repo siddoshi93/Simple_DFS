@@ -52,4 +52,11 @@ public class DFS_CONSTANTS
 	public final static String user_name_file = "/home/ubuntu/.sdfs/sdfs_username";
 	public final static String sdfs_path = "/home/ubuntu/.sdfs/";
 	public final static String dn_list = "dn_config.csv";
+
+	/*Log Path and Constants*/
+	public final static String logPath="";
+	public final static String INFO="INFORMATION";
+	public final static String FATAL="FATAL";
+	public final static String WARN="WARNING";
+	public final static String ERR="ERROR";
 }
