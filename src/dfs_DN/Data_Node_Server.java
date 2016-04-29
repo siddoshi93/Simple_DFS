@@ -89,6 +89,7 @@ public class Data_Node_Server
         active_request_list = new ConcurrentHashMap<String, RequestProcessor>();
         workers = Executors.newFixedThreadPool(DFS_CONSTANTS.NUM_OF_WORKERS);
         DFS_Globals.client_data = new HashMap();
+
         if((DFS_Globals.server_addr = System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR)) == null)
         {
             System.out.println("Please set the environment variable for Server Address");

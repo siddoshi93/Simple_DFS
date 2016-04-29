@@ -5,6 +5,7 @@ import dfs_api.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Iterator;
@@ -21,23 +22,36 @@ public class MaintenanceDmn implements Runnable
     private ClientResponsePacket res_packet = null;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
+    boolean is_alive = false;
 
     @Override
     public void run()
     {
         System.out.println("I am Up for Maintenance Boys....");
-        dn_list_iterator = DFS_Globals.dn_q.iterator();
-        while (dn_list_iterator.hasNext())
-        {
-            sn = dn_list_iterator.next();
-            System.out.println("STORAGE DT : " + sn.IPAddr + ":" + sn.Size);
-            ping_server(sn);
-        }
         try
         {
+            dn_list_iterator = DFS_Globals.dn_q.iterator();
+            while (dn_list_iterator.hasNext())
+            {
+                sn = dn_list_iterator.next();
+                System.out.println("STORAGE DT : " + sn.IPAddr + ":" + sn.Size);
+                //ping_server(sn);
+                is_alive = InetAddress.getByName(sn.IPAddr).isReachable(DFS_CONSTANTS.TIMEOUT);
+
+                if (is_alive)
+                {
+                    System.out.println("STORAGE DT : " + sn.DataNodeID + ":" + is_alive);
+                }
+                else
+                {
+                    System.out.println("STORAGE DT : " + sn.DataNodeID + ":" + is_alive);
+                    /* Remove this listing from the PQ */
+                    DFS_Globals.dn_q.remove(sn);
+                }
+            }
             Thread.sleep(DFS_CONSTANTS.SLEEP_TIME);
         }
-        catch (InterruptedException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }

@@ -15,17 +15,15 @@ import java.util.concurrent.TimeUnit;
 
 
 /* Program specific imports */
-import dfs_api.DFS_CONSTANTS;
-import dfs_api.DFS_Globals;
-import dfs_api.FileTransfer;
-import dfs_api.StorageNode;
+import dfs_api.*;
 
 /**
  * Created by Abhishek on 4/24/2016.
  */
 public class Main_Node_Server 
 {
-	private static ExecutorService workers;
+	private static ExecutorService workers; /* Workers threads */
+	private static AliveServer alive_server; /* HeartBeat Server */
 
 	/* List which maintains the current active client REQUESTS in the Server */
 	private static ConcurrentHashMap<String,ClientRequestHandle> active_client_list;
@@ -101,11 +99,17 @@ public class Main_Node_Server
 	{		
 		hostAddress = InetAddress.getLocalHost();  /* Get the host address */
 		client_request = new ServerSocket(DFS_CONSTANTS.MN_LISTEN_PORT,DFS_CONSTANTS.REQUEST_BACK_LOG/*,hostAddress*/);
-		active_client_list = new ConcurrentHashMap<String, ClientRequestHandle>();
+		active_client_list = new ConcurrentHashMap();
 		workers = Executors.newFixedThreadPool(DFS_CONSTANTS.NUM_OF_WORKERS);
 
 		DFS_Globals.global_client_list = new HashMap();
 		if(!setUp_DN_List())
+		{
+			System.out.println("Please define a proper config file for DN!!!!");
+			System.exit(DFS_CONSTANTS.SUCCESS);
+		}
+
+		if(bringUpAliveServer())
 		{
 			System.out.println("Please define a proper config file for DN!!!!");
 			System.exit(DFS_CONSTANTS.SUCCESS);
@@ -153,4 +157,10 @@ public class Main_Node_Server
 		return true;
 	}
 
+	public static boolean bringUpAliveServer()
+	{
+		alive_server = new AliveServer();
+		new Thread(alive_server).start();
+		return alive_server.isSetUp();
+	}
 }
