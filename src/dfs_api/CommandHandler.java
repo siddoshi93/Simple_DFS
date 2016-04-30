@@ -26,6 +26,15 @@ public class CommandHandler {
         return TreeAPI.findNode(tempNode,path);
     }
 
+    public static void checkStorageList(ArrayList<StorageNode> storageList)
+    {
+        for(StorageNode node: storageList)
+        {
+          if(!node.isAlive)
+              storageList.remove(node);
+        }
+    }
+
     //Adds NEW storage node to TreeNode IF NOT PRESENT, Else Ignores
     static void AddStorageNode (TreeNode TN, StorageNode SN)
     {
@@ -178,7 +187,7 @@ public class CommandHandler {
         return responsePacket;
     }
 
-    public static ClientResponsePacket commandGet(ClientRequestPacket req_packet)
+    public static ClientResponsePacket commandGET(ClientRequestPacket req_packet)
     {
         ClientResponsePacket responsePacket = new ClientResponsePacket();
         String dirPath="",filename="";
@@ -205,11 +214,20 @@ public class CommandHandler {
         }
         else
         {
-            responsePacket.response_code=DFS_CONSTANTS.OK;
-            responsePacket.curNode=targetNode;
-            responsePacket.dn_list=targetNode.storageNode;
-            responsePacket.arguments=req_packet.arguments;
-            responsePacket.file_size=(int)targetNode.size;
+            checkStorageList(targetNode.storageNode);  // Checks if assigned StorageNode to TreeNode are up
+
+            if(targetNode.storageNode.size()>0)     // if atleast one StorageNode has it
+            {
+                responsePacket.response_code = DFS_CONSTANTS.OK;
+                responsePacket.curNode = targetNode;
+                responsePacket.dn_list = targetNode.storageNode;
+                responsePacket.arguments = req_packet.arguments;
+                responsePacket.file_size = (int) targetNode.size;
+            }
+            else
+            {
+                responsePacket.response_code = DFS_CONSTANTS.FAILURE;
+            }
         }
 
         return responsePacket;
