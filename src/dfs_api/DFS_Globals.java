@@ -12,6 +12,7 @@ public class DFS_Globals
 	//Flag to tell server to keep running for requests
 	public static boolean is_MN_on = true;
     public static boolean is_DN_on = true;
+    public static boolean is_alive_server_on = true;
 
     //Global HashMap to maintain Client information
     public static HashMap<String, ClientWrapper> global_client_list;

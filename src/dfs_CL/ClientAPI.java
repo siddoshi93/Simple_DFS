@@ -6,7 +6,10 @@ import dfs_api.DFS_CONSTANTS;
 import dfs_api.FileTransfer;
 
 import java.io.*;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 /**
@@ -33,13 +36,40 @@ public class ClientAPI
         return true;
     }
 
+    /* In this part of the code we have configured to get the server address */
     public static String getServerAddress()
     {
-        String server_address;
-        if((server_address = System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR)) != null)
-            return server_address;
-        else
-            return null;
+        for (int i = 0;i < DFS_CONSTANTS.NUM_OF_MN;i++)
+        {
+            String server_address;
+            if ((server_address = System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR)) != null)
+            {
+                if(!check_mn_service(server_address,DFS_CONSTANTS.MN_LISTEN_PORT))  /* Check if its reachable */
+                    continue;
+                return server_address;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        System.out.println("No Master Node is Reachable!!!");
+        return null;
+    }
+
+    public static boolean check_mn_service(String host,int port)
+    {
+        try
+        {
+            Socket server_connect = new Socket();
+            server_connect.connect(new InetSocketAddress(host, port), DFS_CONSTANTS.TIMEOUT);
+            server_connect.close();
+            return true; /* Service is up and running */
+        }
+        catch (IOException ex)
+        {
+            return false; /* Unnable to connect specific port; */
+        }
     }
 
     public static void send_request(Socket client_socket, ClientRequestPacket req_packet)
@@ -106,6 +136,7 @@ public class ClientAPI
             System.out.println("Please login.....");
             System.exit(DFS_CONSTANTS.SUCCESS);
         }
+        System.out.println("UN : " + username);
         req_packet = new ClientRequestPacket();
         req_packet.client_uuid = username;
         req_packet.command = command;
@@ -125,6 +156,7 @@ public class ClientAPI
         req_packet.client_uuid = ClientAPI.getUserName();
         req_packet.file_name = res_packet.file_name;
         req_packet.file_size = res_packet.file_size;
+        req_packet.dn_list = res_packet.dn_list;
         System.out.println("Path:" + req_packet.file_name);
         try
         {
