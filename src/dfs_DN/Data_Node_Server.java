@@ -3,6 +3,8 @@ package dfs_DN;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,10 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 /* Program specific imports */
 import dfs_MN.ClientRequestHandle;
-import dfs_api.ClientRequestPacket;
-import dfs_api.DFS_CONSTANTS;
-import dfs_api.DFS_Globals;
-import dfs_api.PacketTransfer;
+import dfs_api.*;
 
 public class Data_Node_Server
 {
@@ -32,6 +31,8 @@ public class Data_Node_Server
     private static InetAddress hostAddress;
     private static RequestProcessor curr_req;
     private static String new_uuid;
+
+    private static StorageNode storageNode;
 
     //args[0] => Master Node IP, args[1] => Capacity
     public static void main(String[] args)
@@ -91,8 +92,12 @@ public class Data_Node_Server
 
     public static void setUpDN(String[] args) throws IOException
     {
-        //Registering Data Node with Master Node
-        NotifyMasterNode(args);
+        //Registering Data Node with Master Node. Exit if Fails
+        if(!NotifyMasterNode(args))
+        {
+            System.out.println("Data Node cannot register with Master Node");
+            System.exit(0);
+        }
 
         hostAddress = InetAddress.getLocalHost();  /* Get the host address */
         request = new ServerSocket(DFS_CONSTANTS.DN_LISTEN_PORT,DFS_CONSTANTS.REQUEST_BACK_LOG/*,hostAddress*/);
@@ -107,9 +112,33 @@ public class Data_Node_Server
         }
     }
 
-    private static void NotifyMasterNode(String[] args) {
+    private static boolean NotifyMasterNode(String[] args) {
 
+        //Creating Packet Transfer Object with the Main Node IP and Misc Listen Port
         PacketTransfer packetTransfer = new PacketTransfer(args[0],DFS_CONSTANTS.MN_MISC_LISTEN_PORT);
-        ClientRequestPacket clientRequestPacket = new ClientRequestPacket();
+
+        Packet responsePacket;
+
+        Packet clientRequestPacket = new Packet();
+        clientRequestPacket.command = DFS_CONSTANTS.ADD_DN;
+
+        try {
+            ArrayList<StorageNode> storageNodes = new ArrayList<>();
+            StorageNode tempNode = new StorageNode(InetAddress.getLocalHost().getHostAddress(),UUID.randomUUID().toString(),Integer.parseInt(args[1]));
+            storageNodes.add(tempNode);
+
+            //REGISTER WITH MASTER NODE
+            packetTransfer.sendPacket(clientRequestPacket);
+
+            responsePacket = packetTransfer.receivePacket();
+
+            if (responsePacket == null || responsePacket.response_code!= DFS_CONSTANTS.OK)
+                return false;
+        }
+        catch (UnknownHostException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return  true;
     }
 }
