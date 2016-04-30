@@ -18,6 +18,7 @@ public class DFS_CONSTANTS
 	public final static int MN_LISTEN_PORT = 7091;
 	public final static int ALIVE_LISTEN_PORT = 8090;
 	public final static int DN_LISTEN_PORT = 9090;
+	public final static int MN_MISC_LISTEN_PORT = 9099;
 
 	/* Data Node Constants */
 	public final static String storage_path = "/home/abhishek/";
@@ -49,7 +50,7 @@ public class DFS_CONSTANTS
 	public final static int UPDATE = 19;
 	public final static String CURRENT_DIRECTORY = ".";
 	public final static String repl = "REPL";
-	public final static int IS_DN_ALIVE = 20;
+	public final static int ADD_DN = 20;
 
 	/* Environment variable for server address */
 	public final static String DFS_SERVER_ADDR = "DFS_SERVER_ADDR";
