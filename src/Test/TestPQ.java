@@ -8,6 +8,8 @@ import dfs_api.LoadBalancer;
 import dfs_api.StorageNode;
 import log.Logger;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.Date;
 /**
@@ -40,6 +42,12 @@ public class TestPQ {
         newLog.print("Check", DFS_CONSTANTS.WARN);
 
         newLog.stopLogging();
+        try {
+            System.out.println(InetAddress.getLocalHost().getCanonicalHostName());
+        }catch(Exception e)
+        {
+
+        }
 
 
     }
