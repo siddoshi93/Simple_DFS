@@ -16,8 +16,10 @@ import java.util.concurrent.TimeUnit;
 
 /* Program specific imports */
 import dfs_MN.ClientRequestHandle;
+import dfs_api.ClientRequestPacket;
 import dfs_api.DFS_CONSTANTS;
 import dfs_api.DFS_Globals;
+import dfs_api.PacketTransfer;
 
 public class Data_Node_Server
 {
@@ -31,12 +33,18 @@ public class Data_Node_Server
     private static RequestProcessor curr_req;
     private static String new_uuid;
 
+    //args[0] => Master Node IP, args[1] => Capacity
     public static void main(String[] args)
     {
         try
         {
+            if(args.length != 2)
+            {
+                System.out.println("Please call with arguments as: <Master Node IP> <Data Node Capacity>");
+                System.exit(0);
+            }
 			/* Wait for a connection so that it can be served in a thread */
-            setUpDN(); /* Set up the server */
+            setUpDN(args); /* Set up the server */
 
             while(DFS_Globals.is_DN_on)
             {
@@ -49,7 +57,6 @@ public class Data_Node_Server
 
                 workers.submit(curr_req);
             }
-
         }
         catch(IOException ioe)
         {
@@ -82,8 +89,11 @@ public class Data_Node_Server
 
     }
 
-    public static void setUpDN() throws IOException
+    public static void setUpDN(String[] args) throws IOException
     {
+        //Registering Data Node with Master Node
+        NotifyMasterNode(args);
+
         hostAddress = InetAddress.getLocalHost();  /* Get the host address */
         request = new ServerSocket(DFS_CONSTANTS.DN_LISTEN_PORT,DFS_CONSTANTS.REQUEST_BACK_LOG/*,hostAddress*/);
         active_request_list = new ConcurrentHashMap<String, RequestProcessor>();
@@ -95,5 +105,11 @@ public class Data_Node_Server
             System.out.println("Please set the environment variable for Server Address");
             System.exit(DFS_CONSTANTS.SUCCESS);
         }
+    }
+
+    private static void NotifyMasterNode(String[] args) {
+
+        PacketTransfer packetTransfer = new PacketTransfer(args[0],DFS_CONSTANTS.MN_MISC_LISTEN_PORT);
+        ClientRequestPacket clientRequestPacket = new ClientRequestPacket();
     }
 }

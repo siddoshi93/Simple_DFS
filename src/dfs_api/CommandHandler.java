@@ -187,6 +187,7 @@ public class CommandHandler {
         return responsePacket;
     }
 
+    //GET Command
     public static ClientResponsePacket commandGET(ClientRequestPacket req_packet)
     {
         ClientResponsePacket responsePacket = new ClientResponsePacket();
