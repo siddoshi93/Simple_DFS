@@ -23,6 +23,11 @@ public class PacketTransfer {
         }
     }
 
+    public PacketTransfer(Socket connect)
+    {
+        this.connect = connect;
+    }
+
     @Override
     protected void finalize() throws Throwable {
 

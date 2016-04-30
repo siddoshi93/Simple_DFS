@@ -15,6 +15,8 @@ public class ClientResponsePacket implements Serializable
 
     public ArrayList<StorageNode> dn_list;
 
+    public int command;
+
     public String file_name;
     public String arguments[];
     public double file_size;

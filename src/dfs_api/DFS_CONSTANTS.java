@@ -59,7 +59,7 @@ public class DFS_CONSTANTS
 	public final static String user_name_file = "/home/abhishek/.sdfs/sdfs_username";
 	public final static String sdfs_path = "/home/abhishek/.sdfs/";
 	public final static String dn_list = "dn_config.csv";
-	public final static String "persistance_file";
+	public final static String persistance_file = "persistance_file";
 
 	/*Log Path and Constants*/
 	public final static String logPath="";
