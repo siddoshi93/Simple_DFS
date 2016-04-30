@@ -3,6 +3,8 @@ package dfs_DN;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,10 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 /* Program specific imports */
 import dfs_MN.ClientRequestHandle;
-import dfs_api.ClientRequestPacket;
-import dfs_api.DFS_CONSTANTS;
-import dfs_api.DFS_Globals;
-import dfs_api.PacketTransfer;
+import dfs_MN.DN_MiscDmn;
+import dfs_api.*;
 
 public class Data_Node_Server
 {
@@ -32,6 +32,10 @@ public class Data_Node_Server
     private static InetAddress hostAddress;
     private static RequestProcessor curr_req;
     private static String new_uuid;
+
+    private static StorageNode storageNode;
+    private static AliveServer alive_server;
+    private static DN_MiscDmn dn_misc_daemon;
 
     //args[0] => Master Node IP, args[1] => Capacity
     public static void main(String[] args)
@@ -91,8 +95,12 @@ public class Data_Node_Server
 
     public static void setUpDN(String[] args) throws IOException
     {
-        //Registering Data Node with Master Node
-        NotifyMasterNode(args);
+        //Registering Data Node with Master Node. Exit if Fails
+        if(!NotifyMasterNode(args))
+        {
+            System.out.println("Data Node cannot register with Master Node");
+            System.exit(0);
+        }
 
         hostAddress = InetAddress.getLocalHost();  /* Get the host address */
         request = new ServerSocket(DFS_CONSTANTS.DN_LISTEN_PORT,DFS_CONSTANTS.REQUEST_BACK_LOG/*,hostAddress*/);
@@ -100,16 +108,47 @@ public class Data_Node_Server
         workers = Executors.newFixedThreadPool(DFS_CONSTANTS.NUM_OF_WORKERS);
         DFS_Globals.client_data = new HashMap();
 
-        if((DFS_Globals.server_addr = System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR)) == null)
+        /* Bring up the MISC Daemon */
+        dn_misc_daemon = new DN_MiscDmn();
+        new Thread(dn_misc_daemon).start();
+
+        /* Bring up the alive server */
+        alive_server = new AliveServer();
+        new Thread(alive_server).start();
+        if(!alive_server.isSetUp())
         {
-            System.out.println("Please set the environment variable for Server Address");
+            System.out.println("Unnable to bring up the alive Server!!!!");
             System.exit(DFS_CONSTANTS.SUCCESS);
         }
     }
 
-    private static void NotifyMasterNode(String[] args) {
+    private static boolean NotifyMasterNode(String[] args) {
 
-        PacketTransfer packetTransfer = new PacketTransfer(args[0],DFS_CONSTANTS.MN_MISC_LISTEN_PORT);
-        ClientRequestPacket clientRequestPacket = new ClientRequestPacket();
+        //Creating Packet Transfer Object with the Main Node IP and Misc Listen Port
+        PacketTransfer packetTransfer = new PacketTransfer(args[DFS_CONSTANTS.ZERO], DFS_CONSTANTS.MN_MISC_LISTEN_PORT);
+
+        Packet responsePacket;
+
+        Packet clientRequestPacket = new Packet();
+        clientRequestPacket.command = DFS_CONSTANTS.ADD_DN;
+
+        try {
+            ArrayList<StorageNode> storageNodes = new ArrayList<>();
+            StorageNode tempNode = new StorageNode(InetAddress.getLocalHost().getHostAddress(), UUID.randomUUID().toString(), Integer.parseInt(args[DFS_CONSTANTS.ONE]));
+            storageNodes.add(tempNode);
+
+            //REGISTER WITH MASTER NODE
+            packetTransfer.sendPacket(clientRequestPacket);
+
+            responsePacket = packetTransfer.receivePacket();
+
+            if (responsePacket == null || responsePacket.response_code != DFS_CONSTANTS.OK)
+                return false;
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return false;
+        }
+            DFS_Globals.server_addr = args[DFS_CONSTANTS.ZERO];
+            return true;
     }
 }

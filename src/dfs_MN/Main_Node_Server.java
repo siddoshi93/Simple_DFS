@@ -33,6 +33,7 @@ public class Main_Node_Server
 	private static InetAddress hostAddress;
 	private static ClientRequestHandle curr_req;
 	private static String new_uuid;
+	private static MN_MiscDmn mn_misc_daemon;
 
    public static class Storagesort implements Comparator<StorageNode> {
 
@@ -104,21 +105,26 @@ public class Main_Node_Server
 		workers = Executors.newFixedThreadPool(DFS_CONSTANTS.NUM_OF_WORKERS);
 
 		DFS_Globals.global_client_list = new HashMap();
-		if(!setUp_DN_List())
+		/*if(!setUp_DN_List())
 		{
 			System.out.println("Please define a proper config file for DN!!!!");
 			System.exit(DFS_CONSTANTS.SUCCESS);
-		}
+		}*/
+
+		/* Bring up the MISC Daemon */
+		mn_misc_daemon = new MN_MiscDmn();
+		new Thread(mn_misc_daemon).start();
+
+		/* Maintenance Daemon */
+		maintenance_dmn = new MaintenanceDmn();
+		new Thread(maintenance_dmn).start();
 
 		/* Service Check Daemon */
 		if(bringUpAliveServer())
 		{
-			System.out.println("Please define a proper config file for DN!!!!");
+			System.out.println("Unnable to bring up the alive Server!!!!");
 			System.exit(DFS_CONSTANTS.SUCCESS);
 		}
-
-		/* Maintenance Daemon */
-		maintenance_dmn = new MaintenanceDmn();
 	}
 
 	public static boolean setUp_DN_List()

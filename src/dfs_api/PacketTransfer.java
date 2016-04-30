@@ -43,7 +43,7 @@ public class PacketTransfer {
     }
 
     //Sending A packet
-    public void sendPacket(String IPAddr, int Port, ClientRequestPacket req_packet)
+    public void sendPacket(Packet req_packet)
     {
         ObjectOutputStream oos = null;
 
@@ -59,15 +59,16 @@ public class PacketTransfer {
         }
     }
 
-    public ClientResponsePacket receivePacket()
+    //Receiving a Packet
+    public Packet receivePacket()
     {
         ObjectInputStream ois = null;
-        ClientResponsePacket res_packet = null;
+        Packet res_packet = null;
         try
         {
             /* Wait for the response packet from the server */
             ois = new ObjectInputStream(connect.getInputStream());
-            res_packet = (ClientResponsePacket) ois.readObject();
+            res_packet = (Packet) ois.readObject();
         }
         catch (Exception e)
         {
