@@ -118,7 +118,7 @@ public class Main_Node_Server
 		}
 
 		/* Maintenance Daemon */
-
+		maintenance_dmn = new MaintenanceDmn();
 	}
 
 	public static boolean setUp_DN_List()
