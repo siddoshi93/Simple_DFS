@@ -14,13 +14,13 @@ public class DFS_Globals
     public static boolean is_DN_on = true;
     public static boolean is_alive_server_on = true;
 
-    //Global HashMap to maintain Client information
+    /* Global HashMap to maintain Client information <MN> */
     public static HashMap<String, ClientWrapper> global_client_list;
 
-    /* HashMap for maintaining the client data*/
+    /* HashMap for maintaining the client data<DN>*/
     public static HashMap<String, ClientMetaData> client_data;
 
-    /* List of data node to maintain */
+    /* List of data node to maintain <MN> */
     public static PriorityQueue<StorageNode> dn_q;
 
     /* Server address stored by DN */

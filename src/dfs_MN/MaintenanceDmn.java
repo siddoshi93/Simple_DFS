@@ -2,9 +2,7 @@ package dfs_MN;
 
 import dfs_api.*;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -15,14 +13,16 @@ import java.util.Iterator;
  */
 public class MaintenanceDmn implements Runnable
 {
-    private Socket connect = null;
+    private Socket dn_connect = null;
     private StorageNode sn = null;
     private Iterator<StorageNode> dn_list_iterator = null;
-    private ClientRequestPacket req_packet = null;
-    private ClientResponsePacket res_packet = null;
-    private ObjectInputStream ois;
-    private ObjectOutputStream oos;
-    boolean is_alive = false;
+    private FileOutputStream fos = null;
+    private ObjectOutputStream os = null;
+
+    public MaintenanceDmn()
+    {
+
+    }
 
     @Override
     public void run()
@@ -30,71 +30,91 @@ public class MaintenanceDmn implements Runnable
         System.out.println("I am Up for Maintenance Boys....");
         try
         {
-            dn_list_iterator = DFS_Globals.dn_q.iterator();
-            while (dn_list_iterator.hasNext())
-            {
-                sn = dn_list_iterator.next();
-                System.out.println("STORAGE DT : " + sn.IPAddr + ":" + sn.Size);
-                //ping_server(sn);
-                is_alive = InetAddress.getByName(sn.IPAddr).isReachable(DFS_CONSTANTS.TIMEOUT);
-
-                if (is_alive)
-                {
-                    System.out.println("STORAGE DT : " + sn.DataNodeID + ":" + is_alive);
-                }
-                else
-                {
-                    System.out.println("STORAGE DT : " + sn.DataNodeID + ":" + is_alive);
-                    /* Remove this listing from the PQ */
-                    DFS_Globals.dn_q.remove(sn);
-                }
-            }
+            check_dn_status(); /* Check for aliveness of DN in the list */
+            //if(create_and_update_pers_md())/* create or update the meta data persistance copy */
+            //{
+                /* Send this new metadata to the secondary Main Node */
+            //}
             Thread.sleep(DFS_CONSTANTS.SLEEP_TIME);
         }
-        catch (Exception e)
+        catch (InterruptedException e)
         {
             e.printStackTrace();
         }
     }
 
-    public void ping_server(StorageNode sn)
+    public boolean create_and_update_pers_md()
     {
         try
         {
-            /* Forming the request packet */
-            req_packet.command = DFS_CONSTANTS.IS_DN_ALIVE;
-            req_packet.requestEntity = DFS_CONSTANTS.MN;
+            fos = new FileOutputStream(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.persistance_file);
+            os = new ObjectOutputStream(fos);
 
-            connect = new Socket();
-            connect.connect(new InetSocketAddress(sn.IPAddr,DFS_CONSTANTS.DN_LISTEN_PORT),DFS_CONSTANTS.TIMEOUT);
-
-            /* Send the request packet */
-            send_request();
+            os.writeObject(DFS_Globals.global_client_list);
+            os.flush();
+            return true;
         }
-        catch (Exception ex)
+        catch (IOException ex)
         {
             ex.printStackTrace();
+            return false;
+        }
+        finally
+        {
+            try
+            {
+                os.close();
+                fos.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
+
+    public void check_dn_status()
+    {
+        dn_list_iterator = DFS_Globals.dn_q.iterator();
+
+        while (dn_list_iterator.hasNext())
+        {
+            sn = dn_list_iterator.next();
+
+            if (ping_server(sn))
+            {
+                System.out.println("STORAGE DT : " + sn.DataNodeID + ": is up");
+            }
+            else
+            {
+                System.out.println("STORAGE DT : " + sn.DataNodeID + ": is down ");
+                    /* Remove this listing from the PQ */
+                DFS_Globals.dn_q.remove(sn);
+            }
+        }
+    }
+
+    public boolean ping_server(StorageNode sn)
+    {
+        try
+        {
+            dn_connect = new Socket();
+            dn_connect.connect(new InetSocketAddress(sn.IPAddr,DFS_CONSTANTS.ALIVE_LISTEN_PORT),DFS_CONSTANTS.TIMEOUT);
+            /* Connection succesfull */
+            return true;
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+            return false;
         }
         finally {
             try {
-                connect.close();
+                dn_connect.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void send_request()
-    {
-        try
-        {
-            oos = new ObjectOutputStream(connect.getOutputStream());
-            oos.writeObject(req_packet);
-            oos.flush();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
         }
     }
 }

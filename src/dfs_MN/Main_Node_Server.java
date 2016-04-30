@@ -24,6 +24,7 @@ public class Main_Node_Server
 {
 	private static ExecutorService workers; /* Workers threads */
 	private static AliveServer alive_server; /* HeartBeat Server */
+	private static MaintenanceDmn maintenance_dmn; /* Maintenance Daemon */
 
 	/* List which maintains the current active client REQUESTS in the Server */
 	private static ConcurrentHashMap<String,ClientRequestHandle> active_client_list;
@@ -109,11 +110,15 @@ public class Main_Node_Server
 			System.exit(DFS_CONSTANTS.SUCCESS);
 		}
 
+		/* Service Check Daemon */
 		if(bringUpAliveServer())
 		{
 			System.out.println("Please define a proper config file for DN!!!!");
 			System.exit(DFS_CONSTANTS.SUCCESS);
 		}
+
+		/* Maintenance Daemon */
+
 	}
 
 	public static boolean setUp_DN_List()
