@@ -1,11 +1,12 @@
 package dfs_api;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Anas on 4/30/2016.
  */
-public class Packet {
+public class Packet implements Serializable{
     public String client_uuid;
 
     public int command;
