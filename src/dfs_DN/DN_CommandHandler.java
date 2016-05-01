@@ -48,6 +48,10 @@ public class DN_CommandHandler
 
         /* Set the response packet and pass it back */
         res_packet.file_name = req_packet.file_name;
+
+        String file_path = DFS_CONSTANTS.storage_path + client_data.folder_name + "/" + client_data.file_map.get(req_packet.file_name);
+        res_packet.file_size = (int)(new File(file_path).length());
+
         res_packet.response_code = DFS_CONSTANTS.OK;
         return res_packet;
     }

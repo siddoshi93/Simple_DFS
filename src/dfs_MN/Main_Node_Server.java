@@ -32,7 +32,6 @@ public class Main_Node_Server
 		{
 			case DFS_CONSTANTS.PM:
 				DFS_Globals.mn_mode_ind = DFS_CONSTANTS.PM;
-				MN_Server_PM.start_pm_server(); /* Start Server in Primary mode */
 				break;
 			case DFS_CONSTANTS.SM:
 				DFS_Globals.mn_mode_ind = DFS_CONSTANTS.SM;
@@ -42,5 +41,6 @@ public class Main_Node_Server
 			default:
 				System.out.println("Please pass either PM or SM as mode");
 		}
+		MN_Server_PM.start_pm_server(); /* Start Server in Primary mode */
 	}
 }

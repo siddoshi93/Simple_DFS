@@ -44,6 +44,7 @@ public class ClientAPI
 
             if (server_address != null)
             {
+                System.out.println("SIP : " + server_address);
                 if(!check_mn_service(server_address,DFS_CONSTANTS.ALIVE_LISTEN_PORT))  /* Check if its reachable */
                     continue;
                 return server_address;
@@ -67,6 +68,11 @@ public class ClientAPI
 
             if (server_address != null)
             {
+                /*try {
+                    //System.out.println("ASL : " + InetAddress.getByName(server_address).isReachable(5000));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
                 if(!check_mn_service(server_address,DFS_CONSTANTS.ALIVE_LISTEN_PORT))  /* Check if its reachable */
                     continue;
                 return server_address;
@@ -90,6 +96,7 @@ public class ClientAPI
         }
         catch (IOException ex)
         {
+            System.out.println("Timeouttttttt");
             return false; /* Unnable to connect specific port; */
         }
     }
@@ -180,7 +187,7 @@ public class ClientAPI
         req_packet.file_name = res_packet.file_name;
         req_packet.file_size = res_packet.file_size;
         req_packet.dn_list = res_packet.dn_list;
-        System.out.println("Path:" + req_packet.file_name);
+        System.out.println("Path:" + req_packet.file_name + ":" + req_packet.file_size);
         try
         {
             connect = new Socket(dn_ip,DFS_CONSTANTS.DN_LISTEN_PORT);

@@ -23,6 +23,7 @@ public class ClientCommand
     public static boolean RegLogActivity(String username,int command,ClientResponsePacket res_packet)
     {
         server_ip = ClientAPI.getServerAddress();
+        System.out.println("Server IP : " + server_ip);
         if(server_ip == null || username == null)
         {
             System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
@@ -53,7 +54,7 @@ public class ClientCommand
                 DFS_Globals.server_addr = System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR);
 
                 //Setting sec_mn_ip_addr => IP of Secondary Master Node IF Provided by Master Node
-                if (res_packet.arguments.length > 0)
+                if (res_packet.arguments != null)
                 {
                     DFS_Globals.sec_mn_ip_addr = res_packet.arguments[0];
                 }
@@ -325,6 +326,7 @@ public class ClientCommand
                 System.out.println("IP1 : " + res_packet.dn_list.get(DFS_CONSTANTS.ZERO));
                 connect.close(); /* Close the connection with the server */
                 res_packet.file_name = req_packet.file_name;
+                res_packet.file_size = req_packet.file_size;
                 ClientAPI.getFiles(res_packet,arg[1]);
             }
             else
@@ -406,6 +408,8 @@ public class ClientCommand
                 connect.close(); /* Close the connection with the server */
                 res_packet.arguments = req_packet.arguments; /* Data need to send to DN */
                 res_packet.file_name = req_packet.file_name;
+                res_packet.file_size = req_packet.file_size;
+
                 System.out.println("Replication ind : " + res_packet.replicate_ind);
                 if(res_packet.replicate_ind)
                 {

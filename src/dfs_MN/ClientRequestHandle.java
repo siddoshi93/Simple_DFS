@@ -40,7 +40,6 @@ public class ClientRequestHandle implements Runnable
 			System.out.println("Request for ID : " + req_packet.client_uuid);
 
 			handle_command(req_packet);
-			System.out.println("ASL");
 		}
 		catch (IOException e)
 		{

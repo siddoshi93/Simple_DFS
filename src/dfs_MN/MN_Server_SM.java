@@ -117,6 +117,13 @@ public class MN_Server_SM {
         {
             ex.printStackTrace();
         }
+        finally {
+            try {
+                persistentSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static boolean create_and_update_pers_md()
