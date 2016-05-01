@@ -17,8 +17,6 @@ import java.util.concurrent.TimeUnit;
  */
 
 /* Program specific imports */
-import dfs_MN.ClientRequestHandle;
-import dfs_MN.DN_MiscDmn;
 import dfs_api.*;
 
 public class Data_Node_Server
