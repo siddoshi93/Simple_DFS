@@ -52,10 +52,10 @@ public class TestPQ {
         tester.add("asd");
         tester.add("bsd");
 
-        for(String a: tester)
+        for(int i=0;i<tester.size();i++)
         {
-            if(a.equals("asd"))
-                tester.remove(a);
+            if(tester.get(i).equals("asd"))
+                tester.remove(i);
         }
         for(String a: tester)
         {
