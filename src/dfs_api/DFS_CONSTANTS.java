@@ -41,7 +41,7 @@ public class DFS_CONSTANTS
 	public final static int OK = 0;
 	public final static int AUTH_FAILED = 3;
 	public final static int INVALID_CMD = 4;
-	public final static int INVALID_SIZE = 5;
+	public final static int INVALID_SIZE = -1;
 
 	/* CONSTANTS FOR TYPE OF CLIENT REQUESTS i.e. commands*/
 	public final static int REGISTER = 11;

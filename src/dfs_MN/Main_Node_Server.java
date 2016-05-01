@@ -8,10 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 
 /* Program specific imports */
@@ -110,7 +107,7 @@ public class Main_Node_Server
 
 		/* Initialize Storage pool */
 		Storagesort storagesort = new Storagesort();
-		DFS_Globals.dn_q = new PriorityQueue(DFS_CONSTANTS.PQ_SIZE,storagesort);
+		DFS_Globals.dn_q = new PriorityBlockingQueue(DFS_CONSTANTS.PQ_SIZE,storagesort);
 
 		DFS_Globals.global_client_list = new HashMap();
 		/*if(!setUp_DN_List())
@@ -138,7 +135,7 @@ public class Main_Node_Server
 	public static boolean setUp_DN_List()
 	{
 		Storagesort storagesort = new Storagesort();
-		DFS_Globals.dn_q = new PriorityQueue(DFS_CONSTANTS.PQ_SIZE,storagesort);
+		//DFS_Globals.dn_q = new PriorityQueue(DFS_CONSTANTS.PQ_SIZE,storagesort);
 		String line = null;
 		StorageNode temp;
 		String[] storage_params;
