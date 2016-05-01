@@ -143,26 +143,29 @@ public class CommandHandler {
         //Getting the Directory to Store File
         String filePath = req_packet.arguments[1];
         System.out.println("Filename:"+filePath);
+
         //Getting Correct Directory Node to insert a new directory
         TreeNode node = searchNode(req_packet,filePath);
 
         ArrayList<StorageNode> tempStorageList = new ArrayList<>();
         tempStorageList.add(req_packet.dn_list.get(0));
 
+        //Inserting File Into Tree
         boolean insert = TreeAPI.TreeInsert
                                         (node,
                                         new TreeNode(tempStorageList,              //Storage Node List => Implement Function
                                                     req_packet.file_name,
-                                                    false,                      //isDir = false
+                                                    false,                         //isDir = false
                                                     new Date(),
-                                                    req_packet.file_size)                 //Size at the time of creation
+                                                    req_packet.file_size)          //Size at the time of creation
                                         );
         System.out.println("File Path : " + filePath + ":" + req_packet.file_name + ":" + insert);
+
         //1st Time File Insertion
         if (insert)
             responsePacket.response_code = DFS_CONSTANTS.OK;
 
-        //File Present
+        //File Already Present => File Overwrite
         else
         {
             System.out.println("FilePresent");
@@ -183,7 +186,6 @@ public class CommandHandler {
                 responsePacket.response_code = DFS_CONSTANTS.OK;
             }
         }
-
         return responsePacket;
     }
 
@@ -192,8 +194,10 @@ public class CommandHandler {
     {
         ClientResponsePacket responsePacket = new ClientResponsePacket();
         String dirPath="",filename="";
+
         String completePath= req_packet.arguments[0];
 
+        //Checking if path DOES NOT end with a "/"
         if(completePath.length()>(completePath.lastIndexOf('/')+1))
         {
             dirPath = completePath.substring(0, completePath.lastIndexOf('/'));
@@ -204,9 +208,11 @@ public class CommandHandler {
             System.out.println("Invalid Directory Path FORMAT");
         }
 
-        TreeNode dirNode= searchNode(req_packet,dirPath);
+        //Getting DIRECTORY for the File Requested
+        TreeNode dirNode = searchNode(req_packet,dirPath);
 
-        TreeNode targetNode= TreeAPI.searchNode(dirNode,filename);
+        //Getting the FILE inside the Directory
+        TreeNode targetNode = TreeAPI.searchNode(dirNode,filename);
 
         if(targetNode==null || targetNode.isDir)
         {
@@ -215,9 +221,11 @@ public class CommandHandler {
         }
         else
         {
-            checkStorageList(targetNode.storageNode);  // Checks if assigned StorageNode to TreeNode are up
+            // Check if assigned StorageNode are Alive. Removing if Dead.
+            checkStorageList(targetNode.storageNode);
 
-            if(targetNode.storageNode.size()>0)     // if atleast one StorageNode has it
+            //If atleast one StorageNode is Alive
+            if(targetNode.storageNode.size()>0)
             {
                 responsePacket.response_code = DFS_CONSTANTS.OK;
                 responsePacket.curNode = targetNode;
@@ -230,7 +238,6 @@ public class CommandHandler {
                 responsePacket.response_code = DFS_CONSTANTS.FAILURE;
             }
         }
-
         return responsePacket;
     }
 
