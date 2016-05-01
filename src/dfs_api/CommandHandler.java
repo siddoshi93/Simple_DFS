@@ -28,10 +28,13 @@ public class CommandHandler {
 
     public static void checkStorageList(ArrayList<StorageNode> storageList)
     {
-        for(StorageNode node: storageList)
+        int loop_counter;
+        for(loop_counter=0;loop_counter<storageList.size();loop_counter++)
         {
+            StorageNode node= storageList.get(loop_counter);
+
           if(!node.isAlive)
-              storageList.remove(node);
+              storageList.remove(loop_counter);
         }
     }
 
