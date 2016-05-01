@@ -20,6 +20,19 @@ import java.util.LinkedList;
  */
 public class TestPQ {
 
+
+    class Tp
+    {
+        String name;
+        int value;
+        public Tp(String name,int value)
+        {
+            this.name=name;
+            this.value=value;
+        }
+
+    }
+
     public static void main(String[] args)
     {
 /*       Main_Node_Server.setUp_DN_List();
@@ -45,33 +58,31 @@ public class TestPQ {
         newLog.print("Check", DFS_CONSTANTS.WARN);
 
         newLog.stopLogging();*/
+        TestPQ obj=new TestPQ();
 
-        LinkedList<String> tester= new LinkedList<String>();
-        tester.add("asd");
-        tester.add("dsd");
-        tester.add("asd");
-        tester.add("bsd");
 
-        for(int i=0;i<tester.size();i++)
+        ArrayList<Tp> tester= new ArrayList<Tp>();
+
+        ArrayList<Tp> otherlist= new ArrayList<Tp>();
+
+        tester.add(obj.new Tp("asd",10));
+        tester.add(obj.new Tp("bsd",10));
+        tester.add(obj.new Tp("bsd",10));
+        tester.add(obj.new Tp("asd",10));
+
+        otherlist.add(tester.get(0));
+        otherlist.add(tester.get(1));
+
+        for(Tp a: tester)
         {
-            if(tester.get(i).equals("asd"))
-                tester.remove(i);
-        }
-        for(String a: tester)
-        {
-           System.out.println(a);
-        }
-
-
-
-        try {
-            System.out.println(InetAddress.getLocalHost().getCanonicalHostName());
-        }catch(Exception e)
-        {
-
+            a.value=-1;
         }
 
+        for(Tp a: otherlist)
+        {
+            System.out.println(a.name+" "+a.value);
 
+        }
     }
 
 }
