@@ -80,19 +80,24 @@ public class MaintenanceDmn implements Runnable
 
         dn_list_iterator = DFS_Globals.dn_q.iterator();
 
-        try{
-        while (dn_list_iterator.hasNext()) {
-            sn = dn_list_iterator.next();
+        try
+        {
+            while (dn_list_iterator.hasNext())
+            {
+                sn = dn_list_iterator.next();
 
-            if (ping_server(sn)) {
-                System.out.println("STORAGE DT : " + sn.DataNodeID + ": is up");
-            } else {
-                System.out.println("STORAGE DT : " + sn.DataNodeID + ": is down ");
-                /* Remove this listing from the PQ */
-                sn.Size = DFS_CONSTANTS.INVALID_SIZE;
-                sn.isAlive = false;
+                if (ping_server(sn))
+                {
+                    System.out.println("STORAGE DT : " + sn.DataNodeID + ": is up");
+                }
+                else
+                {
+                    System.out.println("STORAGE DT : " + sn.DataNodeID + ": is down ");
+                    /* Remove this listing from the PQ */
+                    sn.Size = DFS_CONSTANTS.INVALID_SIZE;
+                    sn.isAlive = false;
+                }
             }
-        }
         }
         catch (Exception ex)
         {
