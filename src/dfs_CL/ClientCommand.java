@@ -329,6 +329,7 @@ public class ClientCommand
                 System.out.println("IP1 : " + res_packet.dn_list.get(DFS_CONSTANTS.ZERO));
                 connect.close(); /* Close the connection with the server */
                 res_packet.file_name = req_packet.file_name;
+                res_packet.file_size = req_packet.file_size;
                 ClientAPI.getFiles(res_packet,arg[1]);
             }
             else
