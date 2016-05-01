@@ -33,6 +33,7 @@ public class Main_Node_Server
 				MN_Server_PM.start_pm_server(); /* Start Server in Primary mode */
 				break;
 			case DFS_CONSTANTS.SM:
+				MN_Server_SM.start_sm_server();
 				break;
 			default:
 				System.out.println("Please pass either PM or SM as mode");

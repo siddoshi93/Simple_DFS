@@ -138,6 +138,7 @@ public class MaintenanceDmn implements Runnable
     {
         try
         {
+            //Pinging Data Nodes to Check if They are ALIVE.
             dn_connect = new Socket();
             dn_connect.connect(new InetSocketAddress(sn.IPAddr,DFS_CONSTANTS.ALIVE_LISTEN_PORT),DFS_CONSTANTS.TIMEOUT);
             /* Connection succesfull */
