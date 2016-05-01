@@ -8,12 +8,30 @@ import dfs_api.LoadBalancer;
 import dfs_api.StorageNode;
 import log.Logger;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Date;
+import java.util.LinkedList;
+
 /**
  * Created by abhishek on 4/28/16.
  */
 public class TestPQ {
+
+
+    class Tp
+    {
+        String name;
+        int value;
+        public Tp(String name,int value)
+        {
+            this.name=name;
+            this.value=value;
+        }
+
+    }
 
     public static void main(String[] args)
     {
@@ -30,7 +48,7 @@ public class TestPQ {
             System.out.println("STORAGE DT : " + st.IPAddr + ":" + st.Size);
         }
 */
-        System.out.println((new Date().toString()));
+        /*System.out.println((new Date().toString()));
 
         Logger newLog= Logger.getInstance();
         newLog.setLogName("clientTest");
@@ -39,9 +57,32 @@ public class TestPQ {
         newLog.print("Check", DFS_CONSTANTS.WARN);
         newLog.print("Check", DFS_CONSTANTS.WARN);
 
-        newLog.stopLogging();
+        newLog.stopLogging();*/
+        TestPQ obj=new TestPQ();
 
 
+        ArrayList<Tp> tester= new ArrayList<Tp>();
+
+        ArrayList<Tp> otherlist= new ArrayList<Tp>();
+
+        tester.add(obj.new Tp("asd",10));
+        tester.add(obj.new Tp("bsd",10));
+        tester.add(obj.new Tp("bsd",10));
+        tester.add(obj.new Tp("asd",10));
+
+        otherlist.add(tester.get(0));
+        otherlist.add(tester.get(1));
+
+        for(Tp a: tester)
+        {
+            a.value=-1;
+        }
+
+        for(Tp a: otherlist)
+        {
+            System.out.println(a.name+" "+a.value);
+
+        }
     }
 
 }

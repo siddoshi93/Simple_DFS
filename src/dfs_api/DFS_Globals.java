@@ -3,6 +3,7 @@ package dfs_api;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * Created by Abhishek on 4/24/2016.
@@ -23,7 +24,7 @@ public class DFS_Globals
     public static HashMap<String, ClientMetaData> client_data;
 
     /* List of data node to maintain <MN> */
-    public static PriorityQueue<StorageNode> dn_q;
+    public static PriorityBlockingQueue<StorageNode> dn_q;
 
     /* Server address stored by DN */
     public static String server_addr;

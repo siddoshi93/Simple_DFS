@@ -11,14 +11,14 @@ public class DFS_CONSTANTS
 	public final static int TWO = 2;
 	public final static int THREE = 3;
 	public final static int PQ_SIZE = 10;
-	public final static int SLEEP_TIME = 5000;
+	public final static int SLEEP_TIME = 3000;
 	public final static int TIMEOUT = 5000;
 
 	/* PORT CONSTANTS */
 	public final static int MN_LISTEN_PORT = 7091;
 	public final static int ALIVE_LISTEN_PORT = 8090;
 	public final static int DN_LISTEN_PORT = 9090;
-	public final static int DN_MISC_LISTEN_PORT = 9099;
+	public final static int DN_MISC_LISTEN_PORT = 9098;
 	public final static int MN_MISC_LISTEN_PORT = 9099;
 
 	/* Data Node Constants */
@@ -41,6 +41,7 @@ public class DFS_CONSTANTS
 	public final static int OK = 0;
 	public final static int AUTH_FAILED = 3;
 	public final static int INVALID_CMD = 4;
+	public final static int INVALID_SIZE = -1;
 
 	/* CONSTANTS FOR TYPE OF CLIENT REQUESTS i.e. commands*/
 	public final static int REGISTER = 11;
@@ -59,6 +60,8 @@ public class DFS_CONSTANTS
 
 	/* Environment variable for server address */
 	public final static String DFS_SERVER_ADDR = "DFS_SERVER_ADDR";
+	public final static String PM = "PM";
+	public final static String SM = "SM";
 
 	/* File Path */
 	public final static String user_name_file = "/home/ubuntu/.sdfs/sdfs_username";

@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Iterator;
+import java.util.PriorityQueue;
 
 /**
  * Created by abhishek on 4/29/16.
@@ -19,11 +20,6 @@ public class MaintenanceDmn implements Runnable
     private FileOutputStream fos = null;
     private ObjectOutputStream os = null;
 
-    public MaintenanceDmn()
-    {
-
-    }
-
     @Override
     public void run()
     {
@@ -33,10 +29,10 @@ public class MaintenanceDmn implements Runnable
             {
                 System.out.println("I am Up for Maintenance Boys....");
                 check_dn_status(); /* Check for aliveness of DN in the list */
-                //if(create_and_update_pers_md())/* create or update the meta data persistance copy */
-                //{
+                if(create_and_update_pers_md())/* create or update the meta data persistance copy */
+                {
                     /* Send this new metadata to the secondary Main Node */
-                //}
+                }
                 Thread.sleep(DFS_CONSTANTS.SLEEP_TIME);
             }
         }
@@ -84,20 +80,28 @@ public class MaintenanceDmn implements Runnable
 
         dn_list_iterator = DFS_Globals.dn_q.iterator();
 
-        while (dn_list_iterator.hasNext())
+        try
         {
-            sn = dn_list_iterator.next();
+            while (dn_list_iterator.hasNext())
+            {
+                sn = dn_list_iterator.next();
 
-            if (ping_server(sn))
-            {
-                System.out.println("STORAGE DT : " + sn.DataNodeID + ": is up");
-            }
-            else
-            {
-                System.out.println("STORAGE DT : " + sn.DataNodeID + ": is down ");
+                if (ping_server(sn))
+                {
+                    System.out.println("STORAGE DT : " + sn.DataNodeID + ": is up");
+                }
+                else
+                {
+                    System.out.println("STORAGE DT : " + sn.DataNodeID + ": is down ");
                     /* Remove this listing from the PQ */
-                DFS_Globals.dn_q.remove(sn);
+                    sn.Size = DFS_CONSTANTS.INVALID_SIZE;
+                    sn.isAlive = false;
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
         }
     }
 

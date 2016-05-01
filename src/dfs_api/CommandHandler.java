@@ -4,6 +4,7 @@ import sun.reflect.generics.tree.Tree;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * Created by Anas on 4/24/2016.
@@ -26,13 +27,33 @@ public class CommandHandler {
         return TreeAPI.findNode(tempNode,path);
     }
 
-    public static void checkStorageList(ArrayList<StorageNode> storageList)
+    public static StorageNode getRealStorageRef(StorageNode networkVal)
     {
-        for(StorageNode node: storageList)
+
+        for(StorageNode node: DFS_Globals.dn_q)
         {
-          if(!node.isAlive)
-              storageList.remove(node);
+            if(networkVal.DataNodeID.equals(node.DataNodeID))
+                return node;
         }
+
+     return null;
+    }
+
+    public static ArrayList<StorageNode> checkStorageList(ArrayList<StorageNode> storageList)
+    {
+        ArrayList<StorageNode> tempList = new ArrayList<>();
+        StorageNode temp = null;
+
+        for(int loop_counter=0;loop_counter<storageList.size();loop_counter++)
+        {
+            StorageNode node= storageList.get(loop_counter);
+            System.out.println(node.IPAddr+" :"+node.Size+" :"+node.isAlive);
+          if(node.isAlive){
+              temp = new StorageNode(node);
+              tempList.add(temp);
+          }
+        }
+        return tempList;
     }
 
     //Adds NEW storage node to TreeNode IF NOT PRESENT, Else Ignores
@@ -122,6 +143,7 @@ public class CommandHandler {
         ArrayList<StorageNode> tempList = new ArrayList<>();
 
         System.out.println("Req_packet:"+req_packet.file_size);
+
         tempList.add(LoadBalancer.getTargetNode(req_packet.file_size));
 
         if(req_packet.replicate_ind)
@@ -143,29 +165,28 @@ public class CommandHandler {
         //Getting the Directory to Store File
         String filePath = req_packet.arguments[1];
         System.out.println("Filename:"+filePath);
-
         //Getting Correct Directory Node to insert a new directory
         TreeNode node = searchNode(req_packet,filePath);
 
         ArrayList<StorageNode> tempStorageList = new ArrayList<>();
-        tempStorageList.add(req_packet.dn_list.get(0));
 
-        //Inserting File Into Tree
+        //Each data node sends its own entry as First
+        tempStorageList.add( getRealStorageRef(req_packet.dn_list.get(0)) );
+
         boolean insert = TreeAPI.TreeInsert
                                         (node,
                                         new TreeNode(tempStorageList,              //Storage Node List => Implement Function
                                                     req_packet.file_name,
-                                                    false,                         //isDir = false
+                                                    false,                      //isDir = false
                                                     new Date(),
-                                                    req_packet.file_size)          //Size at the time of creation
+                                                    req_packet.file_size)                 //Size at the time of creation
                                         );
         System.out.println("File Path : " + filePath + ":" + req_packet.file_name + ":" + insert);
-
         //1st Time File Insertion
         if (insert)
             responsePacket.response_code = DFS_CONSTANTS.OK;
 
-        //File Already Present => File Overwrite
+        //File Present
         else
         {
             System.out.println("FilePresent");
@@ -179,13 +200,14 @@ public class CommandHandler {
             else
             {
                 //Modifying File Attributes
-                AddStorageNode(modifyFile,req_packet.dn_list.get(0));
+                AddStorageNode(modifyFile,getRealStorageRef(req_packet.dn_list.get(0)));
                 modifyFile.timeAccess = new Date();
                 modifyFile.size = req_packet.file_size;
 
                 responsePacket.response_code = DFS_CONSTANTS.OK;
             }
         }
+
         return responsePacket;
     }
 
@@ -194,10 +216,8 @@ public class CommandHandler {
     {
         ClientResponsePacket responsePacket = new ClientResponsePacket();
         String dirPath="",filename="";
-
         String completePath= req_packet.arguments[0];
 
-        //Checking if path DOES NOT end with a "/"
         if(completePath.length()>(completePath.lastIndexOf('/')+1))
         {
             dirPath = completePath.substring(0, completePath.lastIndexOf('/'));
@@ -208,11 +228,9 @@ public class CommandHandler {
             System.out.println("Invalid Directory Path FORMAT");
         }
 
-        //Getting DIRECTORY for the File Requested
-        TreeNode dirNode = searchNode(req_packet,dirPath);
+        TreeNode dirNode= searchNode(req_packet,dirPath);
 
-        //Getting the FILE inside the Directory
-        TreeNode targetNode = TreeAPI.searchNode(dirNode,filename);
+        TreeNode targetNode= TreeAPI.searchNode(dirNode,filename);
 
         if(targetNode==null || targetNode.isDir)
         {
@@ -221,15 +239,13 @@ public class CommandHandler {
         }
         else
         {
-            // Check if assigned StorageNode are Alive. Removing if Dead.
-            checkStorageList(targetNode.storageNode);
+            ArrayList<StorageNode> tempList = checkStorageList(targetNode.storageNode);  // Checks if assigned StorageNode to TreeNode are up
 
-            //If atleast one StorageNode is Alive
-            if(targetNode.storageNode.size()>0)
+            if(tempList.size()>0)     // if atleast one StorageNode has it
             {
                 responsePacket.response_code = DFS_CONSTANTS.OK;
                 responsePacket.curNode = targetNode;
-                responsePacket.dn_list = targetNode.storageNode;
+                responsePacket.dn_list = tempList;
                 responsePacket.arguments = req_packet.arguments;
                 responsePacket.file_size = (int) targetNode.size;
             }
@@ -238,6 +254,7 @@ public class CommandHandler {
                 responsePacket.response_code = DFS_CONSTANTS.FAILURE;
             }
         }
+
         return responsePacket;
     }
 
