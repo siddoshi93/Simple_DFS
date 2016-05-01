@@ -93,6 +93,7 @@ public class MaintenanceDmn implements Runnable
                 else
                 {
                     System.out.println("STORAGE DT : " + sn.DataNodeID + ": is down ");
+                    System.out.println(" IP : " + sn.IPAddr);
                     /* Remove this listing from the PQ */
                     sn.Size = DFS_CONSTANTS.INVALID_SIZE;
                     sn.isAlive = false;

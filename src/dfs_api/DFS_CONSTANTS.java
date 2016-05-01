@@ -11,7 +11,7 @@ public class DFS_CONSTANTS
 	public final static int TWO = 2;
 	public final static int THREE = 3;
 	public final static int PQ_SIZE = 10;
-	public final static int SLEEP_TIME = 5000;
+	public final static int SLEEP_TIME = 3000;
 	public final static int TIMEOUT = 5000;
 
 	/* PORT CONSTANTS */
