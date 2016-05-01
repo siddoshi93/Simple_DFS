@@ -13,7 +13,7 @@ public class DFS_CONSTANTS
 	public final static int PQ_SIZE = 10;
 	public final static int SLEEP_TIME = 3000;
 	public final static int TIMEOUT = 5000;
-	public final static int MASTER_PING_TIMEOUT = 1000;
+	public final static int MASTER_PING_TIMEOUT = 3000;
 
 	/* PORT CONSTANTS */
 	public final static int MN_LISTEN_PORT = 7091;

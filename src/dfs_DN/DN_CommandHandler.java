@@ -48,6 +48,7 @@ public class DN_CommandHandler
 
         /* Set the response packet and pass it back */
         res_packet.file_name = req_packet.file_name;
+
         res_packet.response_code = DFS_CONSTANTS.OK;
         return res_packet;
     }

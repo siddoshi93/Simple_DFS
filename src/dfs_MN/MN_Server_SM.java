@@ -54,7 +54,8 @@ public class MN_Server_SM {
 
         try {
             //Getting the Local Address of Secondary Master Node
-            tempArgs[0] = InetAddress.getLocalHost().getHostAddress();
+            tempArgs[DFS_CONSTANTS.ZERO] = InetAddress.getLocalHost().getHostAddress();
+            System.out.println("SEC  " + tempArgs[0]);
 
             requestPacket.command = DFS_CONSTANTS.ADD_SEC_MN;
             requestPacket.arguments = tempArgs;
@@ -116,6 +117,13 @@ public class MN_Server_SM {
         catch (ClassNotFoundException ex)
         {
             ex.printStackTrace();
+        }
+        finally {
+            try {
+                persistentSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

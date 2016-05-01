@@ -23,6 +23,7 @@ public class ClientCommand
     public static boolean RegLogActivity(String username,int command,ClientResponsePacket res_packet)
     {
         server_ip = ClientAPI.getServerAddress();
+        System.out.println("Server IP : " + server_ip);
         if(server_ip == null || username == null)
         {
             System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
@@ -51,11 +52,13 @@ public class ClientCommand
             {
                 //Setting server_addr => IP Of Master Node
                 DFS_Globals.server_addr = System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR);
+                System.out.println("Server Addr : " + DFS_Globals.server_addr);
 
                 //Setting sec_mn_ip_addr => IP of Secondary Master Node IF Provided by Master Node
-                if (res_packet.arguments.length > 0)
+                if (res_packet.arguments != null)
                 {
                     DFS_Globals.sec_mn_ip_addr = res_packet.arguments[0];
+                    System.out.println("Sec Server Addr : " + DFS_Globals.sec_mn_ip_addr);
                 }
 
                 if(ClientAPI.create_session_file(username))
@@ -319,6 +322,7 @@ public class ClientCommand
 
             ClientAPI.send_request(connect, req_packet);
             res_packet = ClientAPI.recv_response(connect);
+            System.out.println("Name : " + res_packet.file_name + "File Size for Get : " + res_packet.file_size);
             if(res_packet != null && res_packet.response_code == DFS_CONSTANTS.OK)
             {
                 System.out.println("Got the IPs of DN.Connecting for getting data..... : " + res_packet.dn_list.size());
@@ -406,6 +410,8 @@ public class ClientCommand
                 connect.close(); /* Close the connection with the server */
                 res_packet.arguments = req_packet.arguments; /* Data need to send to DN */
                 res_packet.file_name = req_packet.file_name;
+                res_packet.file_size = req_packet.file_size;
+
                 System.out.println("Replication ind : " + res_packet.replicate_ind);
                 if(res_packet.replicate_ind)
                 {

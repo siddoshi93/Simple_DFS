@@ -44,6 +44,7 @@ public class ClientAPI
 
             if (server_address != null)
             {
+                System.out.println("SIP : " + server_address);
                 if(!check_mn_service(server_address,DFS_CONSTANTS.ALIVE_LISTEN_PORT))  /* Check if its reachable */
                     continue;
                 return server_address;
@@ -52,11 +53,14 @@ public class ClientAPI
 
         //Main Master Node Unreachable. Swap Addresses IF Secondary Master Node was Registered with Client
         if (DFS_Globals.sec_mn_ip_addr.length()== 0)
+        {
+            System.out.println("Sorry No Back up node set : " + DFS_Globals.sec_mn_ip_addr);
             return null;
+        }
 
         String temp = DFS_Globals.server_addr;
         DFS_Globals.server_addr = DFS_Globals.sec_mn_ip_addr;
-        DFS_Globals.sec_mn_ip_addr = temp;
+        DFS_Globals.sec_mn_ip_addr = "";
 
         System.out.println ("New Secondary Address: "+ DFS_Globals.server_addr);
 
@@ -90,6 +94,7 @@ public class ClientAPI
         }
         catch (IOException ex)
         {
+            System.out.println("Timeouttttttt");
             return false; /* Unnable to connect specific port; */
         }
     }
@@ -180,7 +185,7 @@ public class ClientAPI
         req_packet.file_name = res_packet.file_name;
         req_packet.file_size = res_packet.file_size;
         req_packet.dn_list = res_packet.dn_list;
-        System.out.println("Path:" + req_packet.file_name);
+        System.out.println("Path:" + req_packet.file_name + ":" + res_packet.file_size);
         try
         {
             connect = new Socket(dn_ip,DFS_CONSTANTS.DN_LISTEN_PORT);
