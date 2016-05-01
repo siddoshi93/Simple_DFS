@@ -12,12 +12,20 @@ public class StorageNode implements Serializable {
     public long Capacity;
     public boolean isAlive;
 
-    public StorageNode(String IPAddr, String DataNodeID, long Capacity)
-    {
+    public StorageNode(String IPAddr, String DataNodeID, long Capacity) {
         this.IPAddr = IPAddr;
         this.DataNodeID = DataNodeID;
         Size = 0;
         this.Capacity = Capacity;
-        isAlive=true;
+        isAlive = true;
+    }
+
+    public StorageNode(StorageNode storageNode)
+    {
+        this.IPAddr = storageNode.IPAddr;
+        this.DataNodeID = storageNode.DataNodeID;
+        Size = storageNode.Size;
+        this.Capacity = storageNode.Capacity;
+        isAlive = storageNode.isAlive;
     }
 }

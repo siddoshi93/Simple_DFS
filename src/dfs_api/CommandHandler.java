@@ -26,16 +26,21 @@ public class CommandHandler {
         return TreeAPI.findNode(tempNode,path);
     }
 
-    public static void checkStorageList(ArrayList<StorageNode> storageList)
+    public static ArrayList<StorageNode> checkStorageList(ArrayList<StorageNode> storageList)
     {
-        int loop_counter;
-        for(loop_counter=0;loop_counter<storageList.size();loop_counter++)
+        ArrayList<StorageNode> tempList = new ArrayList<>();
+        StorageNode temp = null;
+
+        for(int loop_counter=0;loop_counter<storageList.size();loop_counter++)
         {
             StorageNode node= storageList.get(loop_counter);
 
-          if(!node.isAlive)
-              storageList.remove(loop_counter);
+          if(node.isAlive){
+              temp = new StorageNode(node);
+              tempList.add(temp);
+          }
         }
+        return tempList;
     }
 
     //Adds NEW storage node to TreeNode IF NOT PRESENT, Else Ignores
@@ -218,13 +223,13 @@ public class CommandHandler {
         }
         else
         {
-            checkStorageList(targetNode.storageNode);  // Checks if assigned StorageNode to TreeNode are up
+            ArrayList<StorageNode> tempList = checkStorageList(targetNode.storageNode);  // Checks if assigned StorageNode to TreeNode are up
 
-            if(targetNode.storageNode.size()>0)     // if atleast one StorageNode has it
+            if(tempList.size()>0)     // if atleast one StorageNode has it
             {
                 responsePacket.response_code = DFS_CONSTANTS.OK;
                 responsePacket.curNode = targetNode;
-                responsePacket.dn_list = targetNode.storageNode;
+                responsePacket.dn_list = tempList;
                 responsePacket.arguments = req_packet.arguments;
                 responsePacket.file_size = (int) targetNode.size;
             }
