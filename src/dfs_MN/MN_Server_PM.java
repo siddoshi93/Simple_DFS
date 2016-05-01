@@ -2,12 +2,8 @@ package dfs_MN;
 
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.PriorityQueue;
-import java.util.UUID;
+import java.net.*;
+import java.util.*;
 import java.util.concurrent.*;
 
 
@@ -65,8 +61,11 @@ public class MN_Server_PM
         }
         catch(IOException ioe)
         {
-            System.out.println("CONTD....");
             ioe.printStackTrace();
+        }
+        catch (ClassNotFoundException ex)
+        {
+            ex.printStackTrace();
         }
         finally
         {
@@ -102,7 +101,7 @@ public class MN_Server_PM
 
     }
 
-    public static void setUpMN() throws IOException
+    public static void setUpMN() throws IOException,ClassNotFoundException
     {
         hostAddress = InetAddress.getLocalHost();  /* Get the host address */
         client_request = new ServerSocket(DFS_CONSTANTS.MN_LISTEN_PORT,DFS_CONSTANTS.REQUEST_BACK_LOG/*,hostAddress*/);
@@ -110,11 +109,9 @@ public class MN_Server_PM
         workers = Executors.newFixedThreadPool(DFS_CONSTANTS.NUM_OF_WORKERS);
         daemon_exec = Executors.newFixedThreadPool(DFS_CONSTANTS.THREE);
 
-		/* Initialize Storage pool */
-        Storagesort storagesort = new Storagesort();
-        DFS_Globals.dn_q = new PriorityBlockingQueue(DFS_CONSTANTS.PQ_SIZE,storagesort);
+        /* Load/Init data for the Server */
+        load_or_init_data();
 
-        DFS_Globals.global_client_list = new HashMap();
 		/*if(!setUp_DN_List())
 		{
 			System.out.println("Please define a proper config file for DN!!!!");
@@ -135,6 +132,114 @@ public class MN_Server_PM
             System.out.println("Unnable to bring up the alive Server!!!!");
             System.exit(DFS_CONSTANTS.SUCCESS);
         }
+
+        /* If this was a take over then it needs to notify the DN */
+        check_and_notify_dn();
+    }
+
+    public static void check_and_notify_dn()throws UnknownHostException,IOException
+    {
+        if(DFS_Globals.mn_mode_ind == DFS_CONSTANTS.PM) /* Boot up in Primary Mode */
+            return;
+
+        /* Iterate over the PQ */
+        Iterator<StorageNode> itr = DFS_Globals.dn_q.iterator();
+        StorageNode sn = null;
+        PacketTransfer pt = null;
+        Packet req_packet = null;
+        Packet res_packet = null;
+        Socket connect = null;
+
+        while (itr.hasNext())
+        {
+            sn = itr.next();
+            if(check_service(sn))
+            {
+                /* Alive, So notify the DN */
+                connect = new Socket(sn.IPAddr,DFS_CONSTANTS.DN_MISC_LISTEN_PORT); /* Connect to communicate with the DN */
+                pt = new PacketTransfer(connect);
+
+                /* Set the request packet */
+                req_packet = new Packet();
+                req_packet.command = DFS_CONSTANTS.CHANGE_MN;
+                req_packet.mn_addr = Inet4Address.getLocalHost().getHostAddress();
+
+                /* Send the request */
+                pt.sendPacket(req_packet);
+
+                /* Recieve the reponse */
+                res_packet = pt.receivePacket();
+                if(res_packet.response_code != DFS_CONSTANTS.OK)
+                {
+                    System.out.println("DN with IP : " + sn.IPAddr + " did not accept");
+                    sn.isAlive = false;
+                    sn.Size = DFS_CONSTANTS.INVALID_SIZE;
+                    connect.close();
+                    continue;
+                }
+                connect.close();
+            }
+            else
+            {
+                /* Dead so remove it from PQ */
+                sn.isAlive = false;
+                sn.Size = DFS_CONSTANTS.INVALID_SIZE;
+            }
+        }
+    }
+
+    public static boolean check_service(StorageNode sn)
+    {
+        Socket dn_connect = null;
+        try
+        {
+            //Pinging Data Nodes to Check if They are ALIVE for service.
+            dn_connect = new Socket();
+            dn_connect.connect(new InetSocketAddress(sn.IPAddr,DFS_CONSTANTS.ALIVE_LISTEN_PORT),DFS_CONSTANTS.TIMEOUT);
+            /* Connection succesfull */
+            return true;
+        }
+        catch (IOException ex)
+        {
+            return false;
+        }
+        finally {
+            try {
+                dn_connect.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /* Load or Init the data */
+    public static void load_or_init_data() throws IOException,ClassNotFoundException
+    {
+        File check_file = new File(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.persistance_file);
+
+        if(DFS_Globals.mn_mode_ind == DFS_CONSTANTS.SM && !check_file.exists())
+        {
+            System.out.println("MN Server was a SM mode but did not find any syncing file ");
+        }
+
+        if(DFS_Globals.mn_mode_ind == DFS_CONSTANTS.PM && !check_file.exists())
+        {
+            /* Initialize Storage pool */
+            Storagesort storagesort = new Storagesort();
+            DFS_Globals.dn_q = new PriorityBlockingQueue(DFS_CONSTANTS.PQ_SIZE, storagesort);
+            DFS_Globals.global_client_list = new HashMap();
+        }
+        else
+        {
+            /* Load Storage pool */
+            FileInputStream fis = new FileInputStream(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.persistance_file);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            DFS_Globals.global_client_list = (HashMap<String, ClientWrapper>) ois.readObject();
+            DFS_Globals.dn_q = (PriorityBlockingQueue<StorageNode>) ois.readObject();
+            ois.close();
+            fis.close();
+        }
+
     }
 
     public static boolean setUp_DN_List()

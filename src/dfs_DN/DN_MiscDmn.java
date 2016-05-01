@@ -52,8 +52,10 @@ public class DN_MiscDmn implements Runnable
             case DFS_CONSTANTS.CHANGE_MN:
                 if(req_packet.mn_addr == null)
                 {
-                    System.out.println("Improper MainRecieved from DN");
+                    System.out.println("Improper MainNODE Recieved..Shutting down DN");
                     DFS_Globals.is_DN_on = false;
+                    res_packet.response_code = DFS_CONSTANTS.FAILURE;
+                    pt.sendPacket(res_packet);
                     return;
                 }
                 res_packet.response_code = change_mn(req_packet.mn_addr);
