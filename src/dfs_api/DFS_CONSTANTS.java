@@ -18,7 +18,7 @@ public class DFS_CONSTANTS
 	public final static int MN_LISTEN_PORT = 7091;
 	public final static int ALIVE_LISTEN_PORT = 8090;
 	public final static int DN_LISTEN_PORT = 9090;
-	public final static int DN_MISC_LISTEN_PORT = 9099;
+	public final static int DN_MISC_LISTEN_PORT = 9098;
 	public final static int MN_MISC_LISTEN_PORT = 9099;
 
 	/* Data Node Constants */
@@ -41,6 +41,7 @@ public class DFS_CONSTANTS
 	public final static int OK = 0;
 	public final static int AUTH_FAILED = 3;
 	public final static int INVALID_CMD = 4;
+	public final static int INVALID_SIZE = 5;
 
 	/* CONSTANTS FOR TYPE OF CLIENT REQUESTS i.e. commands*/
 	public final static int REGISTER = 11;

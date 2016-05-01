@@ -19,6 +19,4 @@ public class ClientRequestPacket implements Serializable
     public boolean replicate_ind;
 
     public ArrayList<StorageNode> dn_list;
-
-    public int requestEntity;           //0-Client, 1-datanode
 }

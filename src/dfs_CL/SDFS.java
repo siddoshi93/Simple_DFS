@@ -35,13 +35,12 @@ public class SDFS
                 status = ClientCommand.Get(arg);
                 break;
             case "PUT":
-                long startTime = System.currentTimeMillis();
                 status = ClientCommand.Put(arg);
                 long endTime = System.currentTimeMillis();
-                System.out.println("Put Took : " + (endTime - startTime));
                 break;
             case "HELP":
                 display_help_option();
+                break;
             default:
                 System.out.println("Unrecognizable Command.....");
         }

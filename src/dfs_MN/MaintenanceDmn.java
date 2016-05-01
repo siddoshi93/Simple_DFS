@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Iterator;
+import java.util.PriorityQueue;
 
 /**
  * Created by abhishek on 4/29/16.
@@ -18,11 +19,6 @@ public class MaintenanceDmn implements Runnable
     private Iterator<StorageNode> dn_list_iterator = null;
     private FileOutputStream fos = null;
     private ObjectOutputStream os = null;
-
-    public MaintenanceDmn()
-    {
-
-    }
 
     @Override
     public void run()
@@ -84,20 +80,23 @@ public class MaintenanceDmn implements Runnable
 
         dn_list_iterator = DFS_Globals.dn_q.iterator();
 
-        while (dn_list_iterator.hasNext())
-        {
+        try{
+        while (dn_list_iterator.hasNext()) {
             sn = dn_list_iterator.next();
 
-            if (ping_server(sn))
-            {
+            if (ping_server(sn)) {
                 System.out.println("STORAGE DT : " + sn.DataNodeID + ": is up");
-            }
-            else
-            {
+            } else {
                 System.out.println("STORAGE DT : " + sn.DataNodeID + ": is down ");
-                    /* Remove this listing from the PQ */
-                DFS_Globals.dn_q.remove(sn);
+                /* Remove this listing from the PQ */
+                sn.Size = DFS_CONSTANTS.INVALID_SIZE;
+                sn.isAlive = false;
             }
+        }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
         }
     }
 
