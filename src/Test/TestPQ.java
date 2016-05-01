@@ -8,8 +8,13 @@ import dfs_api.LoadBalancer;
 import dfs_api.StorageNode;
 import log.Logger;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Date;
+import java.util.LinkedList;
+
 /**
  * Created by abhishek on 4/28/16.
  */
@@ -30,7 +35,7 @@ public class TestPQ {
             System.out.println("STORAGE DT : " + st.IPAddr + ":" + st.Size);
         }
 */
-        System.out.println((new Date().toString()));
+        /*System.out.println((new Date().toString()));
 
         Logger newLog= Logger.getInstance();
         newLog.setLogName("clientTest");
@@ -39,7 +44,32 @@ public class TestPQ {
         newLog.print("Check", DFS_CONSTANTS.WARN);
         newLog.print("Check", DFS_CONSTANTS.WARN);
 
-        newLog.stopLogging();
+        newLog.stopLogging();*/
+
+        LinkedList<String> tester= new LinkedList<String>();
+        tester.add("asd");
+        tester.add("dsd");
+        tester.add("asd");
+        tester.add("bsd");
+
+        for(String a: tester)
+        {
+            if(a.equals("asd"))
+                tester.remove(a);
+        }
+        for(String a: tester)
+        {
+           System.out.println(a);
+        }
+
+
+
+        try {
+            System.out.println(InetAddress.getLocalHost().getCanonicalHostName());
+        }catch(Exception e)
+        {
+
+        }
 
 
     }

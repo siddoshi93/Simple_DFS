@@ -9,20 +9,23 @@ public class LoadBalancer {
 
     public synchronized static StorageNode getTargetNode(double size)
     {
-        StorageNode targetNode;
-        targetNode= DFS_Globals.dn_q.poll();
-        targetNode.Size+=size;
-        DFS_Globals.dn_q.add(targetNode);  // adds update StorageNode
+        StorageNode targetNode=null;
 
-        StorageNode st;
-        Iterator<StorageNode> it = DFS_Globals.dn_q.iterator();
-        while (it.hasNext()) {
-            st = it.next();
-            System.out.println("STORAGE DT : " + st.IPAddr + ":" + st.Size);
+        while(DFS_Globals.dn_q.size()>0)
+        {
+            targetNode = DFS_Globals.dn_q.poll();
+
+            if(targetNode.Size>=0)    // To remove dead StorageNode
+            {
+                targetNode.Size += size;
+                DFS_Globals.dn_q.add(targetNode);  // adds update StorageNode
+                return targetNode;
+            }
         }
 
-        return targetNode;
+        return null;
     }
+
     public synchronized static void updateDNQ(StorageNode newDNData)
     {
         //Data Node values update
