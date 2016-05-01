@@ -29,10 +29,10 @@ public class MaintenanceDmn implements Runnable
             {
                 System.out.println("I am Up for Maintenance Boys....");
                 check_dn_status(); /* Check for aliveness of DN in the list */
-                //if(create_and_update_pers_md())/* create or update the meta data persistance copy */
-                //{
+                if(create_and_update_pers_md())/* create or update the meta data persistance copy */
+                {
                     /* Send this new metadata to the secondary Main Node */
-                //}
+                }
                 Thread.sleep(DFS_CONSTANTS.SLEEP_TIME);
             }
         }
@@ -96,7 +96,6 @@ public class MaintenanceDmn implements Runnable
                     /* Remove this listing from the PQ */
                     sn.Size = DFS_CONSTANTS.INVALID_SIZE;
                     sn.isAlive = false;
-                    System.out.println(" IP : " + sn.IPAddr + ":" + sn.isAlive + ":" + sn.Size);
                 }
             }
         }

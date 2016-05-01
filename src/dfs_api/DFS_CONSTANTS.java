@@ -60,6 +60,8 @@ public class DFS_CONSTANTS
 
 	/* Environment variable for server address */
 	public final static String DFS_SERVER_ADDR = "DFS_SERVER_ADDR";
+	public final static String PM = "PM";
+	public final static String SM = "SM";
 
 	/* File Path */
 	public final static String user_name_file = "/home/ubuntu/.sdfs/sdfs_username";

@@ -4,6 +4,7 @@ import sun.reflect.generics.tree.Tree;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * Created by Anas on 4/24/2016.
@@ -24,6 +25,18 @@ public class CommandHandler {
          */
 
         return TreeAPI.findNode(tempNode,path);
+    }
+
+    public static StorageNode getRealStorageRef(StorageNode networkVal)
+    {
+
+        for(StorageNode node: DFS_Globals.dn_q)
+        {
+            if(networkVal.DataNodeID.equals(node.DataNodeID))
+                return node;
+        }
+
+     return null;
     }
 
     public static ArrayList<StorageNode> checkStorageList(ArrayList<StorageNode> storageList)
@@ -130,6 +143,7 @@ public class CommandHandler {
         ArrayList<StorageNode> tempList = new ArrayList<>();
 
         System.out.println("Req_packet:"+req_packet.file_size);
+
         tempList.add(LoadBalancer.getTargetNode(req_packet.file_size));
 
         if(req_packet.replicate_ind)
@@ -155,7 +169,9 @@ public class CommandHandler {
         TreeNode node = searchNode(req_packet,filePath);
 
         ArrayList<StorageNode> tempStorageList = new ArrayList<>();
-        tempStorageList.add(req_packet.dn_list.get(0));
+
+        //Each data node sends its own entry as First
+        tempStorageList.add( getRealStorageRef(req_packet.dn_list.get(0)) );
 
         boolean insert = TreeAPI.TreeInsert
                                         (node,
@@ -184,7 +200,7 @@ public class CommandHandler {
             else
             {
                 //Modifying File Attributes
-                AddStorageNode(modifyFile,req_packet.dn_list.get(0));
+                AddStorageNode(modifyFile,getRealStorageRef(req_packet.dn_list.get(0)));
                 modifyFile.timeAccess = new Date();
                 modifyFile.size = req_packet.file_size;
 
