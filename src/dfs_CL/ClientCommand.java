@@ -315,7 +315,8 @@ public class ClientCommand
             res_packet = ClientAPI.recv_response(connect);
             if(res_packet != null && res_packet.response_code == DFS_CONSTANTS.OK)
             {
-                System.out.println("Got the IPs of DN.Connecting for getting data.....");
+                System.out.println("Got the IPs of DN.Connecting for getting data..... : " + res_packet.dn_list.size());
+                System.out.println("IP1 : " + res_packet.dn_list.get(DFS_CONSTANTS.ZERO));
                 connect.close(); /* Close the connection with the server */
                 res_packet.file_name = req_packet.file_name;
                 ClientAPI.getFiles(res_packet,arg[1]);
