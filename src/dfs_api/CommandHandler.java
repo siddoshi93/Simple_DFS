@@ -34,7 +34,7 @@ public class CommandHandler {
         for(int loop_counter=0;loop_counter<storageList.size();loop_counter++)
         {
             StorageNode node= storageList.get(loop_counter);
-
+            System.out.println(node.IPAddr+" :"+node.Size+" :"+node.isAlive);
           if(node.isAlive){
               temp = new StorageNode(node);
               tempList.add(temp);
