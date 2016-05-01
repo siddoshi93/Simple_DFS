@@ -56,7 +56,8 @@ public class DFS_CONSTANTS
 	public final static String CURRENT_DIRECTORY = ".";
 	public final static String repl = "REPL";
 	public final static int ADD_DN = 20;
-	public final static int CHANGE_MN = 21;
+	public final static int ADD_SEC_MN = 21;
+	public final static int CHANGE_MN = 22;
 
 	/* Environment variable for server address */
 	public final static String DFS_SERVER_ADDR = "DFS_SERVER_ADDR";

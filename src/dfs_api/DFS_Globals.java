@@ -16,6 +16,7 @@ public class DFS_Globals
     public static boolean is_alive_server_on = true;
     public static boolean is_maintenance_on = true;
     public static boolean is_misc_dmn_up = true;
+    public static boolean synhronization_start = false;
 
     /* Global HashMap to maintain Client information <MN> */
     public static HashMap<String, ClientWrapper> global_client_list;
@@ -28,4 +29,7 @@ public class DFS_Globals
 
     /* Server address stored by DN */
     public static String server_addr;
+
+    /* Server address of the Secondary Main Node */
+    public static String sec_mn_ip_addr;
 }

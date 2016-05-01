@@ -43,7 +43,7 @@ public class MN_Server_PM
         }
     }
 
-    public static void start()
+    public static void start_pm_server()
     {
         try
         {
@@ -89,6 +89,11 @@ public class MN_Server_PM
         {
             ex.printStackTrace();
         }
+    }
+
+    public static MaintenanceDmn getMaintenance_dmn()
+    {
+        return maintenance_dmn;
     }
 
     public static boolean remove_active_request(String uuid)

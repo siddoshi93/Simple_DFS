@@ -53,6 +53,18 @@ public class MN_MiscDmn implements Runnable
         }
     }
 
+    public int add_sec_mn(String sec_mn_ip)
+    {
+        DFS_Globals.sec_mn_ip_addr = sec_mn_ip; /* Set the ip address */
+
+        /* Pass the socket handle to maintenance daemon */
+        MN_Server_PM.getMaintenance_dmn().set_sec_connect(request);
+
+        /* Start the synhronization */
+        DFS_Globals.synhronization_start = true;
+        return DFS_CONSTANTS.OK;
+    }
+
     public void handle_request()
     {
         PacketTransfer pt = new PacketTransfer(request);
@@ -69,6 +81,17 @@ public class MN_MiscDmn implements Runnable
                 }
                 res_packet.response_code = add_dn(req_packet.dn_list.get(DFS_CONSTANTS.ZERO));
                 System.out.println("Pahuch Gaya");
+                pt.sendPacket(res_packet);
+                break;
+
+            case DFS_CONSTANTS.ADD_SEC_MN:
+                if(req_packet.arguments == null || req_packet.arguments.length != DFS_CONSTANTS.ONE)
+                {
+                    System.out.println("Improper IP recieved from Secodary MN");
+                    return;
+                }
+                res_packet.response_code = add_sec_mn(req_packet.arguments[DFS_CONSTANTS.ZERO]);
+                System.out.println("After adding sec mn " + res_packet.response_code);
                 pt.sendPacket(res_packet);
                 break;
             default:

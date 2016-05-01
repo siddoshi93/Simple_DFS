@@ -17,8 +17,17 @@ public class MaintenanceDmn implements Runnable
     private Socket dn_connect = null;
     private StorageNode sn = null;
     private Iterator<StorageNode> dn_list_iterator = null;
+    private FileTransfer ftp;
+    private String presistant_file_path;
     private FileOutputStream fos = null;
     private ObjectOutputStream os = null;
+    private Socket sec_mn_connect = null;
+
+    public MaintenanceDmn()
+    {
+        ftp = new FileTransfer();
+        presistant_file_path = DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.persistance_file;
+    }
 
     @Override
     public void run()
@@ -32,6 +41,7 @@ public class MaintenanceDmn implements Runnable
                 if(create_and_update_pers_md())/* create or update the meta data persistance copy */
                 {
                     /* Send this new metadata to the secondary Main Node */
+                    send_meta_data();
                 }
                 Thread.sleep(DFS_CONSTANTS.SLEEP_TIME);
             }
@@ -40,16 +50,35 @@ public class MaintenanceDmn implements Runnable
         {
             e.printStackTrace();
         }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    public void set_sec_connect(Socket connect)
+    {
+        this.sec_mn_connect = connect;
+    }
+
+    public void send_meta_data() throws IOException
+    {
+        if(!DFS_Globals.synhronization_start || sec_mn_connect == null) /* if ready for synchronization */
+            return;
+
+        ftp.send_file(sec_mn_connect,presistant_file_path);
+
     }
 
     public boolean create_and_update_pers_md()
     {
         try
         {
-            fos = new FileOutputStream(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.persistance_file);
+            fos = new FileOutputStream(presistant_file_path);
             os = new ObjectOutputStream(fos);
 
             os.writeObject(DFS_Globals.global_client_list);
+            os.writeObject(DFS_Globals.dn_q);
             os.flush();
             return true;
         }
