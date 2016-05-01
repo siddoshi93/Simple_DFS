@@ -15,9 +15,10 @@ import java.util.PriorityQueue;
 public class MaintenanceDmn implements Runnable
 {
     private Socket dn_connect = null;
+    private PacketTransfer pt;
     private StorageNode sn = null;
     private Iterator<StorageNode> dn_list_iterator = null;
-    private FileTransfer ftp;
+    private Packet pack;
     private String presistant_file_path;
     private FileOutputStream fos = null;
     private ObjectOutputStream os = null;
@@ -25,7 +26,6 @@ public class MaintenanceDmn implements Runnable
 
     public MaintenanceDmn()
     {
-        ftp = new FileTransfer();
         presistant_file_path = DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.persistance_file;
     }
 
@@ -59,6 +59,7 @@ public class MaintenanceDmn implements Runnable
     public void set_sec_connect(Socket connect)
     {
         this.sec_mn_connect = connect;
+        pt = new PacketTransfer(this.sec_mn_connect);
     }
 
     public void send_meta_data() throws IOException
@@ -66,8 +67,21 @@ public class MaintenanceDmn implements Runnable
         if(!DFS_Globals.synhronization_start || sec_mn_connect == null) /* if ready for synchronization */
             return;
 
-        ftp.send_file(sec_mn_connect,presistant_file_path);
+        os = new ObjectOutputStream(sec_mn_connect.getOutputStream());
+        os.writeObject(DFS_Globals.global_client_list);
+        os.writeObject(DFS_Globals.dn_q);
+        os.flush();
+        //ftp.send_file(sec_mn_connect,presistant_file_path);
+        /* Send the ack */
+        //pack = new Packet();
+        //pack.response_code = DFS_CONSTANTS.OK;
+        //pt.sendPacket(pack);
 
+        pack = pt.receivePacket();
+        if(pack.response_code != DFS_CONSTANTS.OK)
+            System.out.println("Something went wrong in syncing");
+        else
+            System.out.println("Successully send the copy to SM.....");
     }
 
     public boolean create_and_update_pers_md()
@@ -138,6 +152,7 @@ public class MaintenanceDmn implements Runnable
     {
         try
         {
+            //Pinging Data Nodes to Check if They are ALIVE.
             dn_connect = new Socket();
             dn_connect.connect(new InetSocketAddress(sn.IPAddr,DFS_CONSTANTS.ALIVE_LISTEN_PORT),DFS_CONSTANTS.TIMEOUT);
             /* Connection succesfull */

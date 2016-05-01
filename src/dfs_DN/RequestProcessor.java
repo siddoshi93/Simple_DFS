@@ -69,7 +69,7 @@ public class RequestProcessor implements Runnable {
                 send_response(res_packet);
                 if(res_packet != null) {
                     System.out.println("Saving file... commented : " + req_packet.file_name);
-                    handler.recv_file(client_socket, req_packet.file_name);
+                    handler.recv_file(client_socket, req_packet.file_name,req_packet.file_size);
                 }
                 /* We need to notify the main node about this updation */
                 NotifyMN();

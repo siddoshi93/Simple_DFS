@@ -17,6 +17,7 @@ public class DFS_Globals
     public static boolean is_maintenance_on = true;
     public static boolean is_misc_dmn_up = true;
     public static boolean synhronization_start = false;
+    public static boolean is_secondary_on = true;
 
     /* Global HashMap to maintain Client information <MN> */
     public static HashMap<String, ClientWrapper> global_client_list;

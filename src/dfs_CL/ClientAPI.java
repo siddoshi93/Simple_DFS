@@ -167,7 +167,7 @@ public class ClientAPI
             if (dn_res_packet !=null && dn_res_packet.response_code == DFS_CONSTANTS.OK)
             {
                 /* Start Sending the file */
-                ftp.save_file(connect,System.getProperty("user.dir") + "/" + req_packet.file_name);
+                ftp.save_file(connect,System.getProperty("user.dir") + "/" + req_packet.file_name,req_packet.file_size);
             }
             else
             {
@@ -253,8 +253,8 @@ public class ClientAPI
         return false;
     }
 
-    public static double getFileSize(String file)
+    public static int getFileSize(String file)
     {
-        return new File(file).length();
+        return (int)(new File(file).length());
     }
 }

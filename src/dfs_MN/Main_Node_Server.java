@@ -25,6 +25,7 @@ public class Main_Node_Server
 		{
 			System.out.println("Please bring up the Server as below.");
 			System.out.println("MN_SERVER <MODE>");
+			System.exit(DFS_CONSTANTS.SUCCESS);
 		}
 
 		switch (args[DFS_CONSTANTS.ZERO])
@@ -33,6 +34,8 @@ public class Main_Node_Server
 				MN_Server_PM.start_pm_server(); /* Start Server in Primary mode */
 				break;
 			case DFS_CONSTANTS.SM:
+				MN_Server_SM.start_sm_server(); /* Start Backup server */
+				System.out.println("Changing mode to primary....");
 				break;
 			default:
 				System.out.println("Please pass either PM or SM as mode");

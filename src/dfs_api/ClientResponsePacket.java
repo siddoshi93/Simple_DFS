@@ -19,6 +19,6 @@ public class ClientResponsePacket implements Serializable
 
     public String file_name;
     public String arguments[];
-    public double file_size;
+    public int file_size;
     public boolean replicate_ind;
 }

@@ -10,12 +10,12 @@ import java.net.Socket;
  */
 public class PacketTransfer {
 
-    Socket connect;     //Socket Object for 1 Send-Receive Operation
+    public Socket connectSocket;     //Socket Object for 1 Send-Receive Operation
 
     public PacketTransfer(String IPAddr, int Port)
     {
         try {
-            connect = new Socket(IPAddr, Port);
+            connectSocket = new Socket(IPAddr, Port);
         }
         catch (IOException e)
         {
@@ -25,14 +25,14 @@ public class PacketTransfer {
 
     public PacketTransfer(Socket connect)
     {
-        this.connect = connect;
+        this.connectSocket = connect;
     }
 
     @Override
     protected void finalize() throws Throwable {
 
         try {
-            connect.close();
+            connectSocket.close();
         }
         catch (IOException e)
         {
@@ -49,7 +49,7 @@ public class PacketTransfer {
 
         try
         {
-            oos = new ObjectOutputStream(connect.getOutputStream());
+            oos = new ObjectOutputStream(connectSocket.getOutputStream());
             oos.writeObject(req_packet);
             oos.flush();
         }
@@ -67,7 +67,7 @@ public class PacketTransfer {
         try
         {
             /* Wait for the response packet from the server */
-            ois = new ObjectInputStream(connect.getInputStream());
+            ois = new ObjectInputStream(connectSocket.getInputStream());
             res_packet = (Packet) ois.readObject();
         }
         catch (Exception e)

@@ -33,7 +33,7 @@ public class MN_Server_PM
     private static String new_uuid;
     private static MN_MiscDmn mn_misc_daemon;
 
-    public static class Storagesort implements Comparator<StorageNode> {
+    public static class Storagesort implements Comparator<StorageNode>,Serializable {
 
         public int compare(StorageNode s1, StorageNode s2) {
             if(s2.Size < s1.Size)

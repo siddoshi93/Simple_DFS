@@ -98,7 +98,7 @@ public class DN_CommandHandler
         }
     }
 
-    public void recv_file(Socket connect,String file_name)
+    public void recv_file(Socket connect,String file_name,int file_size)
     {
         FileTransfer ft = new FileTransfer();
         boolean new_file = false;
@@ -113,7 +113,7 @@ public class DN_CommandHandler
 
         try
         {
-            ft.save_file(connect, (DFS_CONSTANTS.storage_path + client_data.folder_name + "/" + cname));
+            ft.save_file(connect, (DFS_CONSTANTS.storage_path + client_data.folder_name + "/" + cname),file_size);
 
             /* Add the mapping to the File Map so that data node knows about the mapping */
             if (new_file)
