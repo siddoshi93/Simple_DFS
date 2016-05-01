@@ -54,7 +54,7 @@ public class ClientRequestHandle implements Runnable
 		}
 		finally
 		{
-			Main_Node_Server.remove_active_request(uuid);
+			MN_Server_PM.remove_active_request(uuid);
 			try {
 				ois.close();
 				client_socket.close();
