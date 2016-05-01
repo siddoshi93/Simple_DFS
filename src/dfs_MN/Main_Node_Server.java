@@ -30,6 +30,7 @@ public class Main_Node_Server
 		switch (args[0])
 		{
 			case DFS_CONSTANTS.PM:
+				MN_Server_PM.start(); /* Start Server in Primary mode */
 				break;
 			case DFS_CONSTANTS.SM:
 				break;

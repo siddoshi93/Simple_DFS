@@ -43,7 +43,7 @@ public class MN_Server_PM
         }
     }
 
-    public static void main(String[] args)
+    public static void start()
     {
         try
         {
