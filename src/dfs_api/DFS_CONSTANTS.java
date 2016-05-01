@@ -68,6 +68,7 @@ public class DFS_CONSTANTS
 
 	/* File Path */
 	public final static String user_name_file = "/home/ubuntu/.sdfs/sdfs_username";
+	public final static String sec_nm_data_file = "sec_nm_data";
 	public final static String sdfs_path = "/home/ubuntu/.sdfs/";
 	public final static String dn_list = "dn_config.csv";
 	public final static String persistance_file = "persistance_file";
