@@ -23,6 +23,7 @@ import dfs_api.*;
 public class Main_Node_Server 
 {
 	private static ExecutorService workers; /* Workers threads */
+	private static ExecutorService daemon_exec;
 	private static AliveServer alive_server; /* HeartBeat Server */
 	private static MaintenanceDmn maintenance_dmn; /* Maintenance Daemon */
 
@@ -82,8 +83,10 @@ public class Main_Node_Server
 		{
 			client_request.close(); /* Close the server socket connection */
 			workers.shutdown();
-			workers.awaitTermination(1, TimeUnit.MINUTES);
+			workers.awaitTermination(DFS_CONSTANTS.ONE, TimeUnit.MINUTES);
 			/* Close all the open connection */
+			daemon_exec.shutdown();
+			daemon_exec.awaitTermination(DFS_CONSTANTS.ONE,TimeUnit.DAYS.SECONDS);
 		}
 		catch(Exception ex)
 		{
@@ -103,6 +106,11 @@ public class Main_Node_Server
 		client_request = new ServerSocket(DFS_CONSTANTS.MN_LISTEN_PORT,DFS_CONSTANTS.REQUEST_BACK_LOG/*,hostAddress*/);
 		active_client_list = new ConcurrentHashMap();
 		workers = Executors.newFixedThreadPool(DFS_CONSTANTS.NUM_OF_WORKERS);
+		daemon_exec = Executors.newFixedThreadPool(DFS_CONSTANTS.THREE);
+
+		/* Initialize Storage pool */
+		Storagesort storagesort = new Storagesort();
+		DFS_Globals.dn_q = new PriorityQueue(DFS_CONSTANTS.PQ_SIZE,storagesort);
 
 		DFS_Globals.global_client_list = new HashMap();
 		/*if(!setUp_DN_List())
@@ -113,14 +121,14 @@ public class Main_Node_Server
 
 		/* Bring up the MISC Daemon */
 		mn_misc_daemon = new MN_MiscDmn();
-		new Thread(mn_misc_daemon).start();
+		daemon_exec.submit(mn_misc_daemon);
 
 		/* Maintenance Daemon */
 		maintenance_dmn = new MaintenanceDmn();
-		new Thread(maintenance_dmn).start();
+		daemon_exec.submit(maintenance_dmn);
 
 		/* Service Check Daemon */
-		if(bringUpAliveServer())
+		if(!bringUpAliveServer())
 		{
 			System.out.println("Unnable to bring up the alive Server!!!!");
 			System.exit(DFS_CONSTANTS.SUCCESS);
@@ -171,7 +179,7 @@ public class Main_Node_Server
 	public static boolean bringUpAliveServer()
 	{
 		alive_server = new AliveServer();
-		new Thread(alive_server).start();
+		daemon_exec.submit(alive_server);
 		return alive_server.isSetUp();
 	}
 }

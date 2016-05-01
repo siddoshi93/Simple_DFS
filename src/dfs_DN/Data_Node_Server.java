@@ -108,11 +108,11 @@ public class Data_Node_Server
 
         /* Bring up the MISC Daemon */
         dn_misc_daemon = new DN_MiscDmn();
-        new Thread(dn_misc_daemon).start();
+        new Thread(dn_misc_daemon,"DN MISC Daemon").start();
 
         /* Bring up the alive server */
         alive_server = new AliveServer();
-        new Thread(alive_server).start();
+        new Thread(alive_server,"DN Alive Daemon").start();
         if(!alive_server.isSetUp())
         {
             System.out.println("Unnable to bring up the alive Server!!!!");
@@ -127,16 +127,18 @@ public class Data_Node_Server
 
         Packet responsePacket;
 
-        Packet clientRequestPacket = new Packet();
-        clientRequestPacket.command = DFS_CONSTANTS.ADD_DN;
+        Packet requestPacket = new Packet();
+        requestPacket.command = DFS_CONSTANTS.ADD_DN;
 
         try {
             ArrayList<StorageNode> storageNodes = new ArrayList<>();
             StorageNode tempNode = new StorageNode(InetAddress.getLocalHost().getHostAddress(), UUID.randomUUID().toString(), Integer.parseInt(args[DFS_CONSTANTS.ONE]));
             storageNodes.add(tempNode);
 
+            requestPacket.dn_list = storageNodes;
+
             //REGISTER WITH MASTER NODE
-            packetTransfer.sendPacket(clientRequestPacket);
+            packetTransfer.sendPacket(requestPacket);
 
             responsePacket = packetTransfer.receivePacket();
 

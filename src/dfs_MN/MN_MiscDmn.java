@@ -26,8 +26,12 @@ public class MN_MiscDmn implements Runnable
     {
         try
         {
-            request = listen.accept();
-            handle_request();
+            while(DFS_Globals.is_misc_dmn_up)
+            {
+                request = listen.accept();
+                System.out.println("DN to MN");
+                handle_request();
+            }
         }
         catch (IOException ex)
         {
@@ -37,11 +41,13 @@ public class MN_MiscDmn implements Runnable
 
     public int add_dn(StorageNode sn)
     {
-        if(!DFS_Globals.dn_q.add(sn)) {
+        if(!DFS_Globals.dn_q.add(sn))
+        {
             System.out.println("Unsucessfull addition of Storage");
             return DFS_CONSTANTS.FAILURE;
         }
-        else {
+        else
+        {
             System.out.println("Successfull addition of Storage");
             return DFS_CONSTANTS.OK;
         }
@@ -62,11 +68,11 @@ public class MN_MiscDmn implements Runnable
                     return;
                 }
                 res_packet.response_code = add_dn(req_packet.dn_list.get(DFS_CONSTANTS.ZERO));
+                System.out.println("Pahuch Gaya");
                 pt.sendPacket(res_packet);
                 break;
             default:
                 System.out.println("Unknown Command Recieved");
         }
-
     }
 }

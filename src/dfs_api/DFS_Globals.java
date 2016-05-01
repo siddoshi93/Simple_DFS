@@ -13,6 +13,8 @@ public class DFS_Globals
 	public static boolean is_MN_on = true;
     public static boolean is_DN_on = true;
     public static boolean is_alive_server_on = true;
+    public static boolean is_maintenance_on = true;
+    public static boolean is_misc_dmn_up = true;
 
     /* Global HashMap to maintain Client information <MN> */
     public static HashMap<String, ClientWrapper> global_client_list;

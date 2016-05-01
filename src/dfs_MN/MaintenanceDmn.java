@@ -27,15 +27,18 @@ public class MaintenanceDmn implements Runnable
     @Override
     public void run()
     {
-        System.out.println("I am Up for Maintenance Boys....");
         try
         {
-            check_dn_status(); /* Check for aliveness of DN in the list */
-            //if(create_and_update_pers_md())/* create or update the meta data persistance copy */
-            //{
-                /* Send this new metadata to the secondary Main Node */
-            //}
-            Thread.sleep(DFS_CONSTANTS.SLEEP_TIME);
+            while (DFS_Globals.is_maintenance_on)
+            {
+                System.out.println("I am Up for Maintenance Boys....");
+                check_dn_status(); /* Check for aliveness of DN in the list */
+                //if(create_and_update_pers_md())/* create or update the meta data persistance copy */
+                //{
+                    /* Send this new metadata to the secondary Main Node */
+                //}
+                Thread.sleep(DFS_CONSTANTS.SLEEP_TIME);
+            }
         }
         catch (InterruptedException e)
         {
@@ -76,6 +79,9 @@ public class MaintenanceDmn implements Runnable
 
     public void check_dn_status()
     {
+        if(DFS_Globals.dn_q == null)
+            return;
+
         dn_list_iterator = DFS_Globals.dn_q.iterator();
 
         while (dn_list_iterator.hasNext())
@@ -106,7 +112,6 @@ public class MaintenanceDmn implements Runnable
         }
         catch (IOException ex)
         {
-            ex.printStackTrace();
             return false;
         }
         finally {
