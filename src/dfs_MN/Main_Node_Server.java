@@ -30,9 +30,10 @@ public class Main_Node_Server
 		switch (args[0])
 		{
 			case DFS_CONSTANTS.PM:
-				MN_Server_PM.start(); /* Start Server in Primary mode */
+				MN_Server_PM.start_pm_server(); /* Start Server in Primary mode */
 				break;
 			case DFS_CONSTANTS.SM:
+				MN_Server_SM.start_sm_server();
 				break;
 			default:
 				System.out.println("Please pass either PM or SM as mode");

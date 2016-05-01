@@ -43,7 +43,7 @@ public class MN_Server_PM
         }
     }
 
-    public static void start()
+    public static void start_pm_server()
     {
         try
         {

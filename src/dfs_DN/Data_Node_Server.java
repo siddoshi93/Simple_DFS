@@ -120,6 +120,7 @@ public class Data_Node_Server
         }
     }
 
+    //Register Data Node with Master Node
     private static boolean NotifyMasterNode(String[] args) {
 
         //Creating Packet Transfer Object with the Main Node IP and Misc Listen Port
@@ -131,6 +132,7 @@ public class Data_Node_Server
         requestPacket.command = DFS_CONSTANTS.ADD_DN;
 
         try {
+            //Creating a Storage Node List with ONLY 1 Object => Information about itself :D
             ArrayList<StorageNode> storageNodes = new ArrayList<>();
             StorageNode tempNode = new StorageNode(InetAddress.getLocalHost().getHostAddress(), UUID.randomUUID().toString(), Integer.parseInt(args[DFS_CONSTANTS.ONE]));
             storageNodes.add(tempNode);
@@ -140,11 +142,13 @@ public class Data_Node_Server
             //REGISTER WITH MASTER NODE
             packetTransfer.sendPacket(requestPacket);
 
+            //Getting Response from MASTER NODE
             responsePacket = packetTransfer.receivePacket();
 
             if (responsePacket == null || responsePacket.response_code != DFS_CONSTANTS.OK)
                 return false;
-        } catch (UnknownHostException e) {
+        }
+        catch (UnknownHostException e) {
             e.printStackTrace();
             return false;
         }
