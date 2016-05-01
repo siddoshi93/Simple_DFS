@@ -5,10 +5,7 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 
 /* Program specific imports */
-import dfs_api.ClientRequestPacket;
-import dfs_api.ClientResponsePacket;
-import dfs_api.DFS_CONSTANTS;
-import dfs_api.TreeNode;
+import dfs_api.*;
 
 import javax.xml.ws.handler.MessageContext;
 
@@ -52,6 +49,15 @@ public class ClientCommand
 
             if(res_packet.response_code == DFS_CONSTANTS.OK)
             {
+                //Setting server_addr => IP Of Master Node
+                DFS_Globals.server_addr = System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR);
+
+                //Setting sec_mn_ip_addr => IP of Secondary Master Node IF Provided by Master Node
+                if (res_packet.arguments.length > 0)
+                {
+                    DFS_Globals.sec_mn_ip_addr = res_packet.arguments[0];
+                }
+
                 if(ClientAPI.create_session_file(username))
                 {
                     System.out.println("Successfully Performed the Activity.......");

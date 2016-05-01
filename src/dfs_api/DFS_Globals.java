@@ -29,8 +29,8 @@ public class DFS_Globals
     public static PriorityBlockingQueue<StorageNode> dn_q;
 
     /* Server address stored by DN */
-    public static String server_addr;
+    public static String server_addr = "";
 
     /* Server address of the Secondary Main Node */
-    public static String sec_mn_ip_addr;
+    public static String sec_mn_ip_addr = "";
 }
