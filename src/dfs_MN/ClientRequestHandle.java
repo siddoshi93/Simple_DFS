@@ -13,14 +13,16 @@ import java.net.Socket;
  * Created by Abhishek on 4/24/2016.
  */
 //This is a Client Thread, which is created for EVERY client request handled
-public class ClientRequestHandle implements Runnable{
+public class ClientRequestHandle implements Runnable
+{
 	private Socket client_socket;
 	private String uuid;
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 	private ClientRequestPacket req_packet;
 
-	public ClientRequestHandle(Socket soc,String uuid) {
+	public ClientRequestHandle(Socket soc,String uuid)
+	{
 		this.client_socket = soc;
 		this.uuid = uuid;
 	}
@@ -31,19 +33,30 @@ public class ClientRequestHandle implements Runnable{
 		{
 			ois = new ObjectInputStream(client_socket.getInputStream());
 			req_packet = (ClientRequestPacket)ois.readObject();
+
 			if(req_packet == null)
 				System.out.println("Handle NULL case");
+
 			System.out.println("Request for ID : " + req_packet.client_uuid);
-			handle_command(this.client_socket,req_packet);
+
+			handle_command(req_packet);
+			System.out.println("ASL");
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
+			System.out.println("FIRST");
 			e.printStackTrace();
+		}
+		catch (ClassNotFoundException ex)
+		{
+			System.out.println("Second");
+			ex.printStackTrace();
 		}
 		finally
 		{
 			Main_Node_Server.remove_active_request(uuid);
 			try {
+				ois.close();
 				client_socket.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -51,7 +64,7 @@ public class ClientRequestHandle implements Runnable{
 		}
 	}
 
-	public void handle_command(Socket client_socket,ClientRequestPacket req_packet)
+	public void handle_command(ClientRequestPacket req_packet)
 	{
 		ClientResponsePacket res_packet = null;
 		switch (req_packet.command)
@@ -81,7 +94,6 @@ public class ClientRequestHandle implements Runnable{
 
 			case DFS_CONSTANTS.MKDIR:
 				res_packet = CommandHandler.commandMKDIR(req_packet);
-				send_response(res_packet);
 				break;
 
 			case DFS_CONSTANTS.LS:
@@ -95,9 +107,11 @@ public class ClientRequestHandle implements Runnable{
 			case DFS_CONSTANTS.PUT:
 				res_packet = CommandHandler.commandPUT(req_packet);
 				break;
+
 			case DFS_CONSTANTS.UPDATE:
 				res_packet = CommandHandler.commandPUTData(req_packet);
 				break;
+
 			default:
 				System.out.println("Invalid Command");
 				res_packet = new ClientResponsePacket();

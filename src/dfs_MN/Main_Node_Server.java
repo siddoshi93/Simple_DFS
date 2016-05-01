@@ -60,15 +60,15 @@ public class Main_Node_Server
 
 				curr_req = new ClientRequestHandle(client_request.accept(),new_uuid); /* Listen to client request and assign the request to a worker thread */
 
-				//System.out.println("Got connection : ");
 				active_client_list.put(new_uuid,curr_req); /* Add the client to the end of the list */
 
-				workers.submit(curr_req);
+				workers.execute(curr_req);
 			}
 						
 		}
 		catch(IOException ioe)
 		{
+			System.out.println("CONTD....");
 			ioe.printStackTrace();
 		}
 		finally
