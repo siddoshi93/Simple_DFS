@@ -13,6 +13,7 @@ public class DFS_CONSTANTS
 	public final static int PQ_SIZE = 10;
 	public final static int SLEEP_TIME = 3000;
 	public final static int TIMEOUT = 5000;
+	public final static int MASTER_PING_TIMEOUT = 1000;
 
 	/* PORT CONSTANTS */
 	public final static int MN_LISTEN_PORT = 7091;
@@ -61,6 +62,7 @@ public class DFS_CONSTANTS
 
 	/* Environment variable for server address */
 	public final static String DFS_SERVER_ADDR = "DFS_SERVER_ADDR";
+	public final static String DFS_SECONDARY_SERVER_ADDR = "DFS_SECONDARY_SERVER_ADDR";
 	public final static String PM = "PM";
 	public final static String SM = "SM";
 

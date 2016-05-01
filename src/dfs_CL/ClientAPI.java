@@ -1,9 +1,6 @@
 package dfs_CL;
 
-import dfs_api.ClientRequestPacket;
-import dfs_api.ClientResponsePacket;
-import dfs_api.DFS_CONSTANTS;
-import dfs_api.FileTransfer;
+import dfs_api.*;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -36,33 +33,58 @@ public class ClientAPI
         return true;
     }
 
-    /* In this part of the code we have configured to get the server address */
+    /* In this part of the code we have configured to get the server address THAT WORKS.
+       If Primary Master Node Fails, we SWAP the server_addr and sec_mn_ip_addr */
     public static String getServerAddress()
     {
-        for (int i = 0;i < DFS_CONSTANTS.NUM_OF_MN;i++)
+        //Checking TWICE if Primary Master Node is working
+        for (int i = 0; i < DFS_CONSTANTS.TWO;   i++)
         {
-            String server_address;
-            if ((server_address = System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR)) != null)
+            String server_address = (DFS_Globals.server_addr.length()>0)? DFS_Globals.server_addr : System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR) ;
+
+            if (server_address != null)
             {
-                if(!check_mn_service(server_address,DFS_CONSTANTS.MN_LISTEN_PORT))  /* Check if its reachable */
+                if(!check_mn_service(server_address,DFS_CONSTANTS.ALIVE_LISTEN_PORT))  /* Check if its reachable */
                     continue;
                 return server_address;
             }
-            else
+        }
+
+        //Main Master Node Unreachable. Swap Addresses IF Secondary Master Node was Registered with Client
+        if (DFS_Globals.sec_mn_ip_addr.length()== 0)
+            return null;
+
+        String temp = DFS_Globals.server_addr;
+        DFS_Globals.server_addr = DFS_Globals.sec_mn_ip_addr;
+        DFS_Globals.sec_mn_ip_addr = temp;
+
+        System.out.println ("New Secondary Address: "+ DFS_Globals.server_addr);
+
+        //Checking TWICE if Secondary Master Node is working
+        for (int i = 0; i < DFS_CONSTANTS.TWO;   i++)
+        {
+            String server_address = DFS_Globals.server_addr;
+
+            if (server_address != null)
             {
-                return null;
+                if(!check_mn_service(server_address,DFS_CONSTANTS.ALIVE_LISTEN_PORT))  /* Check if its reachable */
+                    continue;
+                return server_address;
             }
         }
+
+        //BOTH Nodes Unreachable
         System.out.println("No Master Node is Reachable!!!");
         return null;
     }
 
+    //Checks by Pinging if A Server is Alive
     public static boolean check_mn_service(String host,int port)
     {
         try
         {
             Socket server_connect = new Socket();
-            server_connect.connect(new InetSocketAddress(host, port), DFS_CONSTANTS.TIMEOUT);
+            server_connect.connect(new InetSocketAddress(host, port), DFS_CONSTANTS.MASTER_PING_TIMEOUT);
             server_connect.close();
             return true; /* Service is up and running */
         }
@@ -107,6 +129,7 @@ public class ClientAPI
         }
     }
 
+    //Gets Username from the Stored File on Disk
     public static String getUserName()
     {
         /* Check if the file exists or not */
