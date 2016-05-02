@@ -322,14 +322,13 @@ public class ClientCommand
 
             ClientAPI.send_request(connect, req_packet);
             res_packet = ClientAPI.recv_response(connect);
-            System.out.println("Name : " + res_packet.file_name + "File Size for Get : " + res_packet.file_size);
+            System.out.println("Name : " + req_packet.file_name + "File Size for Get : " + res_packet.file_size);
             if(res_packet != null && res_packet.response_code == DFS_CONSTANTS.OK)
             {
                 System.out.println("Got the IPs of DN.Connecting for getting data..... : " + res_packet.dn_list.size());
                 System.out.println("IP1 : " + res_packet.dn_list.get(DFS_CONSTANTS.ZERO));
                 connect.close(); /* Close the connection with the server */
                 res_packet.file_name = req_packet.file_name;
-                res_packet.file_size = req_packet.file_size;
                 ClientAPI.getFiles(res_packet,arg[1]);
             }
             else

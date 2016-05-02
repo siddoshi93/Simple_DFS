@@ -121,6 +121,8 @@ public class ClientRequestHandle implements Runnable
 
 			case DFS_CONSTANTS.GET:
 				res_packet = CommandHandler.commandGET(req_packet);
+				System.out.println("MN NAME : " + res_packet.file_name);
+				System.out.println("MN Size : " + res_packet.file_size);
 				break;
 
 			case DFS_CONSTANTS.PUT:
@@ -128,6 +130,7 @@ public class ClientRequestHandle implements Runnable
 				break;
 
 			case DFS_CONSTANTS.UPDATE:
+				System.out.print("Anas : Command Update");
 				res_packet = CommandHandler.commandPUTData(req_packet);
 				break;
 

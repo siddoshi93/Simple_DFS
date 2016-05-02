@@ -35,7 +35,7 @@ public class MN_Server_SM {
         if (((DFS_Globals.server_addr = System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR)) == null) || !RegisterWithMaster())
         {
             System.out.println("Secondary Node CANNOT reach Master Node.");
-            System.exit(0);
+            System.exit(DFS_CONSTANTS.SUCCESS);
         }
         ListenForPersistance();
     }
@@ -144,19 +144,6 @@ public class MN_Server_SM {
         {
             ex.printStackTrace();
             return false;
-        }
-        finally
-        {
-            try
-            {
-                os.close();
-                fos.close();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-                return false;
-            }
         }
     }
 }

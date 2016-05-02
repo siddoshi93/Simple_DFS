@@ -81,16 +81,9 @@ public class MaintenanceDmn implements Runnable
             else
                 System.out.println("Successully send the copy to SM.....");
         }
-        catch (IOException ex)
+        catch (Exception ex)
         {
             System.out.print("Backup Node became dead. Please check ");
-        }
-        finally {
-            try {
-                os.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 

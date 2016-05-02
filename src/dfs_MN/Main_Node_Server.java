@@ -34,6 +34,15 @@ public class Main_Node_Server
 			System.exit(DFS_CONSTANTS.SUCCESS);
 		}
 
+		DFS_Globals.sdfs_path = DFS_Globals.base_path + DFS_Globals.sdfs_path;
+		/* Create the directory if not present */
+		File dir = new File(DFS_Globals.sdfs_path);
+		if(!(dir.exists() && dir.isDirectory()))
+		{
+			System.out.println("Creating Directory......");
+			dir.mkdir();
+		}
+
 		switch (args[DFS_CONSTANTS.ZERO])
 		{
 			case DFS_CONSTANTS.PM:
