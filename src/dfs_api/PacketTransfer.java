@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
+ * Wrapper used to Send/Receive objects of class "Packet"
  * Created by Anas on 4/30/2016.
  */
 public class PacketTransfer {
@@ -42,7 +43,10 @@ public class PacketTransfer {
         super.finalize();
     }
 
-    //Sending A packet
+    /**
+     * Sends the Packet
+     * @param req_packet
+     */
     public void sendPacket(Packet req_packet)
     {
         ObjectOutputStream oos = null;
@@ -59,7 +63,10 @@ public class PacketTransfer {
         }
     }
 
-    //Receiving a Packet
+    /**
+     * Returns a "Packet" instance
+     * @return
+     */
     public Packet receivePacket()
     {
         ObjectInputStream ois = null;
