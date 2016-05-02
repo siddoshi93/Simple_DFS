@@ -16,7 +16,7 @@ public class ClientAPI
 {
     public static boolean create_file(String file_path,String data)
     {
-        if(!FileTransfer.check_and_create_dir(DFS_CONSTANTS.sdfs_path))
+        if(!FileTransfer.check_and_create_dir(DFS_Globals.sdfs_path))
         {
             System.out.println("Failed in Creating");
             return false;
@@ -52,7 +52,7 @@ public class ClientAPI
         }
 
         //Main Master Node Unreachable. Swap Addresses IF Secondary Master Node was Registered with Client
-        DFS_Globals.sec_mn_ip_addr = read_file(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.sec_nm_data_file);
+        DFS_Globals.sec_mn_ip_addr = read_file(DFS_Globals.sdfs_path + DFS_CONSTANTS.sec_nm_data_file);
 
         if (DFS_Globals.sec_mn_ip_addr == null)
         {
@@ -160,7 +160,7 @@ public class ClientAPI
     public static ClientRequestPacket createRequestPacket(int command)
     {
         ClientRequestPacket req_packet;
-        String username = ClientAPI.read_file(DFS_CONSTANTS.user_name_file);
+        String username = ClientAPI.read_file(DFS_Globals.user_name_file);
         if(username == null)
         {
             System.out.println("Please login.....");
@@ -183,7 +183,7 @@ public class ClientAPI
         FileTransfer ftp = new FileTransfer();
 
         req_packet.command = DFS_CONSTANTS.GET;
-        req_packet.client_uuid = ClientAPI.read_file(DFS_CONSTANTS.user_name_file);
+        req_packet.client_uuid = ClientAPI.read_file(DFS_Globals.user_name_file);
         req_packet.file_name = res_packet.file_name;
         req_packet.file_size = res_packet.file_size;
         req_packet.dn_list = res_packet.dn_list;
@@ -230,7 +230,7 @@ public class ClientAPI
 
         /* Creating request packet for DN */
         req_packet.command = DFS_CONSTANTS.PUT;
-        req_packet.client_uuid = ClientAPI.read_file(DFS_CONSTANTS.user_name_file);
+        req_packet.client_uuid = ClientAPI.read_file(DFS_Globals.user_name_file);
         req_packet.file_name = res_packet.file_name;
         req_packet.file_size = res_packet.file_size;
         req_packet.arguments = res_packet.arguments;

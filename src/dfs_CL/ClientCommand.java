@@ -57,10 +57,10 @@ public class ClientCommand
                 {
                     DFS_Globals.sec_mn_ip_addr = res_packet.arguments[DFS_CONSTANTS.ZERO];
                     System.out.println("Sec Server Addr : " + DFS_Globals.sec_mn_ip_addr);
-                    ClientAPI.create_file(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.sec_nm_data_file,DFS_Globals.sec_mn_ip_addr);
+                    ClientAPI.create_file(DFS_Globals.sdfs_path + DFS_CONSTANTS.sec_nm_data_file,DFS_Globals.sec_mn_ip_addr);
                 }
 
-                if(ClientAPI.create_file(DFS_CONSTANTS.user_name_file,username))
+                if(ClientAPI.create_file(DFS_Globals.user_name_file,username))
                 {
                     System.out.println("Successfully Performed the Activity.......");
                 }

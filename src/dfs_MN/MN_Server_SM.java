@@ -27,9 +27,9 @@ public class MN_Server_SM {
     //Starting point for Secondary Server
     public static void start_sm_server()
     {
-        file_path = (DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.persistance_file);
-        System.out.println(DFS_CONSTANTS.sdfs_path);
-        FileTransfer.check_and_create_dir(DFS_CONSTANTS.sdfs_path);
+        file_path = (DFS_Globals.sdfs_path + DFS_CONSTANTS.persistance_file);
+        System.out.println(DFS_Globals.sdfs_path);
+        FileTransfer.check_and_create_dir(DFS_Globals.sdfs_path);
 
         ftp = new FileTransfer();
         if (((DFS_Globals.server_addr = System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR)) == null) || !RegisterWithMaster())

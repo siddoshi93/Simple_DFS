@@ -23,7 +23,6 @@ public class DFS_CONSTANTS
 	public final static int MN_MISC_LISTEN_PORT = 9099;
 
 	/* Data Node Constants */
-	public final static String storage_path = "/home/ubuntu/";
 	public final static short DATA_PACKET_SIZE = 4096;
 
 	/* MISC CONSTANTS */
@@ -67,9 +66,8 @@ public class DFS_CONSTANTS
 	public final static String SM = "SM";
 
 	/* File Path */
-	public final static String user_name_file = "/home/ubuntu/.sdfs/sdfs_username";
+	public final static String base_path = "SDFS_BASE_PATH";
 	public final static String sec_nm_data_file = "sec_nm_data";
-	public final static String sdfs_path = "/home/ubuntu/.sdfs/";
 	public final static String dn_list = "dn_config.csv";
 	public final static String persistance_file = "persistance_file";
 

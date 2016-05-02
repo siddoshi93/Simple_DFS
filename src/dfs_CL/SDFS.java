@@ -1,6 +1,7 @@
 package dfs_CL;
 
 import dfs_api.DFS_CONSTANTS;
+import dfs_api.DFS_Globals;
 
 /**
  * Created by abhishek on 4/24/16.
@@ -15,6 +16,16 @@ public class SDFS
             System.out.println("Usage : SDFS <COMMAND> <Arguement List>");
             System.exit(DFS_CONSTANTS.SUCCESS);
         }
+
+        if((DFS_Globals.base_path = System.getenv(DFS_CONSTANTS.base_path)) == null)
+        {
+            System.out.print("Please set the Base path of SDFS:" + DFS_CONSTANTS.base_path);
+            System.exit(DFS_CONSTANTS.SUCCESS);
+        }
+
+        DFS_Globals.user_name_file = DFS_Globals.base_path + DFS_Globals.user_name_file;
+        DFS_Globals.sdfs_path = DFS_CONSTANTS.base_path + DFS_Globals.sdfs_path;
+
         String command = arg[0].toUpperCase();
         boolean status = false;
         switch (command)

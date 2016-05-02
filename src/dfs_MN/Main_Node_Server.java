@@ -28,6 +28,12 @@ public class Main_Node_Server
 			System.exit(DFS_CONSTANTS.SUCCESS);
 		}
 
+		if((DFS_Globals.base_path = System.getenv(DFS_CONSTANTS.base_path)) == null)
+		{
+			System.out.print("Please set the Base path of SDFS:" + DFS_CONSTANTS.base_path);
+			System.exit(DFS_CONSTANTS.SUCCESS);
+		}
+
 		switch (args[DFS_CONSTANTS.ZERO])
 		{
 			case DFS_CONSTANTS.PM:
