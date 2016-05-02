@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 /**
- * Created by Anas on 4/24/2016.
+ * Handles the Commands Issues by Client.
  */
 public class CommandHandler {
 
@@ -15,18 +15,16 @@ public class CommandHandler {
     public static TreeNode searchNode (ClientRequestPacket req_packet, String path)
     {
 
+        //Get the ROOT Node of the Requested Client.
         TreeNode tempNode = DFS_Globals.global_client_list.get(req_packet.client_uuid).root;
-
-        /*
-        if (path.charAt(0) == '/')
-            tempNode =  clientWrapper.root;
-        else
-            tempNode = clientWrapper.curr;
-         */
 
         return TreeAPI.findNode(tempNode,path);
     }
 
+    /**
+     * Returns the Correct Storage Node Reference. This is done to avoid the problems by Passing of Serialized Object
+     * @param networkVal
+     */
     public static StorageNode getRealStorageRef(StorageNode networkVal)
     {
 
@@ -39,24 +37,36 @@ public class CommandHandler {
      return null;
     }
 
+    /**
+     * This function returns the Updated DataNodes during the GET Command. This ensures DEAD DataNodes are Not returned to the Client
+     * @param storageList
+     * @return
+     */
     public static ArrayList<StorageNode> checkStorageList(ArrayList<StorageNode> storageList)
     {
         ArrayList<StorageNode> tempList = new ArrayList<>();
         StorageNode temp = null;
 
-        for(int loop_counter=0;loop_counter<storageList.size();loop_counter++)
+        for(int loop_counter=0; loop_counter<storageList.size(); loop_counter++)
         {
             StorageNode node= storageList.get(loop_counter);
             System.out.println(node.IPAddr+" :"+node.Size+" :"+node.isAlive);
-          if(node.isAlive){
+
+            //Add Data Node ONLY If it is Still Alive
+            if(node.isAlive)
+            {
               temp = new StorageNode(node);
               tempList.add(temp);
-          }
+            }
         }
         return tempList;
     }
 
-    //Adds NEW storage node to TreeNode IF NOT PRESENT, Else Ignores
+    /**
+     * Adds NEW storage node to TreeNode IFF NOT PRESENT. This is used when Duplicate Data nodes notify the Master Node of successful data transfer
+     * @param TN
+     * @param SN
+     */
     static void AddStorageNode (TreeNode TN, StorageNode SN)
     {
         for (StorageNode node : TN.storageNode )
@@ -67,7 +77,9 @@ public class CommandHandler {
         TN.storageNode.add(SN);
     }
 
-    //LS Command (Path is either a Full path OR ./directory)
+    /**
+     * LS Command Handler. Returns true of Path is correct
+     */
     public static ClientResponsePacket commandLS (ClientRequestPacket req_packet)
     {
         ClientResponsePacket responsePacket = new ClientResponsePacket();
@@ -80,7 +92,11 @@ public class CommandHandler {
         return responsePacket;
     }
 
-    //MKDIR Command
+    /**
+     * MKDIR Command Handler. Inserts the TreeNode entry iff path is valid
+     * @param req_packet
+     * @return
+     */
     public static ClientResponsePacket commandMKDIR (ClientRequestPacket req_packet)
     {
         ClientResponsePacket responsePacket = new ClientResponsePacket();
@@ -116,15 +132,11 @@ public class CommandHandler {
         return responsePacket;
     }
 
-    //CD command
-    public static ClientResponsePacket commandCD (ClientRequestPacket req_packet)
-    {
-        ClientResponsePacket responsePacket = new ClientResponsePacket();
-
-        return responsePacket;
-    }
-
-    //PUT Command
+    /**
+     * PUT Command Handler. This function only requests Data Nodes, and does not Update the Client Metadata yet (Reliability).
+     * @param req_packet
+     * @return
+     */
     public static ClientResponsePacket commandPUT (ClientRequestPacket req_packet)
     {
         ClientResponsePacket responsePacket = new ClientResponsePacket();
@@ -157,7 +169,10 @@ public class CommandHandler {
         return responsePacket;
     }
 
-    //PUT Confirmation by Datanode
+    /**
+     * PUT Confirmation by a Datanode. This ensures TreeNode addition to the Client Metadata (Reliable)
+     * @param req_packet
+     */
     public static ClientResponsePacket commandPUTData (ClientRequestPacket req_packet)
     {
         ClientResponsePacket responsePacket = new ClientResponsePacket();
@@ -182,6 +197,7 @@ public class CommandHandler {
                                                     req_packet.file_size)                 //Size at the time of creation
                                         );
         System.out.println("File Path : " + filePath + ":" + req_packet.file_name + ":" + insert);
+
         //1st Time File Insertion
         if (insert)
             responsePacket.response_code = DFS_CONSTANTS.OK;
@@ -211,25 +227,28 @@ public class CommandHandler {
         return responsePacket;
     }
 
-    //GET Command
+    /**
+     * GET Command Handler.
+     * @param req_packet
+     * @return
+     */
     public static ClientResponsePacket commandGET(ClientRequestPacket req_packet)
     {
         ClientResponsePacket responsePacket = new ClientResponsePacket();
         String dirPath="",filename="";
         String completePath= req_packet.arguments[0];
 
+        //Handling Invalid Path
         if(completePath.length()>(completePath.lastIndexOf('/')+1))
         {
             dirPath = completePath.substring(0, completePath.lastIndexOf('/'));
             filename = completePath.substring(completePath.lastIndexOf('/') + 1);
         }
         else
-        {
             System.out.println("Invalid Directory Path FORMAT");
-        }
 
+        //Finding the TreeNode for corresponding File requested
         TreeNode dirNode= searchNode(req_packet,dirPath);
-
         TreeNode targetNode= TreeAPI.searchNode(dirNode,filename);
 
         if(targetNode==null || targetNode.isDir)
@@ -254,7 +273,6 @@ public class CommandHandler {
                 responsePacket.response_code = DFS_CONSTANTS.FAILURE;
             }
         }
-
         return responsePacket;
     }
 

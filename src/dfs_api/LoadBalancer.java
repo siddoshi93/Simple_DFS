@@ -3,7 +3,8 @@ package dfs_api;
 import java.util.Iterator;
 
 /**
- * Created by Raunaq-PC on 27-04-2016.
+ * Implements the Load balancing Function to select a Data Node
+ * @author Raunaq
  */
 public class LoadBalancer {
 

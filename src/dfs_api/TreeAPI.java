@@ -4,12 +4,16 @@ package dfs_api;
 import java.util.ArrayList;
 
 /**
- * Created by abhishek on 4/24/16.
- * This file is responsible for operating on the server
+ * Defines Functions to Operate on Client Metadata => Insert, Search
  */
-
 public class TreeAPI {
 
+    /**
+     * Inserting newNode into a node.
+     * @param root
+     * @param newNode
+     * @return
+     */
     public static boolean TreeInsert(TreeNode root, TreeNode newNode)
     {
         //To avoid duplicates
@@ -25,10 +29,10 @@ public class TreeAPI {
         return true;
     }
 
-    //To find the node from a Given Path
-    /*
-    * Created by Raunaq on 04/26/2016
-     */
+    /**
+    * Find the node from a Given Path. Root of the Client Metadata is passed ALWAYS
+    * @author Raunaq
+    */
     public static TreeNode findNode(TreeNode curNode,String path)
     {
         String nextPathPoint;
@@ -74,7 +78,12 @@ public class TreeAPI {
         return newCurNode;
     }
 
-    //To find a Node in Children of a Node
+    /**
+     * To find the reference of childNodeName (child) in curNode (parent)
+     * @param curNode
+     * @param childNodeName
+     * @return
+     */
     public static TreeNode searchNode(TreeNode curNode,String childNodeName)
     {
         if (curNode.children == null)

@@ -3,7 +3,7 @@ package dfs_api;
 import java.io.Serializable;
 
 /**
- * Created by Anas on 4/24/2016.
+ * Stores Information about a SINGLE Data Node
  */
 public class StorageNode implements Serializable {
     public String IPAddr;

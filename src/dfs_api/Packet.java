@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by Anas on 4/30/2016.
+ * Merged Packet Class
+ * @author Anas
  */
 public class Packet implements Serializable{
     public String client_uuid;

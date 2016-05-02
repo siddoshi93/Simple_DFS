@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Created by Anas on 4/24/2016.
+ * Stores information about a Single Tree Node in MasterNode Metadata
  */
 public class TreeNode implements Serializable
 {
@@ -15,10 +15,14 @@ public class TreeNode implements Serializable
     public double size;
     public TreeNode parent;
 
-    //List of Directories and Files
+    /**
+     * List of Children of a Node => Files/Directories in a Directory
+     */
     public ArrayList<TreeNode> children = new ArrayList<TreeNode>();
 
-    //List of Storage Nodes the files are stored on
+    /**
+     * List of Data Nodes a file is stored on
+     */
     public ArrayList<StorageNode> storageNode = null;
 
     public TreeNode()

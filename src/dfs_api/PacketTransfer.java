@@ -7,7 +7,7 @@ import java.net.Socket;
 
 /**
  * Wrapper used to Send/Receive objects of class "Packet"
- * Created by Anas on 4/30/2016.
+ * @author Anas
  */
 public class PacketTransfer {
 

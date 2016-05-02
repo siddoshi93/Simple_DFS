@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 /**
+ * Implements Functions to Support Client-side operations => Create file, getServerAddress, Ping Master node, Send/Receive File, etc.
  * Created by abhishek on 4/24/16.
  */
 public class ClientAPI
@@ -33,8 +34,11 @@ public class ClientAPI
         return true;
     }
 
-    /* In this part of the code we have configured to get the server address THAT WORKS.
-       If Primary Master Node Fails, we SWAP the server_addr and sec_mn_ip_addr */
+    /**
+     * In this part of the code we have configured to get the server address THAT WORKS.
+       If Primary Master Node Fails, we contact the Secondary Master Node after 2 tries.
+     * @return
+     */
     public static String getServerAddress()
     {
         //Checking TWICE if Primary Master Node is working
@@ -84,7 +88,12 @@ public class ClientAPI
         return null;
     }
 
-    //Checks by Pinging if A Server is Alive
+    /**
+     * Checks by Pinging if A Server is Alive
+     * @param host
+     * @param port
+     * @return
+     */
     public static boolean check_mn_service(String host,int port)
     {
         try
@@ -101,6 +110,11 @@ public class ClientAPI
         }
     }
 
+    /**
+     * Sends the Client Request => LS, MKDIR, PUT, GET
+     * @param client_socket
+     * @param req_packet
+     */
     public static void send_request(Socket client_socket, ClientRequestPacket req_packet)
     {
         ObjectOutputStream oos = null;
@@ -116,6 +130,11 @@ public class ClientAPI
         }
     }
 
+    /**
+     * Receives the Output from the Earlier Request
+     * @param client_socket
+     * @return
+     */
     public static ClientResponsePacket recv_response(Socket client_socket)
     {
         ObjectInputStream ois = null;
@@ -136,7 +155,11 @@ public class ClientAPI
         }
     }
 
-    //Gets Username from the Stored File on Disk
+    /**
+     * Gets "Username" AND "Working Master Node Address" from the Stored File on Disk
+     * @param file_path
+     * @return
+     */
     public static String read_file(String file_path)
     {
         /* Check if the file exists or not */
@@ -157,6 +180,11 @@ public class ClientAPI
         return null;
     }
 
+    /**
+     * Creates a request Packet to send with the given command
+     * @param command
+     * @return
+     */
     public static ClientRequestPacket createRequestPacket(int command)
     {
         ClientRequestPacket req_packet;
@@ -173,11 +201,19 @@ public class ClientAPI
         return req_packet;
     }
 
+    /**
+     * This program connects to the Data Node (received from Master Node) and transfers file to the local system. IF in any case the Data Node is down, Client does not try to request from Other Data Nodes.
+     * @param res_packet
+     * @param path
+     * @return
+     */
     public static boolean getFiles(ClientResponsePacket res_packet,String path)
     {
-        /* This program connects to the Data Node and transfer it to the local system */
         ClientRequestPacket req_packet = new ClientRequestPacket();
         ClientResponsePacket dn_res_packet = new ClientResponsePacket();
+
+        /* USES Only the 1st element of Data Node List. IF THIS FAILS => Does not handle.
+        It should request Master Node again for the file. It will be handled  */
         String dn_ip = res_packet.dn_list.get(DFS_CONSTANTS.ZERO).IPAddr;
         Socket connect = null;
         FileTransfer ftp = new FileTransfer();
@@ -219,9 +255,15 @@ public class ClientAPI
         return true;
     }
 
+
+    /**
+     * This program connects to the Data Node and transfers it.
+     * @param res_packet
+     * @param path
+     * @return
+     */
     public static boolean sendFiles(ClientResponsePacket res_packet,String path)
     {
-        /* This program connects to the Data Node and transfer it to the local system */
         ClientRequestPacket req_packet = new ClientRequestPacket();
         ClientResponsePacket dn_res_packet = new ClientResponsePacket();
         String dn_ip = res_packet.dn_list.get(DFS_CONSTANTS.ZERO).IPAddr;
@@ -273,6 +315,11 @@ public class ClientAPI
         return true;
     }
 
+    /**
+     * Validates if File pointed by input is valid on the local file system
+     * @param file
+     * @return
+     */
     public static boolean validate_file(String file)
     {
         File f = new File(file);
