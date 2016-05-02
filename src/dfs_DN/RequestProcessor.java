@@ -171,7 +171,7 @@ public class RequestProcessor implements Runnable {
         }
         System.out.println("Doing Replication : " + req_packet.dn_list.size());
         client_data = DFS_Globals.client_data.get(req_packet.client_uuid);
-        String file_path = (DFS_CONSTANTS.storage_path +
+        String file_path = (DFS_Globals.storage_path +
                             client_data.folder_name +
                             "/" +
                             client_data.file_map.get(req_packet.file_name));

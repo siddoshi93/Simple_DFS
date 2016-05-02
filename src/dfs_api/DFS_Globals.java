@@ -35,4 +35,10 @@ public class DFS_Globals
 
     /* Server address of the Secondary Main Node */
     public static String sec_mn_ip_addr = null;
+
+    /* Base Path */
+    public static String base_path = null;
+    public static String sdfs_path = ".sdfs/";
+    public static String user_name_file = sdfs_path + "sdfs_username";
+    public static String storage_path = null;
 }

@@ -91,7 +91,7 @@ public class DN_CommandHandler
         String cname = client_data.file_map.get(file_name);
         try
         {
-            ft.send_file(connect, (DFS_CONSTANTS.storage_path + client_data.folder_name + "/" + cname));
+            ft.send_file(connect, (DFS_Globals.storage_path + client_data.folder_name + "/" + cname));
         }
         catch (Exception ex)
         {
@@ -114,7 +114,7 @@ public class DN_CommandHandler
 
         try
         {
-            ft.save_file(connect, (DFS_CONSTANTS.storage_path + client_data.folder_name + "/" + cname),file_size);
+            ft.save_file(connect, (DFS_Globals.storage_path + client_data.folder_name + "/" + cname),file_size);
 
             /* Add the mapping to the File Map so that data node knows about the mapping */
             if (new_file)
@@ -128,8 +128,8 @@ public class DN_CommandHandler
 
     public boolean create_client_folder(String folder_name)
     {
-        File dir = new File(DFS_CONSTANTS.storage_path + folder_name);
-        System.out.println("Creating Client Folder : " + DFS_CONSTANTS.storage_path + folder_name);
+        File dir = new File(DFS_Globals.storage_path + folder_name);
+        System.out.println("Creating Client Folder : " + DFS_Globals.storage_path + folder_name);
         if(!(dir.exists() && dir.isDirectory()))
         {
             System.out.println("Creating Directory......");

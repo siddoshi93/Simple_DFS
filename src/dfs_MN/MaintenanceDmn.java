@@ -26,7 +26,7 @@ public class MaintenanceDmn implements Runnable
 
     public MaintenanceDmn()
     {
-        presistant_file_path = DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.persistance_file;
+        presistant_file_path = DFS_Globals.sdfs_path + DFS_CONSTANTS.persistance_file;
     }
 
     @Override
@@ -50,10 +50,6 @@ public class MaintenanceDmn implements Runnable
         {
             e.printStackTrace();
         }
-        catch (IOException ex)
-        {
-            ex.printStackTrace();
-        }
     }
 
     public void set_sec_connect(Socket connect)
@@ -62,26 +58,40 @@ public class MaintenanceDmn implements Runnable
         pt = new PacketTransfer(this.sec_mn_connect);
     }
 
-    public void send_meta_data() throws IOException
+    public void send_meta_data()
     {
         if(!DFS_Globals.synhronization_start || sec_mn_connect == null) /* if ready for synchronization */
             return;
 
-        os = new ObjectOutputStream(sec_mn_connect.getOutputStream());
-        os.writeObject(DFS_Globals.global_client_list);
-        os.writeObject(DFS_Globals.dn_q);
-        os.flush();
-        //ftp.send_file(sec_mn_connect,presistant_file_path);
-        /* Send the ack */
-        //pack = new Packet();
-        //pack.response_code = DFS_CONSTANTS.OK;
-        //pt.sendPacket(pack);
+        try
+        {
+            os = new ObjectOutputStream(sec_mn_connect.getOutputStream());
+            os.writeObject(DFS_Globals.global_client_list);
+            os.writeObject(DFS_Globals.dn_q);
+            os.flush();
+            //ftp.send_file(sec_mn_connect,presistant_file_path);
+            /* Send the ack */
+            //pack = new Packet();
+            //pack.response_code = DFS_CONSTANTS.OK;
+            //pt.sendPacket(pack);
 
-        pack = pt.receivePacket();
-        if(pack.response_code != DFS_CONSTANTS.OK)
-            System.out.println("Something went wrong in syncing");
-        else
-            System.out.println("Successully send the copy to SM.....");
+            pack = pt.receivePacket();
+            if (pack.response_code != DFS_CONSTANTS.OK)
+                System.out.println("Something went wrong in syncing");
+            else
+                System.out.println("Successully send the copy to SM.....");
+        }
+        catch (IOException ex)
+        {
+            System.out.print("Backup Node became dead. Please check ");
+        }
+        finally {
+            try {
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public boolean create_and_update_pers_md()

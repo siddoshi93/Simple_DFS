@@ -215,7 +215,7 @@ public class MN_Server_PM
     /* Load or Init the data */
     public static void load_or_init_data() throws IOException,ClassNotFoundException
     {
-        File check_file = new File(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.persistance_file);
+        File check_file = new File(DFS_Globals.sdfs_path + DFS_CONSTANTS.persistance_file);
 
         if(DFS_Globals.mn_mode_ind == DFS_CONSTANTS.SM && !check_file.exists())
         {
@@ -232,7 +232,7 @@ public class MN_Server_PM
         else
         {
             /* Load Storage pool */
-            FileInputStream fis = new FileInputStream(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.persistance_file);
+            FileInputStream fis = new FileInputStream(DFS_Globals.sdfs_path + DFS_CONSTANTS.persistance_file);
             ObjectInputStream ois = new ObjectInputStream(fis);
             DFS_Globals.global_client_list = (HashMap<String, ClientWrapper>) ois.readObject();
             DFS_Globals.dn_q = (PriorityBlockingQueue<StorageNode>) ois.readObject();
@@ -254,7 +254,7 @@ public class MN_Server_PM
 
         try
         {
-            fr = new FileReader(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.dn_list);
+            fr = new FileReader(DFS_Globals.sdfs_path + DFS_CONSTANTS.dn_list);
             bufferedReader = new BufferedReader(fr);
 
             while((line = bufferedReader.readLine()) != null)

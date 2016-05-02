@@ -48,6 +48,15 @@ public class Data_Node_Server
                 System.out.println("Please call with arguments as: <Master Node IP> <Data Node Capacity>");
                 System.exit(0);
             }
+
+            if((DFS_Globals.base_path = System.getenv(DFS_CONSTANTS.base_path)) == null)
+            {
+                System.out.print("Please set the Base path of SDFS:" + DFS_CONSTANTS.base_path);
+                System.exit(DFS_CONSTANTS.SUCCESS);
+            }
+
+            DFS_Globals.storage_path = DFS_Globals.base_path;
+
 			/* Wait for a connection so that it can be served in a thread */
             setUpDN(args); /* Set up the server */
 
