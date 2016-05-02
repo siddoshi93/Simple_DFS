@@ -14,16 +14,16 @@ import java.util.Scanner;
  */
 public class ClientAPI
 {
-    public static boolean create_session_file(String user_name)
+    public static boolean create_file(String file_path,String data)
     {
         if(!FileTransfer.check_and_create_dir(DFS_CONSTANTS.sdfs_path))
         {
-            System.out.println("Failed in CCD");
+            System.out.println("Failed in Creating");
             return false;
         }
-        try(PrintWriter out = new PrintWriter(new FileWriter(new File(DFS_CONSTANTS.user_name_file),false)))
+        try(PrintWriter out = new PrintWriter(new FileWriter(new File(file_path),false)))
         {
-            out.print(user_name);
+            out.print(data);
         }
         catch (Exception e)
         {
@@ -40,10 +40,11 @@ public class ClientAPI
         //Checking TWICE if Primary Master Node is working
         for (int i = 0; i < DFS_CONSTANTS.TWO;   i++)
         {
-            String server_address = (DFS_Globals.server_addr.length()>0)? DFS_Globals.server_addr : System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR) ;
+            String server_address = (DFS_Globals.server_addr != null)? DFS_Globals.server_addr : System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR) ;
 
             if (server_address != null)
             {
+                System.out.println("SIP : " + server_address);
                 if(!check_mn_service(server_address,DFS_CONSTANTS.ALIVE_LISTEN_PORT))  /* Check if its reachable */
                     continue;
                 return server_address;
@@ -51,12 +52,17 @@ public class ClientAPI
         }
 
         //Main Master Node Unreachable. Swap Addresses IF Secondary Master Node was Registered with Client
-        if (DFS_Globals.sec_mn_ip_addr.length()== 0)
+        DFS_Globals.sec_mn_ip_addr = read_file(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.sec_nm_data_file);
+
+        if (DFS_Globals.sec_mn_ip_addr == null)
+        {
+            System.out.println("Sorry No Back up node set : ");
             return null;
+        }
 
         String temp = DFS_Globals.server_addr;
         DFS_Globals.server_addr = DFS_Globals.sec_mn_ip_addr;
-        DFS_Globals.sec_mn_ip_addr = temp;
+        DFS_Globals.sec_mn_ip_addr = "";
 
         System.out.println ("New Secondary Address: "+ DFS_Globals.server_addr);
 
@@ -90,6 +96,7 @@ public class ClientAPI
         }
         catch (IOException ex)
         {
+            System.out.println("Timeouttttttt");
             return false; /* Unnable to connect specific port; */
         }
     }
@@ -130,11 +137,11 @@ public class ClientAPI
     }
 
     //Gets Username from the Stored File on Disk
-    public static String getUserName()
+    public static String read_file(String file_path)
     {
         /* Check if the file exists or not */
         Scanner cin = null;
-        File username = new File(DFS_CONSTANTS.user_name_file);
+        File username = new File(file_path);
         if(username.exists())
         {
             try {
@@ -153,7 +160,7 @@ public class ClientAPI
     public static ClientRequestPacket createRequestPacket(int command)
     {
         ClientRequestPacket req_packet;
-        String username = ClientAPI.getUserName();
+        String username = ClientAPI.read_file(DFS_CONSTANTS.user_name_file);
         if(username == null)
         {
             System.out.println("Please login.....");
@@ -176,11 +183,11 @@ public class ClientAPI
         FileTransfer ftp = new FileTransfer();
 
         req_packet.command = DFS_CONSTANTS.GET;
-        req_packet.client_uuid = ClientAPI.getUserName();
+        req_packet.client_uuid = ClientAPI.read_file(DFS_CONSTANTS.user_name_file);
         req_packet.file_name = res_packet.file_name;
         req_packet.file_size = res_packet.file_size;
         req_packet.dn_list = res_packet.dn_list;
-        System.out.println("Path:" + req_packet.file_name);
+        System.out.println("Path:" + req_packet.file_name + ":" + res_packet.file_size);
         try
         {
             connect = new Socket(dn_ip,DFS_CONSTANTS.DN_LISTEN_PORT);
@@ -223,7 +230,7 @@ public class ClientAPI
 
         /* Creating request packet for DN */
         req_packet.command = DFS_CONSTANTS.PUT;
-        req_packet.client_uuid = ClientAPI.getUserName();
+        req_packet.client_uuid = ClientAPI.read_file(DFS_CONSTANTS.user_name_file);
         req_packet.file_name = res_packet.file_name;
         req_packet.file_size = res_packet.file_size;
         req_packet.arguments = res_packet.arguments;

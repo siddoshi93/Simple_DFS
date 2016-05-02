@@ -40,7 +40,6 @@ public class ClientRequestHandle implements Runnable
 			System.out.println("Request for ID : " + req_packet.client_uuid);
 
 			handle_command(req_packet);
-			System.out.println("ASL");
 		}
 		catch (IOException e)
 		{
@@ -67,6 +66,8 @@ public class ClientRequestHandle implements Runnable
 	public void handle_command(ClientRequestPacket req_packet)
 	{
 		ClientResponsePacket res_packet = null;
+		String[] arg = null;
+
 		switch (req_packet.command)
 		{
 			case DFS_CONSTANTS.REGISTER:
@@ -74,6 +75,15 @@ public class ClientRequestHandle implements Runnable
 				DFS_Globals.global_client_list.put(req_packet.client_uuid,cw);
 				res_packet = new ClientResponsePacket();
 				res_packet.response_code = DFS_CONSTANTS.OK;
+
+				/* Set the Secondary ip */
+				if(DFS_Globals.synhronization_start)
+				{
+					System.out.println("Secondary IP is : " + DFS_Globals.sec_mn_ip_addr);
+					arg = new String[DFS_CONSTANTS.ONE];
+					arg[DFS_CONSTANTS.ZERO] = DFS_Globals.sec_mn_ip_addr;
+				}
+				res_packet.arguments = arg;
 				break;
 
 			case DFS_CONSTANTS.LOGIN:
@@ -90,6 +100,15 @@ public class ClientRequestHandle implements Runnable
 					res_packet = new ClientResponsePacket();
 					res_packet.response_code = DFS_CONSTANTS.AUTH_FAILED;
 				}
+
+				/* Set the Secondary ip */
+				if(DFS_Globals.synhronization_start)
+				{
+					System.out.println("Secondary IP is : " + DFS_Globals.sec_mn_ip_addr);
+					arg = new String[DFS_CONSTANTS.ONE];
+					arg[DFS_CONSTANTS.ZERO] = DFS_Globals.sec_mn_ip_addr;
+				}
+				res_packet.arguments = arg;
 				break;
 
 			case DFS_CONSTANTS.MKDIR:

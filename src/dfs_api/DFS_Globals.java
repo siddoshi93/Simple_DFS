@@ -18,6 +18,7 @@ public class DFS_Globals
     public static boolean is_misc_dmn_up = true;
     public static boolean synhronization_start = false;
     public static boolean is_secondary_on = true;
+    public static String mn_mode_ind;
 
     /* Global HashMap to maintain Client information <MN> */
     public static HashMap<String, ClientWrapper> global_client_list;
@@ -29,8 +30,8 @@ public class DFS_Globals
     public static PriorityBlockingQueue<StorageNode> dn_q;
 
     /* Server address stored by DN */
-    public static String server_addr = "";
+    public static String server_addr = null;
 
     /* Server address of the Secondary Main Node */
-    public static String sec_mn_ip_addr = "";
+    public static String sec_mn_ip_addr = null;
 }

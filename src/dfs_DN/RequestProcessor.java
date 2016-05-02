@@ -68,7 +68,7 @@ public class RequestProcessor implements Runnable {
                 res_packet = handler.Put(req_packet);
                 send_response(res_packet);
                 if(res_packet != null) {
-                    System.out.println("Saving file... commented : " + req_packet.file_name);
+                    System.out.println("Saving file... commented : " + req_packet.file_name + ":" + req_packet.file_size);
                     handler.recv_file(client_socket, req_packet.file_name,req_packet.file_size);
                 }
                 /* We need to notify the main node about this updation */
@@ -99,6 +99,7 @@ public class RequestProcessor implements Runnable {
         mn_req_packet.arguments = req_packet.arguments;
         mn_req_packet.dn_list = req_packet.dn_list;
         mn_req_packet.file_name = req_packet.file_name;
+        mn_req_packet.file_size = req_packet.file_size;
         System.out.println("Argument is : " + mn_req_packet.file_name);
 
         try {

@@ -31,14 +31,16 @@ public class Main_Node_Server
 		switch (args[DFS_CONSTANTS.ZERO])
 		{
 			case DFS_CONSTANTS.PM:
-				MN_Server_PM.start_pm_server(); /* Start Server in Primary mode */
+				DFS_Globals.mn_mode_ind = DFS_CONSTANTS.PM;
 				break;
 			case DFS_CONSTANTS.SM:
+				DFS_Globals.mn_mode_ind = DFS_CONSTANTS.SM;
 				MN_Server_SM.start_sm_server(); /* Start Backup server */
-				System.out.println("Changing mode to primary....");
+				System.out.println("Changing mode to primary.....");
 				break;
 			default:
 				System.out.println("Please pass either PM or SM as mode");
 		}
+		MN_Server_PM.start_pm_server(); /* Start Server in Primary mode */
 	}
 }

@@ -23,6 +23,10 @@ public class ClientCommand
     public static boolean RegLogActivity(String username,int command,ClientResponsePacket res_packet)
     {
         server_ip = ClientAPI.getServerAddress();
+
+        //Setting server_addr => IP Of Master Node
+        DFS_Globals.server_addr = server_ip;
+
         if(server_ip == null || username == null)
         {
             System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
@@ -30,7 +34,6 @@ public class ClientCommand
         }
         try
         {
-            System.out.println("Server Ip : " + server_ip);
             connect = new Socket(server_ip,DFS_CONSTANTS.MN_LISTEN_PORT);
 
             /* Set the request packet for Server with registration */
@@ -49,16 +52,15 @@ public class ClientCommand
 
             if(res_packet.response_code == DFS_CONSTANTS.OK)
             {
-                //Setting server_addr => IP Of Master Node
-                DFS_Globals.server_addr = System.getenv(DFS_CONSTANTS.DFS_SERVER_ADDR);
-
                 //Setting sec_mn_ip_addr => IP of Secondary Master Node IF Provided by Master Node
-                if (res_packet.arguments.length > 0)
+                if (res_packet.arguments != null)
                 {
-                    DFS_Globals.sec_mn_ip_addr = res_packet.arguments[0];
+                    DFS_Globals.sec_mn_ip_addr = res_packet.arguments[DFS_CONSTANTS.ZERO];
+                    System.out.println("Sec Server Addr : " + DFS_Globals.sec_mn_ip_addr);
+                    ClientAPI.create_file(DFS_CONSTANTS.sdfs_path + DFS_CONSTANTS.sec_nm_data_file,DFS_Globals.sec_mn_ip_addr);
                 }
 
-                if(ClientAPI.create_session_file(username))
+                if(ClientAPI.create_file(DFS_CONSTANTS.user_name_file,username))
                 {
                     System.out.println("Successfully Performed the Activity.......");
                 }
@@ -136,6 +138,7 @@ public class ClientCommand
 
     public static boolean MkDir(String[] arg) {
         String[] arg_list; /* Argument list passed as String */
+        System.out.println("Sec MN : " + DFS_Globals.sec_mn_ip_addr);
 
         if (arg.length != 2) {
             System.out.println("Please call with a argument as below");
@@ -319,12 +322,14 @@ public class ClientCommand
 
             ClientAPI.send_request(connect, req_packet);
             res_packet = ClientAPI.recv_response(connect);
+            System.out.println("Name : " + res_packet.file_name + "File Size for Get : " + res_packet.file_size);
             if(res_packet != null && res_packet.response_code == DFS_CONSTANTS.OK)
             {
                 System.out.println("Got the IPs of DN.Connecting for getting data..... : " + res_packet.dn_list.size());
                 System.out.println("IP1 : " + res_packet.dn_list.get(DFS_CONSTANTS.ZERO));
                 connect.close(); /* Close the connection with the server */
                 res_packet.file_name = req_packet.file_name;
+                res_packet.file_size = req_packet.file_size;
                 ClientAPI.getFiles(res_packet,arg[1]);
             }
             else
@@ -406,6 +411,8 @@ public class ClientCommand
                 connect.close(); /* Close the connection with the server */
                 res_packet.arguments = req_packet.arguments; /* Data need to send to DN */
                 res_packet.file_name = req_packet.file_name;
+                res_packet.file_size = req_packet.file_size;
+
                 System.out.println("Replication ind : " + res_packet.replicate_ind);
                 if(res_packet.replicate_ind)
                 {
