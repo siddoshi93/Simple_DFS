@@ -108,6 +108,7 @@ public class MN_Server_SM {
         }
         catch (EOFException ex)
         {
+            ex.printStackTrace();
             System.out.println("Detected a Main Node Failure.Taking over....");
         }
         catch (IOException e)
