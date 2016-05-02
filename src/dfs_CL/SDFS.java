@@ -1,7 +1,6 @@
 package dfs_CL;
 
 import dfs_api.DFS_CONSTANTS;
-import dfs_api.DFS_Globals;
 
 /**
  * Created by abhishek on 4/24/16.
@@ -26,6 +25,8 @@ public class SDFS
         DFS_Globals.user_name_file = DFS_Globals.base_path + DFS_Globals.user_name_file;
         DFS_Globals.sdfs_path = DFS_CONSTANTS.base_path + DFS_Globals.sdfs_path;
 
+
+        //Making all commands Uppercase
         String command = arg[0].toUpperCase();
         boolean status = false;
         switch (command)

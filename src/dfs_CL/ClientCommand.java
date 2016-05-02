@@ -10,6 +10,7 @@ import dfs_api.*;
 import javax.xml.ws.handler.MessageContext;
 
 /**
+ * Client-Side Command Handler
  * Created by abhishek on 4/24/16.
  */
 public class ClientCommand
@@ -20,6 +21,12 @@ public class ClientCommand
     static ClientResponsePacket res_packet;
     static ObjectInputStream  ois = null;
 
+    /**
+     * Command Fired ONLY during REGISTER,LOGIN.
+     * @param username
+     * @param command
+     * @param res_packet
+     */
     public static boolean RegLogActivity(String username,int command,ClientResponsePacket res_packet)
     {
         server_ip = ClientAPI.getServerAddress();
@@ -99,6 +106,7 @@ public class ClientCommand
         return true;
     }
 
+
     public static boolean Register(String[] arg)
     {
         String username;
@@ -153,9 +161,12 @@ public class ClientCommand
             return false;
         }
         req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.MKDIR);
+
+        //Passing Path to create directory
         arg_list = new String[DFS_CONSTANTS.ONE];
         arg_list[0] = arg[1];
         req_packet.arguments = arg_list;
+
         try
         {
             connect = new Socket(server_ip, DFS_CONSTANTS.MN_LISTEN_PORT);
@@ -245,55 +256,6 @@ public class ClientCommand
         return true;
     }
 
-    public static boolean Cd(String[] arg)
-    {
-        String[] arg_list; /* Argument list passed as String */
-        if (arg.length != 2) {
-            System.out.println("Please call with a argument as below");
-            System.out.println("Usage <SDFS GET FILE_NAME>");
-            return false;
-        }
-
-        server_ip = ClientAPI.getServerAddress();
-        if(server_ip == null)
-        {
-            System.out.println("Please define DFS_SERVER_ADDR env variable or pass proper username");
-            return false;
-        }
-        req_packet = ClientAPI.createRequestPacket(DFS_CONSTANTS.CD);
-        arg_list = new String[DFS_CONSTANTS.ONE];
-        arg_list[0] = arg[1];
-        req_packet.arguments = arg_list;
-
-        try
-        {
-            connect = new Socket(server_ip, DFS_CONSTANTS.MN_LISTEN_PORT);
-
-            ClientAPI.send_request(connect, req_packet);
-            res_packet = ClientAPI.recv_response(connect);
-            if(res_packet != null && res_packet.response_code == DFS_CONSTANTS.OK)
-            {
-                System.out.println("Successfully performed the operation.....");
-            }
-            else
-            {
-                System.out.println("Something went wrong in performing the address!!!!");
-                return false;
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally {
-            try {
-                connect.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return true;
-    }
 
     public static boolean Get(String[] arg)
     {

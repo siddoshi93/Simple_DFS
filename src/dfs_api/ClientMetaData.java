@@ -3,7 +3,7 @@ package dfs_api;
 import java.util.HashMap;
 
 /**
- * Created by abhishek on 4/26/16.
+ * Stores Client Meta Data => Folder Name, Suffix and HashMap of Files stored on each Data Node
  */
 public class ClientMetaData
 {

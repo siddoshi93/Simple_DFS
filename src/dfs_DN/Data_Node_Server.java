@@ -19,6 +19,9 @@ import java.util.concurrent.TimeUnit;
 /* Program specific imports */
 import dfs_api.*;
 
+/**
+ * Calls main() for Data Nodes.
+ */
 public class Data_Node_Server
 {
     private static ExecutorService workers;
