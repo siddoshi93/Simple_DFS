@@ -1,6 +1,8 @@
 package dfs_CL;
 
 import dfs_api.DFS_CONSTANTS;
+import dfs_api.DFS_Globals;
+import dfs_api.FileTransfer;
 
 /**
  * Created by abhishek on 4/24/16.
@@ -23,8 +25,13 @@ public class SDFS
         }
 
         DFS_Globals.user_name_file = DFS_Globals.base_path + DFS_Globals.user_name_file;
-        DFS_Globals.sdfs_path = DFS_CONSTANTS.base_path + DFS_Globals.sdfs_path;
+        DFS_Globals.sdfs_path = DFS_Globals.base_path + DFS_Globals.sdfs_path;
 
+        if(!FileTransfer.check_and_create_dir(DFS_Globals.sdfs_path))
+        {
+            System.out.print("Unnable to create the SDFS BASE direcotry");
+            System.exit(DFS_CONSTANTS.SUCCESS);
+        }
 
         //Making all commands Uppercase
         String command = arg[0].toUpperCase();

@@ -6,8 +6,7 @@ import java.util.PriorityQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
- * Global Variables for the Application
- * @author Abhishek
+ * Created by Abhishek on 4/24/2016.
  */
 public class DFS_Globals
 {

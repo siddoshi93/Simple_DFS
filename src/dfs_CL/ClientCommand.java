@@ -228,11 +228,11 @@ public class ClientCommand
             ClientAPI.send_request(connect,req_packet);
             res_packet = ClientAPI.recv_response(connect);
 
-            if(res_packet != null && res_packet.response_code == DFS_CONSTANTS.OK)
+            if(res_packet != null && res_packet.curNode != null && res_packet.response_code == DFS_CONSTANTS.OK)
             {
                 for(TreeNode i:res_packet.curNode.children)
                 {
-                    System.out.println(i.NodeName);
+                    System.out.println(i.timeAccess+"\t"+i.size+"\t"+i.NodeName);
                 }
                 System.out.println("LS Worked as expected");
             }

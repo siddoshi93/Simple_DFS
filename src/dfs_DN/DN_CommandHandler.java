@@ -110,6 +110,7 @@ public class DN_CommandHandler
         {
             new_file = true;
             cname = getCNAME(file_name);
+            updateSuffix();
         }
 
         try
@@ -142,4 +143,6 @@ public class DN_CommandHandler
     {
         return (client_data.random_suffix + filename);
     }
+
+    public void updateSuffix() { client_data.random_suffix++;}
 }

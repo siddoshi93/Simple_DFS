@@ -1,8 +1,7 @@
 package dfs_api;
 
 /**
- * All FINAL Constants for the Application
- * @author Abhishek
+ * Created by Abhishek on 4/24/2016.
  */
 public class DFS_CONSTANTS 
 {
@@ -24,6 +23,7 @@ public class DFS_CONSTANTS
 	public final static int MN_MISC_LISTEN_PORT = 9099;
 
 	/* Data Node Constants */
+	public final static String storage_path = "/home/ubuntu/";
 	public final static short DATA_PACKET_SIZE = 4096;
 
 	/* MISC CONSTANTS */
