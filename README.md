@@ -8,5 +8,6 @@ Following are the feature of the system.
 * **Transparent Storage of File**
 
 For more details Please refer to the paper written on the feature design implemented.
+
 **Following feature are being implemented.**
 * **Automation Of Deployment so that use can be simple to use**
